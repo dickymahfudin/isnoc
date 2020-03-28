@@ -54,11 +54,11 @@
                                 @endif --}}
                             @else
                                 <li class="nav-item">
-                                    <a class="nav-link text-light" href="#">NOC</a>
+                                    <a class="nav-link" href="#">NOC</a>
                                 </li>
 
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Nojs</a>
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Nojs</a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                         <a class="dropdown-item" href="">Nojs</a>
                                         <div class="dropdown-divider"></div>
@@ -69,7 +69,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link text-light" href="#">Service Calls</a>
+                                    <a class="nav-link" href="#">Service Calls</a>
                                 </li>
 
                                 <li class="nav-item dropdown">
