@@ -236,7 +236,7 @@ iframe {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    padding: 17px 100px 33px 95px;
+    padding: 2% 90px 3% 95px;
 }
 
 /*------------------------------------------------------------------
@@ -265,7 +265,7 @@ iframe {
 
     width: 100%;
     display: block;
-    padding-bottom: 54px;
+    padding-bottom: 20px;
 }
 
 
