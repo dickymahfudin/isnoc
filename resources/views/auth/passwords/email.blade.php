@@ -6,21 +6,25 @@
     <div class="container-login100">
         <div class="wrap-login100">
             <div class="login100-pic js-tilt" data-tilt>
-                <img src="{{asset('images/img-01.png')}}" alt="IMG">
+                <div class="w-100 p-3">
+                    <img src="{{asset('images/LogoSundaya.png')}}" alt="IMG">
+                </div>
+                <div class="mt-2">
+                    <img src="{{asset('images/Sundayahome.png')}}" alt="IMG">
+                </div>
             </div>
-
-            <div class="card-body">
-                @if (session('status'))
-                    <div class="alert alert-success" role="alert">
-                        {{ session('status') }}
-                    </div>
-                @endif
 
                 <form action="{{ route('password.email') }}" class="float-right login100-form validate-form" method="POST">
                     @csrf
                     <span class="login100-form-title">
                         {{ __('Reset Password') }}
                     </span>
+                    @if (session('status'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                    </div>
+                    @endif
+
                     <div class="wrap-input100 validate-input">
                         <input id="email" class="input100 @error('email') is-invalid @enderror" type="email" name="email" placeholder="Email" value="{{ old('email') }}" required autocomplete="email">
                         <span class="focus-input100"></span>
@@ -47,7 +51,6 @@
                         @endif
                     </div>
                 </form>
-            </div>
         </div>
     </div>
 </div>

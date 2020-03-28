@@ -6,13 +6,18 @@
     <div class="container-login100">
         <div class="wrap-login100">
             <div class="login100-pic js-tilt" data-tilt>
-                <img src="{{asset('images/img-01.png')}}" alt="IMG">
+                <div class="w-100 p-3">
+                    <img src="{{asset('images/LogoSundaya.png')}}" alt="IMG">
+                </div>
+                <div class="mt-2">
+                    <img src="{{asset('images/Sundayahome.png')}}" alt="IMG">
+                </div>
             </div>
 
             <form action="{{ route('register') }}" class="login100-form validate-form" method="POST">
                 @csrf
                 <span class="login100-form-title">
-                   Register
+                   {{ __('Register') }}
                 </span>
 
                 <div class="wrap-input100 validate-input">

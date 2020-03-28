@@ -16,12 +16,7 @@ use Illuminate\Auth\Events\Verified;
 
 Route::get('/', function () {
     return view('welcome');
-    // return view('auth.login');
-});
-Route::get('/x', function () {
-    return view('auth.logintest');
-    // return view('auth.login');
-});
+})->middleware('verified');
 
 Auth::routes(['verify' => true]);
 

@@ -224,7 +224,7 @@ iframe {
 }
 
 .wrap-login100 {
-    width: 960px;
+    width: 700px;
     background: #fff;
     border-radius: 10px;
     overflow: hidden;
@@ -236,13 +236,14 @@ iframe {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    padding: 2% 90px 3% 95px;
+    padding: 2% 10px 3% 15px;
+    padding: 65px;
 }
 
 /*------------------------------------------------------------------
 [  ]*/
 .login100-pic {
-    width: 289px;
+    width: 220px;
 }
 
 .login100-pic img {

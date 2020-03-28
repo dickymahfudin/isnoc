@@ -6,13 +6,18 @@
     <div class="container-login100">
         <div class="wrap-login100">
             <div class="login100-pic js-tilt" data-tilt>
-                <img src="{{asset('images/img-01.png')}}" alt="IMG">
+                <div class="w-100 p-3">
+                    <img src="{{asset('images/LogoSundaya.png')}}" alt="IMG">
+                </div>
+                <div class="mt-2">
+                    <img src="{{asset('images/Sundayahome.png')}}" alt="IMG">
+                </div>
             </div>
 
             <form action="{{ route('login') }}" class="login100-form validate-form" method="POST">
                 @csrf
                 <span class="login100-form-title">
-                    Login
+                    {{ __('Login') }}
                 </span>
                 <div class="wrap-input100 validate-input">
                     <input id="email" class="input100 @error('email') is-invalid @enderror" type="email" name="email" placeholder="Email" value="{{ old('email') }}" required autocomplete="email">
