@@ -22,3 +22,13 @@ Auth::routes(['verify' => true]);
 
 Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
 // Route::redirect('/register', '/home', 301);
+
+Route::group(['prefix' => 'nojs',  'middleware' => 'auth'], function () {
+    Route::get('/', 'NojsUsersController@index')->name('nojs.index');
+    Route::post('/', 'NojsUsersController@store')->name('nojs.store');
+    Route::get('/create', 'NojsUsersController@create')->name('nojs.create');
+    Route::get('/{nojsUser}', 'NojsUsersController@show')->name('nojs.show');
+    Route::put('/{nojsUser}', 'NojsUsersController@update')->name('nojs.update');
+    Route::delete('/{nojsUser}', 'NojsUsersController@destroy')->name('nojs.destroy');
+    Route::get('/{nojsUser}/edit', 'NojsUsersController@edit')->name('nojs.edit');
+});

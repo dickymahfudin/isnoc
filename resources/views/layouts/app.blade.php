@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="{{ asset('images/LogoSundaya.png') }}">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -18,7 +19,6 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{{asset('vendor/bootstrap/css/bootstrap.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('fonts/font-awesome-4.7.0/css/font-awesome.min.css')}}">
 
     @stack('styles')
@@ -27,7 +27,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="nav-item h1" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -47,20 +47,20 @@
                                 <li class="nav-item">
                                     <a class="nav-link btn btn-primary" href="{{ route('login') }}">{{ __('Login') }}</a>
                                 </li>
-                                @if (Route::has('register'))
+                                {{-- @if (Route::has('register'))
                                     <li class="nav-item">
                                         <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                                     </li>
-                                @endif
+                                @endif --}}
                             @else
-                                <li class="nav-item">
+                                <li class="nav-item h5">
                                     <a class="nav-link" href="#">NOC</a>
                                 </li>
 
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Nojs</a>
+                                <li class="nav-item dropdown h5">
+                                    <a class="nav-link dropdown-toggle {{ Request::is('nojs') ? 'bg-warning text-dark' : ''}} {{ Request::is('sla') ? 'bg-warning text-dark' : ''}}" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Nojs</a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                        <a class="dropdown-item" href="">Nojs</a>
+                                        <a class="dropdown-item {{ Request::is('nojs') ? 'bg-warning text-dark' : ''}}" href="{{route('nojs.index')}}">Nojs</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="#">Detail</a>
                                         <div class="dropdown-divider"></div>
@@ -68,11 +68,11 @@
                                     </div>
                                 </li>
 
-                                <li class="nav-item">
+                                <li class="nav-item h5">
                                     <a class="nav-link" href="#">Service Calls</a>
                                 </li>
 
-                                <li class="nav-item dropdown">
+                                <li class="nav-item dropdown h5">
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         {{ Auth::user()->name }} <span class="caret"></span>
                                     </a>
@@ -89,6 +89,11 @@
                                         </form>
                                     </div>
                                 </li>
+
+                                <li class="nav-item h5">
+                                    <div class="nav-link clock active"></div>
+                                </li>
+
                             @endguest
                         </ul>
                     </div>
@@ -100,7 +105,20 @@
             @yield('content')
         </main>
     </div>
-    <script src="{{('vendor/bootstrap/js/popper.js')}}"></script>
-    <script src="{{('vendor/bootstrap/js/bootstrap.min.js')}}"></script>
+
+    <script src="{{('vendor/jquery/jquery-3.4.1.min.js')}}"></script>
+    <script>
+        $(document).ready(function () {
+        setInterval(function () {
+            let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            let clock = new Date();
+            $('.clock').html(
+                `${days[clock.getDay()]}, ${clock.getHours()}:${clock.getMinutes()}:${clock.getSeconds()}`);
+        }, 1000);
+
+        });
+    </script>
+    @stack('scripts')
+
 </body>
 </html>
