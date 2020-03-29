@@ -14,7 +14,8 @@ class ServiceCallsController extends Controller
      */
     public function index()
     {
-        //
+        $service = ServiceCall::all();
+        return response($service, 200);
     }
 
     /**
