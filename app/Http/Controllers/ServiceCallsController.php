@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\models\ServiceCall;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ServiceCallsController extends Controller
 {
@@ -12,9 +13,24 @@ class ServiceCallsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function __construct(){
+        $this->middleware('auth:api');
+    }
+
+    public function index(Request $request)
     {
-        $service = ServiceCall::all();
+        $param = $request->status;
+        if ($param) {
+            $service = DB::table( 'service_calls')->where('status', $param )->get();
+            // $service = DB::table('service_calls')
+            // ->join('nojs_users', 'service_calls.nojs', '=', 'nojs_users.nojs')
+            // ->select('service_calls.*', 'nojs_users.site', 'nojs_users.lc')
+            // ->where('status', 'like', '%' . $request->status . '%')
+            // ->get();
+        }
+        else {
+            $service = ServiceCall::all();
+        }
         return response($service, 200);
     }
 
