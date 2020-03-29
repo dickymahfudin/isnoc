@@ -12,9 +12,26 @@ class NojsUsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if ($request->search) {
+            $datanojs = NojsUser::query()
+                ->where('nojs', 'like', '%' . $request->search . '%')
+                ->orwhere('site', 'like', '%' . $request->search . '%')
+                ->orwhere('provinsi', 'like', '%' . $request->search . '%')
+                ->orwhere('lc', 'like', '%' . $request->search . '%')
+                ->orwhere('mitra', 'like', '%' . $request->search . '%')
+                ->orwhere('ip', 'like', '%' . $request->search . '%')
+                ->orwhere('latitude', 'like', '%' . $request->search . '%')
+                ->orwhere('longitude', 'like', '%' . $request->search . '%')
+                ->get();
+            // dd($datanojs);
+        } else {
+            $datanojs = NojsUser::all();
+        }
+        return view('nojs.index', [
+            'datanojs' => $datanojs
+        ]);
     }
 
     /**
@@ -24,7 +41,10 @@ class NojsUsersController extends Controller
      */
     public function create()
     {
-        //
+        $datanojs = new NojsUser();
+        return view('nojs.form', [
+            'datanojs' => $datanojs
+        ]);
     }
 
     /**
@@ -35,7 +55,31 @@ class NojsUsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'nojs' => 'required|unique:nojs_users,nojs',
+            'site' => 'required|string|max:20',
+            'provinsi' => 'required|string|max:20',
+            'lc' => 'required',
+            'mitra' => 'required',
+            'ip' => 'required|string|max:15',
+            'latitude' => 'required|string|max:20',
+            'longitude' => 'required|string|max:20',
+        ]);
+        // return $request;
+
+        // $datanojs = new NojsUser;
+
+        // $datanojs->nojs = $request->nojs;
+        // $datanojs->site = $request->site;
+        // $datanojs->provinsi = $request->provinsi;
+        // $datanojs->lc = $request->lc;
+        // $datanojs->ip = $request->ip;
+        // $datanojs->latitude = $request->latitude;
+        // $datanojs->longitude = $request->longitude;
+
+        // $datanojs->save();
+        $datanojs = NojsUser::create($request->all());
+        return $datanojs;
     }
 
     /**
@@ -46,7 +90,9 @@ class NojsUsersController extends Controller
      */
     public function show(NojsUser $nojsUser)
     {
-        //
+        return view('nojs.show', [
+            'datanojs' => $nojsUser
+        ]);
     }
 
     /**
@@ -57,7 +103,9 @@ class NojsUsersController extends Controller
      */
     public function edit(NojsUser $nojsUser)
     {
-        //
+        return view('nojs.form', [
+            'datanojs' => $nojsUser
+        ]);
     }
 
     /**
@@ -69,7 +117,17 @@ class NojsUsersController extends Controller
      */
     public function update(Request $request, NojsUser $nojsUser)
     {
-        //
+        $this->validate($request, [
+            'nojs' => 'required',
+            'site' => 'required|string|max:20',
+            'provinsi' => 'required|string|max:20',
+            'lc' => 'required',
+            'ip' => 'required|string|max:15',
+            'latitude' => 'required|string|max:20',
+            'longitude' => 'required|string|max:20',
+        ]);
+
+        $nojsUser->update($request->all());
     }
 
     /**
@@ -80,6 +138,6 @@ class NojsUsersController extends Controller
      */
     public function destroy(NojsUser $nojsUser)
     {
-        //
+        $nojsUser->delete();
     }
 }
