@@ -15,19 +15,19 @@ class CreateNojsUsersTable extends Migration
     {
         Schema::create('nojs_users', function (Blueprint $table) {
             $table->string('nojs', 8)->primary();
-            $table->string('site', 20);
-            $table->string('provinsi', 20);
-            $table->string('lc', 10);
-            $table->string('mitra', 10);
-            $table->string('ip', 15);
-            $table->string('latitude', 20);
-            $table->string('longitude', 20);
-            $table->smallInteger('id_lvdvsat');
-            $table->smallInteger('id_ping');
-            $table->smallInteger('id_batvolt');
-            $table->smallInteger('id_vsatcurr');
-            $table->smallInteger('id_btscurr');
-            $table->smallInteger('no_urut');
+            $table->string('site', 20)->nullable()->default(null);
+            $table->string('provinsi', 20)->nullable()->default(null);
+            $table->string('lc', 10)->nullable()->default(null);
+            $table->string('mitra', 10)->nullable()->default(null);
+            $table->string('ip', 15)->nullable()->default(null);
+            $table->string('latitude', 20)->nullable()->default(null);
+            $table->string('longitude', 20)->nullable()->default(null);
+            $table->integer('id_lvdvsat')->nullable()->default(null);
+            $table->integer('id_ping')->nullable()->default(null);
+            $table->integer('id_batvolt')->nullable()->default(null);
+            $table->integer('id_vsatcurr')->nullable()->default(null);
+            $table->integer('id_btscurr')->nullable()->default(null);
+            $table->integer('no_urut')->nullable()->default(null);
             $table->timestamps();
         });
     }
