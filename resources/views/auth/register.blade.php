@@ -17,7 +17,7 @@
             <form action="{{ route('register') }}" class="login100-form validate-form" method="POST">
                 @csrf
                 <span class="login100-form-title">
-                   {{ __('Register') }}
+                    {{ __('Register') }}
                 </span>
 
                 <div class="wrap-input100 validate-input">
