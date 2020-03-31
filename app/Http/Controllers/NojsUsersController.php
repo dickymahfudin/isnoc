@@ -141,9 +141,4 @@ class NojsUsersController extends Controller
     {
         $nojsUser->delete();
     }
-
-    public function test()
-    {
-        dd(ServiceCall::first());
-    }
 }

@@ -32,6 +32,3 @@ Route::group(['prefix' => 'nojs',  'middleware' => 'verified'], function () {
     Route::delete('/{nojsUser}', 'NojsUsersController@destroy')->name('nojs.destroy');
     Route::get('/{nojsUser}/edit', 'NojsUsersController@edit')->name('nojs.edit');
 });
-Route::get( '/test', 'NojsUsersController@test');
-
-Route::get('/service', 'ServiceCallsController@index');

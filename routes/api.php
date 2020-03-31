@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::get('/servicecalls', 'ServiceCallsController@index');
+Route::get( '/servicecalls/{serviceCall}', 'ServiceCallsController@show');
 Route::post('/servicecalls', 'ServiceCallsController@store');
 Route::put( '/servicecalls/{serviceCall}', 'ServiceCallsController@update');
 
