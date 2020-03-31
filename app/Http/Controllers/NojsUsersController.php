@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\NojsUser;
 use Illuminate\Http\Request;
-use App\models\ServiceCall;
 
 class NojsUsersController extends Controller
 {

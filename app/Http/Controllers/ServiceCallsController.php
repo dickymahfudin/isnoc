@@ -21,7 +21,6 @@ class ServiceCallsController extends Controller
     {
         $nojs = $request->nojs;
         $status = $request->status;
-
         if (!$nojs && $status) {
             // $service = DB::table( 'service_calls')->where('status', $status )->get();
             $service = DB::table('service_calls')
@@ -37,7 +36,6 @@ class ServiceCallsController extends Controller
         else {
             $service = ServiceCall::all();
         }
-
         return response($service, 200);
     }
 
@@ -52,36 +50,6 @@ class ServiceCallsController extends Controller
         return response($dataService, 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\models\ServiceCall  $serviceCall
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Request $request)
-    {
-        $data =  ServiceCall::findOrFail($request->nojs , $request->status);
-        return response($data);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\models\ServiceCall  $serviceCall
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(ServiceCall $serviceCall)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\models\ServiceCall  $serviceCall
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, ServiceCall $serviceCall)
     {
         $this->validate($request, [
@@ -90,16 +58,5 @@ class ServiceCallsController extends Controller
             ]);
         $serviceCall->update($request->all());
         return response($serviceCall, 200);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\models\ServiceCall  $serviceCall
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(ServiceCall $serviceCall)
-    {
-        //
     }
 }
