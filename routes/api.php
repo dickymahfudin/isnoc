@@ -26,6 +26,6 @@ Route::prefix( 'servicecalls')->group(function () {
 });
 
 Route::prefix('logger')->group(function (){
-    Route::get('/logger', 'NojsLoggersController@loggers');
-    Route::post('/logger', 'NojsLoggersController@store');
+    Route::get('/', 'NojsLoggersController@loggers');
+    Route::post('/', 'NojsLoggersController@store');
 });

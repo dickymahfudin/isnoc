@@ -61,18 +61,19 @@ class NojsLoggersController extends Controller
 
     public function loggers(Request $request)
     {
-        if ($request->js && $request->limit) {
-            $js = $request->js;
-            $limit = $request->limit;
-            $datas = NojsLogger::where('nojs', $js)
-                ->orderBy('time_local', 'desc')
-                ->limit($limit)
-                ->get();
+        $nojs = $request->nojs;
+        $limit = $request->limit;
+
+        if ($nojs && $limit) {
+            $datas = NojsLogger::where('nojs', $nojs)
+                            ->orderBy('time_local', 'desc')
+                            ->limit($limit)
+                            ->get();
             $data = $this->dataCalculate($datas);
-            return response($data, 200);
         } else {
-            return [];
+            $data = ["Error" => "parameter not found"];
         }
+        return response($data, 200);
     }
 
     public function dataCalculate($datas)
