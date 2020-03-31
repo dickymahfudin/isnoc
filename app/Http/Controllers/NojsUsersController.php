@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\NojsUser;
 use Illuminate\Http\Request;
+use App\models\ServiceCall;
 
 class NojsUsersController extends Controller
 {
@@ -139,5 +140,10 @@ class NojsUsersController extends Controller
     public function destroy(NojsUser $nojsUser)
     {
         $nojsUser->delete();
+    }
+
+    public function test()
+    {
+        dd(ServiceCall::first());
     }
 }

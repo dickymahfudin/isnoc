@@ -21,12 +21,12 @@ class ServiceCallsController extends Controller
     {
         $param = $request->status;
         if ($param) {
-            $service = DB::table( 'service_calls')->where('status', $param )->get();
-            // $service = DB::table('service_calls')
-            // ->join('nojs_users', 'service_calls.nojs', '=', 'nojs_users.nojs')
-            // ->select('service_calls.*', 'nojs_users.site', 'nojs_users.lc')
-            // ->where('status', 'like', '%' . $request->status . '%')
-            // ->get();
+            // $service = DB::table( 'service_calls')->where('status', $param )->get();
+            $service = DB::table('service_calls')
+            ->join('nojs_users', 'service_calls.nojs', '=', 'nojs_users.nojs')
+            ->select('service_calls.*', 'nojs_users.site', 'nojs_users.lc')
+            ->where('status', 'like', '%' . $request->status . '%')
+            ->get();
         }
         else {
             $service = ServiceCall::all();
@@ -34,25 +34,15 @@ class ServiceCallsController extends Controller
         return response($service, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'service_id' => 'required|unique:service_calls,service_id',
+            'nojs' => 'required',
+            'open_time' => 'required',
+        ]);
+        $dataService = ServiceCall::create($request->all());
+        return response($dataService, 201);
     }
 
     /**
@@ -86,7 +76,13 @@ class ServiceCallsController extends Controller
      */
     public function update(Request $request, ServiceCall $serviceCall)
     {
-        //
+        $data = $request->validate([
+            'closed_time' => 'required',
+            'status' => 'required',
+        ]);
+
+        $serviceCall->update($data);
+        return response($serviceCall, 200);
     }
 
     /**
