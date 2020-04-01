@@ -23,7 +23,7 @@ Auth::routes(['verify' => true]);
 Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
 // Route::redirect('/register', '/home', 301);
 
-Route::group(['prefix' => 'nojs',  'middleware' => 'auth'], function () {
+Route::group(['prefix' => 'nojs',  'middleware' => 'verified'], function () {
     Route::get('/', 'NojsUsersController@index')->name('nojs.index');
     Route::post('/', 'NojsUsersController@store')->name('nojs.store');
     Route::get('/create', 'NojsUsersController@create')->name('nojs.create');
