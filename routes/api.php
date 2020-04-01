@@ -19,13 +19,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::prefix( 'servicecalls')->group(function () {
-    Route::get('/', 'ServiceCallsController@index');
-    Route::get( '/{serviceCall}', 'ServiceCallsController@show');
-    Route::post('/', 'ServiceCallsController@store');
-    Route::put( '/{serviceCall}', 'ServiceCallsController@update');
+    Route::get('/', 'Api\ServiceCallsController@index');
+    Route::get( '/{serviceCall}', 'Api\ServiceCallsController@show');
+    Route::post('/', 'Api\ServiceCallsController@store');
+    Route::put( '/{serviceCall}', 'Api\ServiceCallsController@update');
 });
 
 Route::prefix('logger')->group(function (){
-    Route::get('/', 'NojsLoggersController@loggers');
-    Route::post('/', 'NojsLoggersController@store');
+    Route::get('/', 'Api\NojsLoggersController@loggers')->name('noc.logger');
+    Route::post('/', 'Api\NojsLoggersController@store');
 });

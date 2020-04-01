@@ -1,0 +1,41 @@
+.container-chart {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.container-chart .container-item {
+    width: 350px;
+    margin: 5px;
+    /* margin-left: 20px; */
+    /* margin: 5px; */
+    margin-bottom: 15px;
+    /* margin-bottom: 35px; */
+    border: solid black 1px;
+}
+
+.js {
+    margin: 10px;
+}
+
+.eh {
+    margin-right: 10px;
+    display: flex;
+    flex-direction: row;
+    height: 63px;
+}
+
+.bv {
+    margin-right: 10px;
+    display: flex;
+    height: 32px;
+    flex-direction: row;
+}
+
+.edl {
+    margin-right: 10px;
+    display: flex;
+    height: 42px;
+    flex-direction: row;
+    /* transform: scale(1, -1); */
+}

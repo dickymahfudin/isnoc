@@ -18,8 +18,10 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" type="text/css" href="{{asset('fonts/font-awesome-4.7.0/css/font-awesome.min.css')}}">
+
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.css') }}" rel="stylesheet">
 
     @stack('styles')
 </head>
@@ -27,7 +29,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
-                <a class="nav-item h1" href="{{ url('/') }}">
+                <a class="nav-item h1 text-light" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -106,7 +108,10 @@
         </main>
     </div>
 
-    <script src="{{('vendor/jquery/jquery-3.4.1.min.js')}}"></script>
+    <script src="{{asset('vendor/jquery/jquery-3.4.1.js')}}"></script>
+    <script src="{{asset('vendor/bootstrap/js/popper.js') }}"></script>
+
+    @stack('scripts')
     <script>
         $(document).ready(function () {
         setInterval(function () {
@@ -115,10 +120,8 @@
             $('.clock').html(
                 `${days[clock.getDay()]}, ${clock.getHours()}:${clock.getMinutes()}:${clock.getSeconds()}`);
         }, 1000);
-
         });
     </script>
-    @stack('scripts')
 
 </body>
 </html>

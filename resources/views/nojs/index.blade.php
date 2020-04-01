@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Nojs')
+{{-- @section('title','Nojs') --}}
 @push('styles')
     <link rel="stylesheet" type="text/css" href="{{asset('css/nojs.css')}}">
 @endpush

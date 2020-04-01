@@ -20,7 +20,8 @@ Route::get('/', function () {
 
 Auth::routes(['verify' => true]);
 
-Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
+// Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
+Route::get('/home', 'NocController@index')->name('noc')->middleware('verified');
 // Route::redirect('/register', '/home', 301);
 
 Route::group(['prefix' => 'nojs',  'middleware' => 'verified'], function () {
@@ -32,3 +33,5 @@ Route::group(['prefix' => 'nojs',  'middleware' => 'verified'], function () {
     Route::delete('/{nojsUser}', 'NojsUsersController@destroy')->name('nojs.destroy');
     Route::get('/{nojsUser}/edit', 'NojsUsersController@edit')->name('nojs.edit');
 });
+
+Route::get('/datauser', 'NocController@datauser')->name('noc.datauser');
