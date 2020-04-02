@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\NojsLogger;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
-
+use Carbon\Carbon;
 
 class NojsLoggersController extends Controller
 {
@@ -66,14 +65,46 @@ class NojsLoggersController extends Controller
     {
         $nojs = $request->nojs;
         $limit = $request->limit;
+        $sdate = $request->sdate;
+        $edate = $request->edate;
+        $calculate = $request->calculate;
 
-        if ($nojs && $limit) {
-            $datas = NojsLogger::where('nojs', $nojs)
-                            ->orderBy('time_local', 'desc')
-                            ->limit($limit)
-                            ->get();
-            $data = $this->dataCalculate($datas);
-        } else {
+        if (($nojs && $limit) && !$sdate) {
+            if ($calculate === "true") {
+                $datas = NojsLogger::where('nojs', $nojs)
+                                ->orderBy('time_local', 'desc')
+                                ->limit($limit + 1)
+                                ->get();
+                $data = $this->dataCalculate($datas);
+            }else {
+                $datas = NojsLogger::where('nojs', $nojs)
+                                ->orderBy('time_local', 'desc')
+                                ->limit($limit)
+                                ->get();
+                $data = $datas;
+            }
+        } elseif ($sdate && $edate && !$nojs) {
+            $datas = NojsLogger::whereBetween('time_local', [$sdate, $edate])
+                                ->orderBy('time_local', 'desc')
+                                ->get();
+            $data = $datas;
+        } elseif ($sdate && $edate && $nojs) {
+            if ($calculate === "true") {
+                $newsdate = (new Carbon($sdate))->subMinutes(5)->format('Y-m-d H:i:s');
+
+                $datas = NojsLogger::where('nojs', $nojs)
+                                    ->whereBetween('time_local', [$newsdate, $edate])
+                                    ->orderBy('time_local', 'desc')
+                                    ->get();
+                $data = $this->dataCalculate($datas);;
+            }else {
+                $datas = NojsLogger::where('nojs', $nojs)
+                                    ->whereBetween('time_local', [$sdate, $edate])
+                                    ->orderBy('time_local', 'desc')
+                                    ->get();
+                $data = $datas;
+            }
+        }else {
             $data = ["Error" => "parameter not found"];
         }
         return response($data, 200);
@@ -82,7 +113,7 @@ class NojsLoggersController extends Controller
     public function dataCalculate($datas)
     {
         $valueError = null;
-        if (count($datas) != 0)
+        if (count($datas) != 0) {
             if (count($datas) > 1) {
                 for ($i = 0; $i < count($datas) - 1; $i++) {
                     $array[$i]['time_local'] = $datas[$i]->time_local;
@@ -126,9 +157,11 @@ class NojsLoggersController extends Controller
                         $array[$i]['edl2'] = $valueError;
                     }
 
-                    if (($datas[$i]->batt_volt1 !== $valueError)) {
-                        $array[$i]['pms_state'] =  $this->pmsconvert($datas[$i]->pms_state);
+                    if (($datas[$i]->pms_state !== $valueError)) {
+                        $array[$i]['pms'] =  $this->pmsconvert($datas[$i]->pms_state);
+                        $array[$i]['pms_state'] =  $datas[$i]->pms_state;
                     } else {
+                        $array[$i]['pms'] = $valueError;
                         $array[$i]['pms_state'] = $valueError;
                     }
                 }
@@ -140,13 +173,17 @@ class NojsLoggersController extends Controller
                 $array['batt_volt1'] = (($datas[0]->eh1) != $valueError) ? ($datas[0]->batt_volt1 / 100) : $valueError;
                 $array['edl1'] = (($datas[0]->eh1) != $valueError) ? $datas[0]->edl1 : $valueError;
                 $array['edl2'] = (($datas[0]->eh1) != $valueError) ? $datas[0]->edl2 : $valueError;
-                $array['pms_state'] = (($datas[0]->eh1) != $valueError) ?  pmsConvert($datas[0]->pms_state) : $valueError;
+                $array['pms_state'] = (($datas[0]->eh1) != $valueError) ?  $datas[0]->pms_state : $valueError;
+                $array['pms'] = (($datas[0]->pms_state) != $valueError) ?  pmsConvert($datas[0]->pms_state) : $valueError;
 
                 // $array['batt_volt1'] =  (($datas[0]->batt_volt1$datas[0]) !=$valueError)? $datas[0]->batt_volt1 / 100:$valueError;
                 // $array['edl1'] = $datas[0]->edl1;
                 // $array['edl2'] = $datas[0]->edl2;
                 // $array['pms_state'] =  pmsconvert($datas[0]->pms_state);
             }
+        }else {
+            $array = [];
+        }
         return $array;
     }
 
