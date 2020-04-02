@@ -4,7 +4,6 @@ import {
 
 $(document).ready(function () {
     let js = [];
-
     let DatasLogger = [];
     let GetLogger = new GetData();
 
@@ -30,7 +29,7 @@ $(document).ready(function () {
                 }
             });
         },
-        pageSize: 15,
+        pageSize: 3,
         className: 'paginationjs-theme-blue',
         ajax: {
             beforeSend: function () {
@@ -39,7 +38,7 @@ $(document).ready(function () {
         },
         callback: function (response, pagination) {
             $('.container-chart').html('');
-            js = [];
+            DatasLogger = [];
             response.forEach(function (data, index) {
                 let temp = GetLogger.GetDataLoggers({
                     nojs: data.nojs,
@@ -50,7 +49,19 @@ $(document).ready(function () {
                     data: temp
                 });
                 $('.container-chart').append(`<div class="container-item" id="container-item-${data.nojs}">
-                                                <div class="js" id="js-${data.nojs}">${data.nojs}</div>
+                                                <div class="js row" id="js-${data.nojs}">
+                                                    <div class="col border text-left text-xl">
+                                                        ${data.nojs} ${data.site}
+                                                    </div>
+                                                    <div class="col border">
+                                                        ${data.lc}
+                                                        <span class="ml-5" id="pms-${data.nojs}">
+                                                        </span>
+
+                                                        <span class="float-right" id="bv-${data.nojs}">
+                                                        </span>
+                                                    </div>
+                                                </div>
 
                                                 <div class="eh">
                                                     <canvas id="eh1-${data.nojs}"></canvas>
@@ -68,25 +79,26 @@ $(document).ready(function () {
                                                     <canvas id="edl1-${data.nojs}"></canvas>
                                                 </div>
 
-                                                <div class="edl test">
+                                                <div class="edl">
                                                     <canvas id="edl2-${data.nojs}"></canvas>
                                                 </div>
                                         </div>`);
-                SetidChart(DatasLogger, index);
+                SetidChart(DatasLogger, index, data.nojs);
             });
         }
     });
 
-    function SetidChart(data, index) {
-        // console.log(data);
-        const temp = data[index];
-        temp.data.forEach(data => {
+    function SetidChart(data, index, nojs) {
+        let pms_state = 0,
+            batt_volt1 = 0;
 
-            let chartEh1 = document.getElementById(`eh1-${data.nojs[0]}`).getContext('2d');
-            let chartEh2 = document.getElementById(`eh2-${data.nojs[0]}`).getContext('2d');
-            let chartBv = document.getElementById(`batt_volt1-${data.nojs[0]}`).getContext('2d');
-            let chartedl1 = document.getElementById(`edl1-${data.nojs[0]}`).getContext('2d');
-            let chartedl2 = document.getElementById(`edl2-${data.nojs[0]}`).getContext('2d');
+        const temp = data[index];
+        temp.data.forEach(function (data, index) {
+            let chartEh1 = document.getElementById(`eh1-${nojs}`).getContext('2d');
+            let chartEh2 = document.getElementById(`eh2-${nojs}`).getContext('2d');
+            let chartBv = document.getElementById(`batt_volt1-${nojs}`).getContext('2d');
+            let chartedl1 = document.getElementById(`edl1-${nojs}`).getContext('2d');
+            let chartedl2 = document.getElementById(`edl2-${nojs}`).getContext('2d');
 
             renderChart({
                 data: data.eh1,
@@ -117,24 +129,50 @@ $(document).ready(function () {
                 label: data.label,
                 color: data.color_edl1,
                 chart: chartedl1,
-                min: 0,
-                max: 40
+                min: -40,
+                max: 0
             });
             renderChart({
                 data: data.edl2,
                 label: data.label,
                 color: data.color_edl2,
                 chart: chartedl2,
-                min: 0,
-                max: 40
+                min: -40,
+                max: 0
             });
-        });
 
+            for (let i = data.pms_state.length; i > 0; i--) {
+                const e = data.pms_state[i];
+                if (e != null) {
+                    pms_state = e;
+                    break;
+                }
+            }
+
+            for (let i = data.bv.length; i > 0; i--) {
+                const e = data.bv[i];
+                if (e != null) {
+                    batt_volt1 = e;
+                    break;
+                }
+            }
+
+
+        });
+        $(`#bv-${nojs}`).text(batt_volt1.toFixed(1));
+        if (batt_volt1.toFixed(1) >= 54.6) {
+            $(`#bv-${nojs}`).css("background-color", "green");
+        } else if (batt_volt1.toFixed(1) <= 52.0) {
+            $(`#bv-${nojs}`).css("background-color", "yellow");
+        }
+
+        $(`#pms-${nojs}`).text(pms_state);
+        if (pms_state <= 15) {
+            $(`#pms-${nojs}`).css("background-color", "yellow");
+        }
     }
 
     function renderChart(data) {
-        console.log(data);
-
         let chart = new Chart(data.chart, {
             type: 'bar',
             data: {
@@ -182,102 +220,6 @@ $(document).ready(function () {
         return chart;
     }
 
-    // function chart(js) {
-    //     $.ajax({
-    //         type: 'GET',
-    //         url: log,
-    //         data: {
-    //             js: js,
-    //             limit: '37'
-    //         },
-    //         dataType: 'json',
-    //         success: function (response) {
-    //             let hedl1;
-    //             let hedl2;
-    //             let heh1;
-    //             let heh2;
-    //             let hbv;
-    //             $.each(response, function (index, item) {
-    //                 if (item.eh1 == null) {
-    //                     eh1.push(100);
-    //                 } else {
-    //                     heh1 = Math.abs(Math.round(dataMap(item.eh1, 0, mxEh, 0, 50)));
-    //                     if (heh1 > 50) heh1 = 50;
-    //                     eh1.push(heh1);
-    //                 }
-
-    //                 if (item.eh2 == null) {
-    //                     eh2.push(100);
-    //                 } else {
-    //                     heh2 = Math.abs(Math.round(dataMap(item.eh2, 0, mxEh, 0, 50)));
-    //                     if (heh2 > 50) heh2 = 50;
-    //                     eh2.push(heh2);
-    //                 }
-
-    //                 if (item.batt_volt1 == null) {
-    //                     batt_volt1.push(100);
-    //                 } else {
-    //                     hbv = Math.round(dataMap(item.batt_volt1, 45, 55, 0, 20));
-    //                     if (hbv > 20) hbv = 20;
-    //                     batt_volt1.push(hbv);
-    //                 }
-
-    //                 if (item.edl1 == null) {
-    //                     edl1.push(100);
-    //                 } else {
-    //                     hedl1 = Math.abs(Math.round(dataMap(item.edl1, 0, mxEdl, 0, 30)));
-    //                     if (hedl1 > 30) hedl1 = 30;
-    //                     edl1.push(hedl1);
-    //                 }
-
-    //                 if (item.edl2 == null) {
-    //                     edl2.push(100);
-    //                 } else {
-    //                     hedl2 = Math.abs(Math.round(dataMap(item.edl2, 0, mxEdl, 0, 30)));
-    //                     if (hedl2 > 30) hedl2 = 30;
-    //                     edl2.push(hedl2);
-    //                 }
-    //             });
-    //             if (response.length <= 36) {
-    //                 for (let i = 0; i < 36 - response.length; i++) {
-    //                     edl1.push(100);
-    //                     edl2.push(100);
-    //                     eh1.push(100);
-    //                     eh2.push(100);
-    //                     batt_volt1.push(100);
-    //                 }
-    //             }
-    //             edl1.reverse();
-    //             edl2.reverse();
-    //             batt_volt1.reverse();
-    //             eh1.reverse();
-    //             eh2.reverse();
-    //             for (let i = 0; i < 36; i++) {
-    //                 $('.chart-eh1-' + js).append('<div class = "item itemEh-' + eh1[i] + '"></div></div></div>');
-    //                 $('.chart-eh2-' + js).append('<div class = "item itemEh-' + eh2[i] + '"></div></div></div>');
-    //                 $('.chart-battVolt-' + js).append(
-    //                     '<div class = "item itemBv-' + batt_volt1[i] + '"></div></div></div>'
-    //                 );
-    //                 $('.chart-edl1-' + js).append('<div class = "item itemEdl-' + edl1[i] + '"></div></div></div>');
-    //                 $('.chart-edl2-' + js).append('<div class = "item itemEdl-' + edl2[i] + '"></div></div></div>');
-    //             }
-    //             eh1 = [];
-    //             eh2 = [];
-    //             batt_volt1 = [];
-    //             edl1 = [];
-    //             edl2 = [];
-    //         }
-    //     });
-    // }
-
-    // function dataMap(value, fromLow, fromHigh, toLow, toHigh) {
-    //     fromSpan = fromHigh - fromLow;
-    //     toSpan = toHigh - toLow;
-
-    //     valueScaled = (value - fromLow) / fromSpan;
-
-    //     return toLow + valueScaled * toSpan;
-    // }
     // setInterval(function () {
     //     console.log(DatasLogger);
     //     //     for (let i = 0; i < DatasLogger.length; i++) {
@@ -285,4 +227,12 @@ $(document).ready(function () {
     //     //         console.log(data);
     //     //     }
     // }, 1000 * 4);
+
+    // setInterval(function () {
+    //     refreshData(setchart(test1, data1, 'rgba(22, 145, 13, 1)'), 36, data1.createSingle());
+    //     refreshData(setchart(test2, data2, 'rgba(22, 145, 13, 1)'), 36, data2.createSingle());
+    //     refreshData(setchart(test3, data3, 'rgba(52, 67, 203, 1)'), 36, data2.createSingle());
+    //     refreshData(setchart(test4, data4, 'rgba(230, 0, 0, 1)'), 36, data2.createSingle());
+    //     refreshData(setchart(test5, data5, 'rgba(230, 0, 0, 1)'), 36, data2.createSingle());
+    // }, 1000);
 });

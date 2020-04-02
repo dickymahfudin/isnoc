@@ -12,37 +12,40 @@ class GetData {
             },
             data: {
                 nojs: data.nojs,
-                limit: data.limit
+                limit: data.limit,
+                calculate: true
             },
             async: false,
             dataType: "json",
             success: function (response) {
+                console.log(response);
                 log.push(DataProcessing(response));
             }
         });
         return log;
     }
 
-
 }
 
 function DataProcessing(data) {
     let mxEh = 400;
     let mxEdl = 100;
-    let edl1 = [];
-    let time_local = [];
-    let edl2 = [];
-    let eh1 = [];
-    let eh2 = [];
-    let batt_volt1 = [];
-    let pms_state = [];
-    let colorEh1 = [];
-    let colorEh2 = [];
-    let colorBattVolt1 = [];
-    let colorEdl1 = [];
-    let colorEdl2 = [];
-    let nojs = [];
-    let labels = [];
+    let edl1 = [],
+        time_local = [],
+        edl2 = [],
+        eh1 = [],
+        eh2 = [],
+        batt_volt1 = [],
+        bv = [],
+        pms_state = [],
+        colorEh1 = [],
+        colorEh2 = [],
+        colorBattVolt1 = [],
+        colorEdl1 = [],
+        colorEdl2 = [],
+        nojs = [],
+        labels = [];
+
     let hedl1, hedl2, heh1, heh2, hbv;
     const green = 'rgba(22, 145, 13, 1)';
     const blue = 'rgba(52, 67, 203, 1)';
@@ -81,29 +84,47 @@ function DataProcessing(data) {
         }
 
         if (data.edl1 == null) {
-            edl1.push(100);
+            edl1.push(100 * -1);
             colorEdl1.push(black);
         } else {
             hedl1 = Math.abs(Math.round(dataMap(data.edl1, 0, mxEdl, 0, 30)));
             if (hedl1 > 30) hedl1 = 30;
-            edl1.push(hedl1);
+            edl1.push(hedl1 * -1);
             colorEdl1.push(red);
         }
 
         if (data.edl2 == null) {
-            edl2.push(100);
+            edl2.push(100 * -1);
             colorEdl2.push(black);
         } else {
             hedl2 = Math.abs(Math.round(dataMap(data.edl2, 0, mxEdl, 0, 30)));
             if (hedl2 > 30) hedl2 = 30;
-            edl2.push(hedl2);
+            edl2.push(hedl2 * -1);
             colorEdl2.push(red);
         }
         time_local.push(data.time_local);
-        pms_state.push(data.pms_state);
+        pms_state.push(data.pms);
         nojs.push(data.nojs);
+        bv.push(data.batt_volt1);
         labels.push(index);
     });
+    if (data.length <= 36) {
+        for (let i = 0; i < 36 - data.length; i++) {
+            time_local.push(100);
+            eh1.push(100);
+            eh2.push(100);
+            batt_volt1.push(100);
+            edl1.push(100 * -1);
+            edl2.push(100 * -1);
+            labels.push(i);
+            colorEh1.push(black);
+            colorEh2.push(black);
+            colorBattVolt1.push(black);
+            colorEdl1.push(black);
+            colorEdl2.push(black);
+
+        }
+    }
     let chart = {
         time_local: time_local.reverse(),
         nojs: nojs.reverse(),
@@ -113,6 +134,7 @@ function DataProcessing(data) {
         edl1: edl1.reverse(),
         edl2: edl2.reverse(),
         pms_state: pms_state.reverse(),
+        bv: bv.reverse(),
         color_eh1: colorEh1.reverse(),
         color_eh2: colorEh2.reverse(),
         color_batt_volt1: colorBattVolt1.reverse(),

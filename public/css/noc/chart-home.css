@@ -6,16 +6,18 @@
 
 .container-chart .container-item {
     width: 350px;
-    margin: 5px;
+    margin: 10px;
+    border: solid black 1px;
     /* margin-left: 20px; */
     /* margin: 5px; */
-    margin-bottom: 15px;
+    /* margin-bottom: 10px; */
     /* margin-bottom: 35px; */
-    border: solid black 1px;
 }
 
 .js {
-    margin: 10px;
+    margin: 0px;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .eh {
@@ -37,9 +39,4 @@
     display: flex;
     height: 42px;
     flex-direction: row;
-    transform: scale(1, -1);
-}
-
-.test {
-    margin-bottom: 10px;
 }
