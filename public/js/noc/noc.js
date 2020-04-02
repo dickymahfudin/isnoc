@@ -38,27 +38,149 @@ $(document).ready(function () {
             }
         },
         callback: function (response, pagination) {
-            console.log(response);
             $('.container-chart').html('');
             js = [];
-            response.forEach(data => {
-                DatasLogger.push(GetLogger.GetDataLoggers({
+            response.forEach(function (data, index) {
+                let temp = GetLogger.GetDataLoggers({
                     nojs: data.nojs,
                     limit: 37,
                     url: "http://127.0.0.1:8000/api/logger"
-                }));
+                })
+                DatasLogger.push({
+                    data: temp
+                });
                 $('.container-chart').append(`<div class="container-item" id="container-item-${data.nojs}">
-                                            <div class="js" id="js-${data.nojs}">${data.nojs}</div>
-                                            <div class="eh" id="eh1-${data.nojs}"></div>
-                                            <div class="eh" id="eh1-${data.nojs}"></div>
-                                            <div class="bv" id="batt_volt1-${data.nojs}"></div>
-                                            <div class="edl" id="edl1-${data.nojs}"></div>
-                                            <div class="edl" id="edl2-${data.nojs}"></div>
+                                                <div class="js" id="js-${data.nojs}">${data.nojs}</div>
+
+                                                <div class="eh">
+                                                    <canvas id="eh1-${data.nojs}"></canvas>
+                                                </div>
+
+                                                <div class="eh">
+                                                    <canvas id="eh2-${data.nojs}"></canvas>
+                                                </div>
+
+                                                <div class="bv">
+                                                    <canvas id="batt_volt1-${data.nojs}"></canvas>
+                                                </div>
+
+                                                <div class="edl">
+                                                    <canvas id="edl1-${data.nojs}"></canvas>
+                                                </div>
+
+                                                <div class="edl test">
+                                                    <canvas id="edl2-${data.nojs}"></canvas>
+                                                </div>
                                         </div>`);
+                SetidChart(DatasLogger, index);
             });
         }
     });
 
+    function SetidChart(data, index) {
+        // console.log(data);
+        const temp = data[index];
+        temp.data.forEach(data => {
+
+            let chartEh1 = document.getElementById(`eh1-${data.nojs[0]}`).getContext('2d');
+            let chartEh2 = document.getElementById(`eh2-${data.nojs[0]}`).getContext('2d');
+            let chartBv = document.getElementById(`batt_volt1-${data.nojs[0]}`).getContext('2d');
+            let chartedl1 = document.getElementById(`edl1-${data.nojs[0]}`).getContext('2d');
+            let chartedl2 = document.getElementById(`edl2-${data.nojs[0]}`).getContext('2d');
+
+            renderChart({
+                data: data.eh1,
+                label: data.label,
+                color: data.color_eh1,
+                chart: chartEh1,
+                min: 0,
+                max: 60
+            });
+            renderChart({
+                data: data.eh2,
+                label: data.label,
+                color: data.color_eh2,
+                chart: chartEh2,
+                min: 0,
+                max: 60
+            });
+            renderChart({
+                data: data.batt_volt1,
+                label: data.label,
+                color: data.color_batt_volt1,
+                chart: chartBv,
+                min: 0,
+                max: 30
+            });
+            renderChart({
+                data: data.edl1,
+                label: data.label,
+                color: data.color_edl1,
+                chart: chartedl1,
+                min: 0,
+                max: 40
+            });
+            renderChart({
+                data: data.edl2,
+                label: data.label,
+                color: data.color_edl2,
+                chart: chartedl2,
+                min: 0,
+                max: 40
+            });
+        });
+
+    }
+
+    function renderChart(data) {
+        console.log(data);
+
+        let chart = new Chart(data.chart, {
+            type: 'bar',
+            data: {
+                labels: data.label,
+                datasets: [{
+                    barPercentage: 1.0,
+                    data: data.data,
+                    backgroundColor: data.color,
+                }]
+            },
+            options: {
+                legend: {
+                    display: false
+                },
+                tooltips: {
+                    mode: 'false',
+                },
+                maintainAspectRatio: false,
+                responsive: true,
+                scales: {
+                    yAxes: [{
+                        gridLines: {
+                            display: true
+                        },
+                        ticks: {
+                            min: data.min,
+                            max: data.max,
+                            display: false,
+                            beginAtZero: true
+                        }
+                    }],
+                    xAxes: [{
+                        barPercentage: 1,
+                        categorySpacing: 3,
+                        gridLines: {
+                            display: false
+                        },
+                        ticks: {
+                            display: false
+                        }
+                    }]
+                }
+            }
+        });
+        return chart;
+    }
 
     // function chart(js) {
     //     $.ajax({
@@ -156,12 +278,11 @@ $(document).ready(function () {
 
     //     return toLow + valueScaled * toSpan;
     // }
-    setInterval(function () {
-
-        // for (let i = 0; i < DatasLogger.length; i++) {
-        //     const data = DatasLogger[i];
-        //     console.log(data);
-
-        // }
-    }, 1000 * 4);
+    // setInterval(function () {
+    //     console.log(DatasLogger);
+    //     //     for (let i = 0; i < DatasLogger.length; i++) {
+    //     //         const data = DatasLogger[i];
+    //     //         console.log(data);
+    //     //     }
+    // }, 1000 * 4);
 });

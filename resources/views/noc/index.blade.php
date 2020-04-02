@@ -3,6 +3,8 @@
 @push('styles')
     <link rel="stylesheet" href="{{asset('css/noc/chart-home.css')}}">
     <link rel="stylesheet" href="{{ asset('css/pagination/pagination.css') }}">
+    <script src="{{asset('js/noc/Chartjs.js')}}"></script>
+
 @endpush
 
 @section('content')

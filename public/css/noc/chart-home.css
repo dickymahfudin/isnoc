@@ -37,5 +37,9 @@
     display: flex;
     height: 42px;
     flex-direction: row;
-    /* transform: scale(1, -1); */
+    transform: scale(1, -1);
+}
+
+.test {
+    margin-bottom: 10px;
 }
