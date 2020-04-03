@@ -46,16 +46,16 @@ class NojsLoggersController extends Controller
         $this->validate($request, [
             'time_local' => 'required',
             'nojs' => 'required',
-            'eh1' => 'required',
-            'eh2' => 'required',
+            // 'eh1' => 'required',
+            // 'eh2' => 'required',
             // 'vsat_curr' => 'required',
             // 'bts_curr' => 'required',
             // 'load3' => 'required|string',
-            'batt_volt1' => 'required',
+            // 'batt_volt1' => 'required',
             // 'batt_volt2' => 'required',
-            'edl1' => 'required',
-            'edl2' => 'required',
-            'pms_state' => 'required',
+            // 'edl1' => 'required',
+            // 'edl2' => 'required',
+            // 'pms_state' => 'required',
         ]);
         $dataLogger = NojsLogger::create($request->all());
         return response($dataLogger,201);
@@ -68,14 +68,25 @@ class NojsLoggersController extends Controller
         $sdate = $request->sdate;
         $edate = $request->edate;
         $calculate = $request->calculate;
+        $single = $request->single;
 
         if (($nojs && $limit) && !$sdate) {
             if ($calculate === "true") {
-                $datas = NojsLogger::where('nojs', $nojs)
+                if ($single === "true") {
+                    $datas = NojsLogger::where('nojs', $nojs)
+                                    ->orderBy('time_local', 'desc')
+                                    ->limit($limit + 36)
+                                    ->get();
+                    $data = $this->dataCalculate($datas);
+                    (count($data) === 0)  ?  $data=[] : $data = [$data[0]];
+
+                }else{
+                    $datas = NojsLogger::where('nojs', $nojs)
                                 ->orderBy('time_local', 'desc')
                                 ->limit($limit + 1)
                                 ->get();
-                $data = $this->dataCalculate($datas);
+                    $data = $this->dataCalculate($datas);
+                }
             }else {
                 $datas = NojsLogger::where('nojs', $nojs)
                                 ->orderBy('time_local', 'desc')
@@ -96,7 +107,7 @@ class NojsLoggersController extends Controller
                                     ->whereBetween('time_local', [$newsdate, $edate])
                                     ->orderBy('time_local', 'desc')
                                     ->get();
-                $data = $this->dataCalculate($datas);;
+                $data = $this->dataCalculate($datas);
             }else {
                 $datas = NojsLogger::where('nojs', $nojs)
                                     ->whereBetween('time_local', [$sdate, $edate])
@@ -142,7 +153,7 @@ class NojsLoggersController extends Controller
                     }
 
                     if (($datas[$i]->edl1 !== $valueError) && ($datas[$i + 1]->edl1 !== $valueError)) {
-                        $array[$i]['edl1'] = $datas[$i]->edl1 - $datas[$i + 1]->edl1;
+                        $array[$i]['edl1'] = ($datas[$i]->edl1 - $datas[$i + 1]->edl1) * -1;
                     } else if (($datas[$i]->edl1 !== $valueError) && ($datas[$i + 1]->edl1 === $valueError)) {
                         $array[$i]['edl1'] =  $this->missedData($i, $datas, 'edl1');
                     } else if (($datas[$i]->edl1 === $valueError) && ($datas[$i + 1]->edl1 !== $valueError) || ($datas[$i]->edl1 === $valueError) && ($datas[$i + 1]->edl1 === $valueError)) {
@@ -150,7 +161,7 @@ class NojsLoggersController extends Controller
                     }
 
                     if (($datas[$i]->edl2 !== $valueError) && ($datas[$i + 1]->edl2 !== $valueError)) {
-                        $array[$i]['edl2'] = $datas[$i]->edl2 - $datas[$i + 1]->edl2;
+                        $array[$i]['edl2'] = ($datas[$i]->edl2 - $datas[$i + 1]->edl2) * -1;
                     } else if (($datas[$i]->edl2 !== $valueError) && ($datas[$i + 1]->edl2 === $valueError)) {
                         $array[$i]['edl2'] =  $this->missedData($i, $datas, 'edl2');
                     } else if (($datas[$i]->edl2 === $valueError) && ($datas[$i + 1]->edl2 !== $valueError) || ($datas[$i]->edl2 === $valueError) && ($datas[$i + 1]->edl2 === $valueError)) {
@@ -173,13 +184,9 @@ class NojsLoggersController extends Controller
                 $array['batt_volt1'] = (($datas[0]->eh1) != $valueError) ? ($datas[0]->batt_volt1 / 100) : $valueError;
                 $array['edl1'] = (($datas[0]->eh1) != $valueError) ? $datas[0]->edl1 : $valueError;
                 $array['edl2'] = (($datas[0]->eh1) != $valueError) ? $datas[0]->edl2 : $valueError;
-                $array['pms_state'] = (($datas[0]->eh1) != $valueError) ?  $datas[0]->pms_state : $valueError;
-                $array['pms'] = (($datas[0]->pms_state) != $valueError) ?  pmsConvert($datas[0]->pms_state) : $valueError;
-
-                // $array['batt_volt1'] =  (($datas[0]->batt_volt1$datas[0]) !=$valueError)? $datas[0]->batt_volt1 / 100:$valueError;
-                // $array['edl1'] = $datas[0]->edl1;
-                // $array['edl2'] = $datas[0]->edl2;
-                // $array['pms_state'] =  pmsconvert($datas[0]->pms_state);
+                $array['pms_state'] = (($datas[0]->pms_state) != $valueError) ?  $datas[0]->pms_state : $valueError;
+                $array['pms'] = (($datas[0]->pms_state) != $valueError) ?  $this->pmsConvert($datas[0]->pms_state) : $valueError;
+                return  [ $array ];
             }
         }else {
             $array = [];

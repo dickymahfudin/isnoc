@@ -29,7 +29,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
-                <a class="navbar-brand h4 text-light" href="{{ url('/') }}">
+                <a class="navbar-brand h4 text-light" href="{{ url('/home') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -56,7 +56,7 @@
                                 @endif --}}
                             @else
                                 <li class="nav-item h5">
-                                    <a class="nav-link" href="#">NOC</a>
+                                    <a class="nav-link {{ Request::is('home') ? 'bg-warning text-dark' : ''}}" href="{{route('noc')}}">NOC</a>
                                 </li>
 
                                 <li class="nav-item dropdown h5">

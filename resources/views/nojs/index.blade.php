@@ -7,7 +7,7 @@
 @section('content')
 <div class="container">
     <div class="row mb-3">
-        <div class="col-lg-6">
+        <div class="col-lg-6 mt-2">
             <a href="{{ route('nojs.create') }}" class="btn btn-success modal-show" title="Create User"><i class="icon-plus"></i> Create</a>
         </div>
     </div>
