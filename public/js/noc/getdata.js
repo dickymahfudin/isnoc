@@ -1,6 +1,6 @@
 class GetData {
     GetDataLoggers(data) {
-        var log = [];
+        let log = [];
         $.ajax({
             type: "GET",
             url: data.url,
@@ -11,23 +11,22 @@ class GetData {
                 );
             },
             data: {
-                nojs: data.nojs,
                 limit: data.limit,
+                nojs: data.nojs,
+                single: data.single,
                 calculate: true
             },
             async: false,
             dataType: "json",
             success: function (response) {
-                console.log(response);
-                log.push(DataProcessing(response));
+                log.push(DataProcessing(response, data.multi));
             }
         });
         return log;
     }
-
 }
 
-function DataProcessing(data) {
+function DataProcessing(data, multi) {
     let mxEh = 400;
     let mxEdl = 100;
     let edl1 = [],
@@ -38,21 +37,26 @@ function DataProcessing(data) {
         batt_volt1 = [],
         bv = [],
         pms_state = [],
+        pms = [],
         colorEh1 = [],
         colorEh2 = [],
         colorBattVolt1 = [],
         colorEdl1 = [],
         colorEdl2 = [],
         nojs = [],
-        labels = [];
+        labels = [],
+        chart = [];
 
     let hedl1, hedl2, heh1, heh2, hbv;
-    const green = 'rgba(22, 145, 13, 1)';
-    const blue = 'rgba(52, 67, 203, 1)';
-    const red = 'rgba(230, 0, 0, 1)';
-    const black = 'rgba(0, 0, 0, 1)';
+    const green = "rgba(22, 145, 13, 1)";
+    const blue = "rgba(52, 67, 203, 1)";
+    const red = "rgba(230, 0, 0, 1)";
+    const black = "rgba(0, 0, 0, 1)";
+
+    // console.log(data);
 
     data.forEach(function (data, index) {
+        console.log(data.nojs);
         if (data.eh1 == null) {
             eh1.push(100);
             colorEh1.push(black);
@@ -103,37 +107,60 @@ function DataProcessing(data) {
             colorEdl2.push(red);
         }
         time_local.push(data.time_local);
-        pms_state.push(data.pms);
+        pms_state.push(data.pms_state);
+        pms.push(data.pms);
         nojs.push(data.nojs);
         bv.push(data.batt_volt1);
         labels.push(index);
     });
-    if (data.length <= 36) {
-        for (let i = 0; i < 36 - data.length; i++) {
-            time_local.push(100);
-            eh1.push(100);
-            eh2.push(100);
-            batt_volt1.push(100);
-            edl1.push(100 * -1);
-            edl2.push(100 * -1);
-            labels.push(i);
-            colorEh1.push(black);
-            colorEh2.push(black);
-            colorBattVolt1.push(black);
-            colorEdl1.push(black);
-            colorEdl2.push(black);
-
+    // console.log(data);
+    if (data.length < 36) {
+        if (multi) {
+            for (let i = 0; i < 36 - data.length; i++) {
+                time_local.push(100);
+                eh1.push(100);
+                eh2.push(100);
+                batt_volt1.push(100);
+                edl1.push(100 * -1);
+                edl2.push(100 * -1);
+                labels.push(i);
+                pms.push(100);
+                pms_state.push(100);
+                colorEh1.push(black);
+                colorEh2.push(black);
+                colorBattVolt1.push(black);
+                colorEdl1.push(black);
+                colorEdl2.push(black);
+            }
+        } else {
+            if (data.length == 0) {
+                time_local.push(100);
+                eh1.push(100);
+                eh2.push(100);
+                batt_volt1.push(100);
+                edl1.push(100 * -1);
+                edl2.push(100 * -1);
+                pms_state.push(100);
+                pms.push(100);
+                labels.push(36);
+                colorEh1.push(black);
+                colorEh2.push(black);
+                colorBattVolt1.push(black);
+                colorEdl1.push(black);
+                colorEdl2.push(black);
+            }
         }
     }
-    let chart = {
+
+    chart = {
         time_local: time_local.reverse(),
-        nojs: nojs.reverse(),
         eh1: eh1.reverse(),
         eh2: eh2.reverse(),
         batt_volt1: batt_volt1.reverse(),
         edl1: edl1.reverse(),
         edl2: edl2.reverse(),
         pms_state: pms_state.reverse(),
+        pms: pms.reverse(),
         bv: bv.reverse(),
         color_eh1: colorEh1.reverse(),
         color_eh2: colorEh2.reverse(),
@@ -150,19 +177,19 @@ function dataMap(value, fromLow, fromHigh, toLow, toHigh) {
     let toSpan = toHigh - toLow;
 
     let valueScaled = (value - fromLow) / fromSpan;
-
     return toLow + valueScaled * toSpan;
 }
 
-function setchart(param, data, color, min, max) {
-    let chart = new Chart(param, {
-        type: 'bar',
+function renderChart(data) {
+    let chart = new Chart(data.chart, {
+        type: "bar",
         data: {
             labels: data.label,
             datasets: [{
-                barPercentage: 1.0,
+                // barPercentage: 1.0,
+                label: '# of Votes',
                 data: data.data,
-                backgroundColor: color,
+                backgroundColor: data.color
             }]
         },
         options: {
@@ -170,18 +197,23 @@ function setchart(param, data, color, min, max) {
                 display: false
             },
             tooltips: {
-                mode: 'false',
+                mode: false,
+                intersect: false
+            },
+            hover: {
+                mode: false,
+                intersect: false
             },
             maintainAspectRatio: false,
             responsive: true,
             scales: {
                 yAxes: [{
                     gridLines: {
-                        display: false
+                        display: true
                     },
                     ticks: {
-                        min: min,
-                        max: max,
+                        min: data.min,
+                        max: data.max,
                         display: false,
                         beginAtZero: true
                     }
@@ -193,7 +225,8 @@ function setchart(param, data, color, min, max) {
                         display: false
                     },
                     ticks: {
-                        display: false
+                        display: false,
+                        beginAtZero: true
                     }
                 }]
             }
@@ -202,6 +235,64 @@ function setchart(param, data, color, min, max) {
     return chart;
 }
 
+function GetDataSingle(data) {
+    let object = new GetData();
+    let temp_data = data.data[0];
+    let chart;
+    let temp = object.GetDataLoggers({
+        nojs: data.nojs,
+        limit: 1,
+        url: "http://127.0.0.1:8000/api/logger",
+        single: true,
+        multi: false
+    });
+
+    if (temp[0].time_local[0] === temp_data.time_local[35]) {
+        chart = data;
+    } else {
+        temp_data.time_local.push(temp[0].time_local[0]);
+        temp_data.eh1.push(temp[0].eh1[0]);
+        temp_data.eh2.push(temp[0].eh2[0]);
+        temp_data.batt_volt1.push(temp[0].batt_volt1[0]);
+        temp_data.edl1.push(temp[0].edl1[0]);
+        temp_data.edl2.push(temp[0].edl2[0]);
+        temp_data.pms_state.push(temp[0].pms_state[0]);
+        temp_data.pms.push(temp[0].pms[0]);
+        temp_data.bv.push(temp[0].bv[0]);
+        temp_data.color_eh1.push(temp[0].color_eh1[0]);
+        temp_data.color_eh2.push(temp[0].color_eh2[0]);
+        temp_data.color_batt_volt1.push(temp[0].color_batt_volt1[0]);
+        temp_data.color_edl1.push(temp[0].color_edl1[0]);
+        temp_data.color_edl2.push(temp[0].color_edl2[0]);
+        temp_data.label.push(36);
+
+
+        temp_data.time_local.splice(0, 1);
+        temp_data.eh1.splice(0, 1);
+        temp_data.eh2.splice(0, 1);
+        temp_data.batt_volt1.splice(0, 1);
+        temp_data.edl1.splice(0, 1);
+        temp_data.edl2.splice(0, 1);
+        temp_data.pms_state.splice(0, 1);
+        temp_data.pms.splice(0, 1);
+        temp_data.bv.splice(0, 1);
+        temp_data.color_eh1.splice(0, 1);
+        temp_data.color_eh2.splice(0, 1);
+        temp_data.color_batt_volt1.splice(0, 1);
+        temp_data.color_edl1.splice(0, 1);
+        temp_data.color_edl2.splice(0, 1);
+        temp_data.label.splice(0, 1);
+
+        chart = {
+            nojs: data.nojs,
+            data: [temp_data]
+        };
+    }
+    return chart;
+}
+
 export {
-    GetData
+    GetData,
+    renderChart,
+    GetDataSingle
 };

@@ -14,15 +14,15 @@ use Illuminate\Auth\Events\Verified;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->middleware('verified');
+// Route::get('/', function () {
+//     return view('welcome');
+// })->middleware('verified');
 
 Auth::routes(['verify' => true]);
 
-// Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
 Route::get('/home', 'NocController@index')->name('noc')->middleware('verified');
-// Route::redirect('/register', '/home', 301);
+Route::redirect('/', '/home', 301);
+Route::redirect('/register', '/home', 301);
 
 Route::group(['prefix' => 'nojs',  'middleware' => 'verified'], function () {
     Route::get('/', 'NojsUsersController@index')->name('nojs.index');
