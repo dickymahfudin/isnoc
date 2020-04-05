@@ -13,6 +13,7 @@ $(document).ready(function () {
     let me = $("#pagination"),
         url = me.attr("dism"),
         log = me.attr("dismlog");
+    console.log(url);
 
     // let a = GetLogger.GetDataLoggers({
     //     nojs: "JS10",
@@ -28,7 +29,7 @@ $(document).ready(function () {
                 type: "GET",
                 url: url,
                 success: function (response) {
-                    done(response);
+                    done(response.data);
                 }
             });
         },

@@ -71,7 +71,7 @@
                                 </li>
 
                                 <li class="nav-item h5">
-                                    <a class="nav-link" href="#">Service Calls</a>
+                                    <a class="nav-link {{ Request::is('servicecalls') ? 'bg-warning text-dark' : ''}}" href="{{route('servicecalls')}}">Service Calls</a>
                                 </li>
 
                                 <li class="nav-item dropdown h5">
@@ -109,7 +109,7 @@
     </div>
 
     <script src="{{asset('vendor/jquery/jquery-3.4.1.js')}}"></script>
-    <script src="{{asset('vendor/bootstrap/js/popper.js') }}"></script>
+    <script src="{{asset('vendor/bootstrap/js/popper.js') }}" defer></script>
 
     @stack('scripts')
     <script>

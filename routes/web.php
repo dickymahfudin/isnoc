@@ -20,9 +20,10 @@ use Illuminate\Auth\Events\Verified;
 
 Auth::routes(['verify' => true]);
 
-Route::get('/home', 'NocController@index')->name('noc')->middleware('verified');
 Route::redirect('/', '/home', 301);
 Route::redirect('/register', '/home', 301);
+
+Route::get('/home', 'NocController@index')->name('noc')->middleware('verified');
 
 Route::group(['prefix' => 'nojs',  'middleware' => 'verified'], function () {
     Route::get('/', 'NojsUsersController@index')->name('nojs.index');
@@ -35,4 +36,6 @@ Route::group(['prefix' => 'nojs',  'middleware' => 'verified'], function () {
     Route::get('/{nojsUser}/edit', 'NojsUsersController@edit')->name('nojs.edit');
 });
 
-Route::get('/datauser', 'NocController@datauser')->name('noc.datauser');
+Route::get('/servicecalls', function () {
+    return view('servicecalls.index');
+})->name('servicecalls');
