@@ -26,6 +26,7 @@ Route::redirect('/register', '/home', 301);
 
 Route::group(['prefix' => 'nojs',  'middleware' => 'verified'], function () {
     Route::get('/', 'NojsUsersController@index')->name('nojs.index');
+    Route::get('/table', 'NojsUsersController@dataTable')->name('nojs.table');
     Route::post('/', 'NojsUsersController@store')->name('nojs.store');
     Route::get('/create', 'NojsUsersController@create')->name('nojs.create');
     Route::get('/{nojsUser}', 'NojsUsersController@show')->name('nojs.show');

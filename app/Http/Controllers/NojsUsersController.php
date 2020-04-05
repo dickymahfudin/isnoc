@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\NojsUser;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 
 class NojsUsersController extends Controller
 {
@@ -20,24 +21,25 @@ class NojsUsersController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->search) {
-            $datanojs = NojsUser::query()
-                ->where('nojs', 'like', '%' . $request->search . '%')
-                ->orwhere('site', 'like', '%' . $request->search . '%')
-                ->orwhere('provinsi', 'like', '%' . $request->search . '%')
-                ->orwhere('lc', 'like', '%' . $request->search . '%')
-                ->orwhere('mitra', 'like', '%' . $request->search . '%')
-                ->orwhere('ip', 'like', '%' . $request->search . '%')
-                ->orwhere('latitude', 'like', '%' . $request->search . '%')
-                ->orwhere('longitude', 'like', '%' . $request->search . '%')
-                ->get();
-            // dd($datanojs);
-        } else {
-            $datanojs = NojsUser::all();
-        }
-        return view('nojs.index', [
-            'datanojs' => $datanojs
-        ]);
+        // if ($request->search) {
+        //     $datanojs = NojsUser::where('nojs', 'like', '%' . $request->search . '%')
+        //         ->orwhere('site', 'like', '%' . $request->search . '%')
+        //         ->orwhere('provinsi', 'like', '%' . $request->search . '%')
+        //         ->orwhere('lc', 'like', '%' . $request->search . '%')
+        //         ->orwhere('mitra', 'like', '%' . $request->search . '%')
+        //         ->orwhere('ip', 'like', '%' . $request->search . '%')
+        //         ->orwhere('latitude', 'like', '%' . $request->search . '%')
+        //         ->orwhere('longitude', 'like', '%' . $request->search . '%')
+        //         ->get();
+        //     // dd($datanojs);
+        // } else {
+        //     $datanojs = NojsUser::all();
+        // }
+        // return view('nojs.index', [
+        //     'datanojs' => $datanojs
+        // ]);
+
+        return view('nojs.index');
     }
 
     /**
@@ -145,5 +147,21 @@ class NojsUsersController extends Controller
     public function destroy(NojsUser $nojsUser)
     {
         $nojsUser->delete();
+    }
+
+    public function dataTable()
+    {
+        $datas = NojsUser::query();
+        return datatables()->of($datas)
+            ->addColumn('action', function ($datas) {
+                return view('nojs._action', [
+                    'model' => $datas,
+                    'url_show' => route('nojs.show', $datas->nojs),
+                    'url_edit' => route('nojs.edit', $datas->nojs),
+                    'url_destroy' => route('nojs.destroy', $datas->nojs),
+                ]);
+            })
+            ->AddIndexColumn()
+            ->make(true);
     }
 }

@@ -14,7 +14,8 @@ class ServiceCallsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function __construct(){
+    public function __construct()
+    {
         $this->middleware('auth:api');
     }
 
@@ -25,16 +26,14 @@ class ServiceCallsController extends Controller
         if (!$nojs && $status) {
             // $service = DB::table( 'service_calls')->where('status', $status )->get();
             $service = DB::table('service_calls')
-                                ->join('nojs_users', 'service_calls.nojs', '=', 'nojs_users.nojs')
-                                ->select('service_calls.*', 'nojs_users.site', 'nojs_users.lc')
-                                ->where('status', 'like', '%' . $request->status . '%')
-                                ->get();
-        }
-        elseif ($nojs && $status) {
+                ->join('nojs_users', 'service_calls.nojs', '=', 'nojs_users.nojs')
+                ->select('service_calls.*', 'nojs_users.site', 'nojs_users.lc')
+                ->where('status', 'like', '%' . $request->status . '%')
+                ->get();
+        } elseif ($nojs && $status) {
             $service = ServiceCall::where('nojs', $nojs)
-                                ->where('status', $status)->get();
-        }
-        else {
+                ->where('status', $status)->get();
+        } else {
             $service = ServiceCall::all();
         }
         return response($service, 200);
@@ -54,9 +53,9 @@ class ServiceCallsController extends Controller
     public function update(Request $request, ServiceCall $serviceCall)
     {
         $this->validate($request, [
-                'closed_time' => 'required',
-                'status' => 'required',
-            ]);
+            'closed_time' => 'required',
+            'status' => 'required',
+        ]);
         $serviceCall->update($request->all());
         return response($serviceCall, 200);
     }

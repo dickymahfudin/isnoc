@@ -192,5 +192,5 @@ $(document).ready(function () {
                 DatasLogger[i].update = false;
             }
         }
-    }, 1000 * 10);
+    }, 1000 * 50);
 });

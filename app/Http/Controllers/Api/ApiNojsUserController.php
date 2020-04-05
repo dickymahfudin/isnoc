@@ -22,8 +22,11 @@ class ApiNojsUserController extends Controller
     public function index(Request $request)
     {
         $lc = $request->lc;
-        $datas = NojsUser::where('lc', $lc)
-            ->get();
+        $lc1 = $request->lc1;
+        if ($lc && !$lc1) {
+            $datas = NojsUser::where('lc', $lc)
+                ->get();
+        }
         return response($datas, 200);
     }
 

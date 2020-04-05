@@ -58,7 +58,7 @@ class NojsLoggersController extends Controller
             // 'pms_state' => 'required',
         ]);
         $dataLogger = NojsLogger::create($request->all());
-        return response($dataLogger,201);
+        return response($dataLogger, 201);
     }
 
     public function loggers(Request $request)
@@ -74,48 +74,56 @@ class NojsLoggersController extends Controller
             if ($calculate === "true") {
                 if ($single === "true") {
                     $datas = NojsLogger::where('nojs', $nojs)
-                                    ->orderBy('time_local', 'desc')
-                                    ->limit($limit + 36)
-                                    ->get();
+                        ->orderBy('time_local', 'desc')
+                        ->limit($limit + 36)
+                        ->get();
                     $data = $this->dataCalculate($datas);
-                    (count($data) === 0)  ?  $data=[] : $data = [$data[0]];
-
-                }else{
+                    (count($data) === 0)  ?  $data = [] : $data = [$data[0]];
+                } else {
                     $datas = NojsLogger::where('nojs', $nojs)
-                                ->orderBy('time_local', 'desc')
-                                ->limit($limit + 1)
-                                ->get();
+                        ->orderBy('time_local', 'desc')
+                        ->limit($limit + 1)
+                        ->get();
                     $data = $this->dataCalculate($datas);
                 }
-            }else {
+            } else {
                 $datas = NojsLogger::where('nojs', $nojs)
-                                ->orderBy('time_local', 'desc')
-                                ->limit($limit)
-                                ->get();
+                    ->orderBy('time_local', 'desc')
+                    ->limit($limit)
+                    ->get();
                 $data = $datas;
             }
         } elseif ($sdate && $edate && !$nojs) {
             $datas = NojsLogger::whereBetween('time_local', [$sdate, $edate])
-                                ->orderBy('time_local', 'desc')
-                                ->get();
+                ->orderBy('time_local', 'desc')
+                ->get();
             $data = $datas;
         } elseif ($sdate && $edate && $nojs) {
             if ($calculate === "true") {
-                $newsdate = (new Carbon($sdate))->subMinutes(5)->format('Y-m-d H:i:s');
-
+                if ($single === "true") {
+                    $newsdate = (new Carbon($sdate))->subHours(3)->format('Y-m-d H:i:s');
+                    $datas = NojsLogger::where('nojs', $nojs)
+                        ->whereBetween('time_local', [$newsdate, $edate])
+                        ->orderBy('time_local', 'desc')
+                        ->get();
+                    $data = $this->dataCalculate($datas);
+                    (count($data) === 0)  ?  $data = [] : $data = [$data[0]];
+                } else {
+                    $newsdate = (new Carbon($sdate))->subMinutes(5)->format('Y-m-d H:i:s');
+                    $datas = NojsLogger::where('nojs', $nojs)
+                        ->whereBetween('time_local', [$newsdate, $edate])
+                        ->orderBy('time_local', 'desc')
+                        ->get();
+                    $data = $this->dataCalculate($datas);
+                }
+            } else {
                 $datas = NojsLogger::where('nojs', $nojs)
-                                    ->whereBetween('time_local', [$newsdate, $edate])
-                                    ->orderBy('time_local', 'desc')
-                                    ->get();
-                $data = $this->dataCalculate($datas);
-            }else {
-                $datas = NojsLogger::where('nojs', $nojs)
-                                    ->whereBetween('time_local', [$sdate, $edate])
-                                    ->orderBy('time_local', 'desc')
-                                    ->get();
+                    ->whereBetween('time_local', [$sdate, $edate])
+                    ->orderBy('time_local', 'desc')
+                    ->get();
                 $data = $datas;
             }
-        }else {
+        } else {
             $data = ["Error" => "parameter not found"];
         }
         return response($data, 200);
@@ -186,9 +194,9 @@ class NojsLoggersController extends Controller
                 $array['edl2'] = (($datas[0]->eh1) != $valueError) ? $datas[0]->edl2 : $valueError;
                 $array['pms_state'] = (($datas[0]->pms_state) != $valueError) ?  $datas[0]->pms_state : $valueError;
                 $array['pms'] = (($datas[0]->pms_state) != $valueError) ?  $this->pmsConvert($datas[0]->pms_state) : $valueError;
-                return  [ $array ];
+                return  [$array];
             }
-        }else {
+        } else {
             $array = [];
         }
         return $array;
