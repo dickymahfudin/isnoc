@@ -56,7 +56,6 @@ function DataProcessing(data, multi) {
     // console.log(data);
 
     data.forEach(function (data, index) {
-        console.log(data.nojs);
         if (data.eh1 == null) {
             eh1.push(100);
             colorEh1.push(black);
@@ -124,8 +123,8 @@ function DataProcessing(data, multi) {
                 edl1.push(100 * -1);
                 edl2.push(100 * -1);
                 labels.push(i);
-                pms.push(100);
-                pms_state.push(100);
+                pms.push(null);
+                pms_state.push(null);
                 colorEh1.push(black);
                 colorEh2.push(black);
                 colorBattVolt1.push(black);
@@ -284,6 +283,7 @@ function GetDataSingle(data) {
         temp_data.label.splice(0, 1);
 
         chart = {
+            update: true,
             nojs: data.nojs,
             data: [temp_data]
         };

@@ -32,7 +32,7 @@ $(document).ready(function () {
                 }
             });
         },
-        pageSize: 3,
+        pageSize: 15,
         className: "paginationjs-theme-blue",
         ajax: {
             beforeSend: function () {
@@ -51,6 +51,7 @@ $(document).ready(function () {
                     multi: true
                 });
                 DatasLogger.push({
+                    update: false,
                     nojs: data.nojs,
                     data: temp
                 });
@@ -163,17 +164,22 @@ $(document).ready(function () {
                 break;
             }
         }
-
-        $(`#bv-${temp.nojs}`).text(batt_volt1.toFixed(1));
+        $(`#bv-${data.nojs}`).text(batt_volt1.toFixed(1));
         if (batt_volt1.toFixed(1) >= 54.6) {
-            $(`#bv-${temp.nojs}`).css("background-color", "green");
+            $(`#bv-${data.nojs}`).removeClass("bg-warning");
+            $(`#bv-${data.nojs}`).addClass("bg-success");
         } else if (batt_volt1.toFixed(1) <= 52.0) {
-            $(`#bv-${temp.nojs}`).css("background-color", "yellow");
+            $(`#bv-${data.nojs}`).removeClass("bg-success");
+            $(`#bv-${data.nojs}`).addClass("bg-warning");
         }
 
-        $(`#pms-${temp.nojs}`).text(pms);
+        $(`#pms-${data.nojs}`).text(pms);
         if (pms <= 15) {
-            $(`#pms-${temp.nojs}`).css("background-color", "yellow");
+            // $(`#pms-${data.nojs}`).css("background-color", "yellow");
+            $(`#pms-${data.nojs}`).addClass("bg-warning");
+        } else {
+            $(`#pms-${data.nojs}`).removeClass("bg-warning");
+
         }
     }
 
@@ -181,11 +187,10 @@ $(document).ready(function () {
         for (let i = 0; i < DatasLogger.length; i++) {
             const data = DatasLogger[i];
             DatasLogger[i] = GetDataSingle(data);
-            GetDataSingle(data);
-            // console.log(data);
-            SetidChart(DatasLogger[i], i);
+            if (DatasLogger[i].update) {
+                SetidChart(DatasLogger[i], i);
+                DatasLogger[i].update = false;
+            }
         }
-        console.log("");
-        console.log();
     }, 1000 * 10);
 });
