@@ -64,7 +64,7 @@
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                         <a class="dropdown-item {{ Request::is('nojs') ? 'bg-warning text-dark' : ''}}" href="{{route('nojs.index')}}">Nojs</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">Detail</a>
+                                        <a class="dropdown-item" href="{{route('nojs.detail')}}">Detail</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="">SLA</a>
                                     </div>
@@ -109,7 +109,7 @@
     </div>
 
     <script src="{{asset('vendor/jquery/jquery-3.4.1.js')}}"></script>
-    <script src="{{asset('vendor/bootstrap/js/popper.js') }}" defer></script>
+    <script src="{{asset('vendor/bootstrap/js/popper.js') }}"></script>
 
     @stack('scripts')
     <script>

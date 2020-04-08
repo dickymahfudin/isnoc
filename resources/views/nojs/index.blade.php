@@ -8,29 +8,31 @@
         </div>
 
             <div class="card-body bg-light text-dark">
-            <table class="table table-striped table-bordered dt-responsive nowrap" style="width:100%" id="tableusers" url="{{route('nojs.table')}}">
-                <thead>
-                    <tr>
-                    <th scope="col">Nojs</th>
-                    <th scope="col">site</th>
-                    <th scope="col">LC</th>
-                    <th scope="col">Mitra</th>
-                    <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
+                <div class="container">
+                    <table class="table table-striped table-bordered dt-responsive nowrap" style="width:100%" id="tableusers" url="{{route('nojs.table')}}">
+                        <thead>
+                            <tr>
+                            <th scope="col">Nojs</th>
+                            <th scope="col">site</th>
+                            <th scope="col">LC</th>
+                            <th scope="col">Mitra</th>
+                            <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-                </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
+@endsection
 
 @push('scripts1')
-    <script src="{{asset('js/nojs/nojs.js')}}"></script>
-    <script src="{{asset('js/nojs/datatables.js')}}"></script>
-    <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
+    {{-- <script src="{{asset('js/nojs/datatables.js')}}"></script> --}}
+    <script src="{{asset('js/nojs/nojs.js')}}" defer></script>
+    <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}" defer></script>
 @endpush
 
 @include('nojs._modal')
-@endsection

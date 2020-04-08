@@ -46,6 +46,29 @@
         {{  Form::text('longitude', null, ['class' => 'form-control', 'id' => 'longitude'])  }}
     </div>
 
+    <div class="form-group">
+        <label for="" class="control-label">id_lvdvsat</label>
+        {{  Form::text('id_lvdvsat', null, ['class' => 'form-control', 'id' => 'id_lvdvsat'])  }}
+    </div>
 
+    <div class="form-group">
+        <label for="" class="control-label">id_ping</label>
+        {{  Form::text('id_ping', null, ['class' => 'form-control', 'id' => 'id_ping'])  }}
+    </div>
+
+    <div class="form-group">
+        <label for="" class="control-label">id_batvolt</label>
+        {{  Form::text('id_batvolt', null, ['class' => 'form-control', 'id' => 'id_batvolt'])  }}
+    </div>
+
+    <div class="form-group">
+        <label for="" class="control-label">id_vsatcurr</label>
+        {{  Form::text('id_vsatcurr', null, ['class' => 'form-control', 'id' => 'id_vsatcurr'])  }}
+    </div>
+
+    <div class="form-group">
+        <label for="" class="control-label">id_btscurr</label>
+        {{  Form::text('id_btscurr', null, ['class' => 'form-control', 'id' => 'id_btscurr'])  }}
+    </div>
 
 {{  Form::close()  }}
