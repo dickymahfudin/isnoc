@@ -19,7 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::prefix('servicecalls')->group(function () {
-    Route::get('/', 'Api\ServiceCallsController@index');
+    Route::get('/', 'Api\ServiceCallsController@index')->name('servicecalls.index');
     Route::get('/{serviceCall}', 'Api\ServiceCallsController@show');
     Route::post('/', 'Api\ServiceCallsController@store');
     Route::put('/{serviceCall}', 'Api\ServiceCallsController@update');

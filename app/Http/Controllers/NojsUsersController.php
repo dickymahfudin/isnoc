@@ -70,8 +70,8 @@ class NojsUsersController extends Controller
             'lc' => 'required',
             'mitra' => 'required',
             'ip' => 'required|string|max:15',
-            'latitude' => 'required|string|max:20',
-            'longitude' => 'required|string|max:20',
+            // 'latitude' => 'required|string|max:20',
+            // 'longitude' => 'required|string|max:20',
         ]);
         // return $request;
 
@@ -131,8 +131,8 @@ class NojsUsersController extends Controller
             'provinsi' => 'required|string|max:20',
             'lc' => 'required',
             'ip' => 'required|string|max:15',
-            'latitude' => 'required|string|max:20',
-            'longitude' => 'required|string|max:20',
+            // 'latitude' => 'required|string|max:20',
+            // 'longitude' => 'required|string|max:20',
         ]);
 
         $nojsUser->update($request->all());

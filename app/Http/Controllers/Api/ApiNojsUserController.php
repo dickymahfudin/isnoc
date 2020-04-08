@@ -26,6 +26,9 @@ class ApiNojsUserController extends Controller
         if ($lc && !$lc1) {
             $datas = NojsUser::where('lc', $lc)
                 ->get();
+        } elseif ($lc && $lc1) {
+            $datas = NojsUser::whereIn('lc', array($lc, $lc1))
+                ->get();
         }
         return response($datas, 200);
     }

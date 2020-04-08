@@ -28,6 +28,9 @@ Route::get('/home', 'NocController@index')->name('noc')->middleware('verified');
 Route::group(['prefix' => 'nojs',  'middleware' => 'verified'], function () {
     Route::get('/', 'NojsUsersController@index')->name('nojs.index');
     Route::get('/table', 'NojsUsersController@dataTable')->name('nojs.table');
+    Route::get('/detail', function () {
+        return view('nojs.detail');
+    })->name('nojs.detail');
     Route::post('/', 'NojsUsersController@store')->name('nojs.store');
     Route::get('/create', 'NojsUsersController@create')->name('nojs.create');
     Route::get('/{nojsUser}', 'NojsUsersController@show')->name('nojs.show');
@@ -36,6 +39,7 @@ Route::group(['prefix' => 'nojs',  'middleware' => 'verified'], function () {
     Route::get('/{nojsUser}/edit', 'NojsUsersController@edit')->name('nojs.edit');
 });
 
+
 Route::get('/servicecalls', function () {
     return view('servicecalls.index');
-})->name('servicecalls');
+})->name('servicecalls')->middleware('verified');
