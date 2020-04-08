@@ -234,14 +234,14 @@ function renderChart(data) {
     return chart;
 }
 
-function GetDataSingle(data) {
+function GetDataSingle(data, url) {
     let object = new GetData();
     let temp_data = data.data[0];
     let chart;
     let temp = object.GetDataLoggers({
         nojs: data.nojs,
         limit: 1,
-        url: "http://127.0.0.1:8000/api/logger",
+        url: url,
         single: true,
         multi: false
     });

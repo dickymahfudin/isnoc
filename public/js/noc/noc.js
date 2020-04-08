@@ -11,14 +11,14 @@ $(document).ready(function () {
     let GetLogger = new GetData();
 
     let me = $("#pagination"),
-        url = me.attr("dism"),
-        log = me.attr("dismlog");
+        url = me.attr("url"),
+        log = me.attr("urllog");
     console.log(url);
 
     // let a = GetLogger.GetDataLoggers({
     //     nojs: "JS10",
     //     limit: 4,
-    //     url: "http://127.0.0.1:8000/api/logger"
+    //     url: log
     // });
 
     // console.log(a);
@@ -47,7 +47,7 @@ $(document).ready(function () {
                 let temp = GetLogger.GetDataLoggers({
                     nojs: data.nojs,
                     limit: 36,
-                    url: "http://127.0.0.1:8000/api/logger",
+                    url: log,
                     single: false,
                     multi: true
                 });
@@ -187,7 +187,7 @@ $(document).ready(function () {
     setInterval(function () {
         for (let i = 0; i < DatasLogger.length; i++) {
             const data = DatasLogger[i];
-            DatasLogger[i] = GetDataSingle(data);
+            DatasLogger[i] = GetDataSingle(data, log);
             if (DatasLogger[i].update) {
                 SetidChart(DatasLogger[i], i);
                 DatasLogger[i].update = false;
