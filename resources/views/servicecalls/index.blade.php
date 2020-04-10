@@ -6,7 +6,7 @@
 @endpush --}}
 
 @section('content1')
-    <div class="container mt-3 mb-3">
+    <div class="container mt-3 mb-3 " auth="{{ env('Auth') }}" id="auth">
         <div class="card text-white bg-primary">
         <div class="card-header font-weight-bold text-center">
             <a class="btn btn-success" data-toggle="collapse" href="#activedTab" dism="{{ route('servicecalls.index','status=OPEN') }}" role="button" aria-expanded="false" aria-controls="activedTab" id="serviceopen">Actived Tab</a>

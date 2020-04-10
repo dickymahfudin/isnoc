@@ -1,7 +1,8 @@
 $(document).ready(function () {
     $.datetimepicker.setDateFormatter('moment');
     let url = $('.selectpicker').attr('url'),
-        logger = $('.selectpicker').attr('urllog');
+        logger = $('.selectpicker').attr('urllog'),
+        auth = $('.selectpicker').attr('auth');
     let js = [];
     $.ajax({
         type: "GET",
@@ -88,6 +89,8 @@ $(document).ready(function () {
     });
 
     function getTable(data) {
+        let error = 0;
+        let sla = 0;
         $('#btnstart').html('');
         $('#btnstart').removeClass('disabled');
         $('#btnstart').text('Start');
@@ -169,7 +172,7 @@ $(document).ready(function () {
                 "beforeSend": function (xhr) {
                     xhr.setRequestHeader(
                         "Authorization",
-                        "Bearer Afidha1pHYJIEOSB08TSrPQ9v2dTFFcPHx1bCFc7lZEQD2BXPBtbNoYEcGHMhKVhnk9MwwwJTOLSK4vR"
+                        `Bearer ${auth}`
                     );
                 },
                 "data": {
@@ -179,7 +182,42 @@ $(document).ready(function () {
                 },
                 "dataType": "json",
                 "dataSrc": function (json) {
-                    return json;
+                    let array = [];
+                    let time_local, eh1, eh2, vsat_curr, bts_curr, load3, batt_volt1, batt_volt2, edl1, edl2, pms_state;
+                    json.forEach(data => {
+                        (data.time_local == null) ? time_local = "error": time_local = data.time_local;
+                        (data.eh1 == null) ? eh1 = "error": eh1 = data.eh1;
+                        (data.eh2 == null) ? eh2 = "error": eh2 = data.eh2;
+                        (data.vsat_curr == null) ? vsat_curr = "error": vsat_curr = data.vsat_curr;
+                        (data.bts_curr == null) ? bts_curr = "error": bts_curr = data.bts_curr;
+                        (data.load3 == null) ? load3 = "error": load3 = data.load3;
+                        (data.batt_volt1 == null) ? batt_volt1 = "error": batt_volt1 = data.batt_volt1;
+                        (data.batt_volt2 == null) ? batt_volt2 = "error": batt_volt2 = data.batt_volt2;
+                        (data.edl1 == null) ? edl1 = "error": edl1 = data.edl1;
+                        (data.edl2 == null) ? edl2 = "error": edl2 = data.edl2;
+                        (data.pms_state == null) ? pms_state = "error": pms_state = data.pms_state;
+
+                        if (data.eh1 != null) error++;
+                        array.push({
+                            time_local: data.time_local,
+                            eh1: eh1,
+                            eh2: eh2,
+                            vsat_curr: vsat_curr,
+                            bts_curr: bts_curr,
+                            load3: load3,
+                            batt_volt1: batt_volt1,
+                            batt_volt2: batt_volt2,
+                            edl1: edl1,
+                            edl2: edl2,
+                            pms_state: pms_state
+                        });
+                    });
+                    sla = (error / (json.length)) * 100;
+                    $('#nojs').text(data.nojs);
+                    $('#site').text(data.site);
+                    $('#mitra').text(data.mitra);
+                    $('#sla').text(`${sla.toFixed(2)}%`);
+                    return array;
                 }
             },
             columns: [{
@@ -218,9 +256,6 @@ $(document).ready(function () {
             ]
         });
 
-        $('#nojs').text(data.nojs);
-        $('#site').text(data.site);
-        $('#mitra').text(data.mitra);
     }
 
 });

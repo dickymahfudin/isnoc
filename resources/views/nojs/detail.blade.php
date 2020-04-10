@@ -29,7 +29,7 @@
 
                 <div class="row justify-content-center">
                     <div class="form-group col-md-5 ">
-                        <select  data-live-search="true" class="form-control selectpicker h-50 d-inline-block" data-size="5" data-style="btn-primary" title="NOJS" url="{{ route('nojs.table') }}" urllog="{{ route('noc.logger') }}">
+                        <select  data-live-search="true" class="form-control selectpicker h-50 d-inline-block" data-size="5" data-style="btn-primary" title="NOJS" url="{{ route('nojs.table') }}" urllog="{{ route('noc.logger') }}"  auth="{{ env('Auth') }}">
                         </select>
                     </div>
 
@@ -55,6 +55,10 @@
                                         <tr>
                                             <th>Mitra</th>
                                             <th id="mitra"></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Sla</th>
+                                            <th id="sla"></th>
                                         </tr>
                                     </tbody>
                                 </table>

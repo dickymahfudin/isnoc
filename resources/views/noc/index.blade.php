@@ -9,7 +9,7 @@
 
 @section('content')
     <div class="container-chart"></div>
-    <div class="d-flex justify-content-center paginationjs m-3" id="pagination"  url="{{ route('nojs.table') }}" urllog="{{ route('noc.logger') }}"></div>
+    <div class="d-flex justify-content-center paginationjs m-3" id="pagination"  url="{{ route('nojs.table') }}" urllog="{{ route('noc.logger') }}" auth="{{ env('Auth') }}"></div>
 @endsection
 
 @push('scripts')

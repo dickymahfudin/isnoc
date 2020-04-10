@@ -1,5 +1,6 @@
 var status;
 var url;
+let auth = $("#auth").attr("auth");
 $('.btn').click(function (e) {
     $(".active").removeClass("active");
     $(this).addClass("active");
@@ -73,7 +74,7 @@ let activeTable = $('#activeTable').DataTable({
         "beforeSend": function (xhr) {
             xhr.setRequestHeader(
                 "Authorization",
-                "Bearer Afidha1pHYJIEOSB08TSrPQ9v2dTFFcPHx1bCFc7lZEQD2BXPBtbNoYEcGHMhKVhnk9MwwwJTOLSK4vR"
+                `Bearer ${auth}`
             );
         },
         "data": {
@@ -205,7 +206,7 @@ let logTable = $('#logTable').DataTable({
         "beforeSend": function (xhr) {
             xhr.setRequestHeader(
                 "Authorization",
-                "Bearer Afidha1pHYJIEOSB08TSrPQ9v2dTFFcPHx1bCFc7lZEQD2BXPBtbNoYEcGHMhKVhnk9MwwwJTOLSK4vR"
+                `Bearer ${auth}`
             );
         },
         "data": {

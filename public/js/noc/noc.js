@@ -12,8 +12,8 @@ $(document).ready(function () {
 
     let me = $("#pagination"),
         url = me.attr("url"),
-        log = me.attr("urllog");
-    console.log(url);
+        log = me.attr("urllog"),
+        auth = me.attr("auth");
 
     // let a = GetLogger.GetDataLoggers({
     //     nojs: "JS10",
@@ -49,7 +49,8 @@ $(document).ready(function () {
                     limit: 36,
                     url: log,
                     single: false,
-                    multi: true
+                    multi: true,
+                    auth: auth
                 });
                 DatasLogger.push({
                     update: false,
@@ -187,7 +188,7 @@ $(document).ready(function () {
     setInterval(function () {
         for (let i = 0; i < DatasLogger.length; i++) {
             const data = DatasLogger[i];
-            DatasLogger[i] = GetDataSingle(data, log);
+            DatasLogger[i] = GetDataSingle(data, log, auth);
             if (DatasLogger[i].update) {
                 SetidChart(DatasLogger[i], i);
                 DatasLogger[i].update = false;

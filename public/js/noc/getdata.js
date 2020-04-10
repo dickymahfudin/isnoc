@@ -7,7 +7,7 @@ class GetData {
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(
                     "Authorization",
-                    "Bearer Afidha1pHYJIEOSB08TSrPQ9v2dTFFcPHx1bCFc7lZEQD2BXPBtbNoYEcGHMhKVhnk9MwwwJTOLSK4vR"
+                    `Bearer ${data.auth}`
                 );
             },
             data: {
@@ -234,7 +234,7 @@ function renderChart(data) {
     return chart;
 }
 
-function GetDataSingle(data, url) {
+function GetDataSingle(data, url, auth) {
     let object = new GetData();
     let temp_data = data.data[0];
     let chart;
@@ -243,7 +243,8 @@ function GetDataSingle(data, url) {
         limit: 1,
         url: url,
         single: true,
-        multi: false
+        multi: false,
+        auth: auth
     });
 
     if (temp[0].time_local[0] === temp_data.time_local[35]) {
