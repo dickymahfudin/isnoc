@@ -29,6 +29,8 @@ class ApiNojsUserController extends Controller
         } elseif ($lc && $lc1) {
             $datas = NojsUser::whereIn('lc', array($lc, $lc1))
                 ->get();
+        } else {
+            $datas = NojsUser::all();
         }
         return response($datas, 200);
     }
