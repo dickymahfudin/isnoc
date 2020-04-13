@@ -61,12 +61,14 @@ $(document).ready(function () {
                     ".container-chart"
                 ).append(`<div class="container-item" id="container-item-${data.nojs}">
                                                 <div class="js row" id="js-${data.nojs}">
-                                                    <div class="col-6 border">
+                                                    <div class="col border">
                                                         ${data.nojs} ${data.site}
+                                                        <span class="float-right mr-3">
+                                                            ${data.lc}
+                                                        </span>
                                                     </div>
-                                                    <div class="col-6 border">
-                                                        ${data.lc}
-                                                        <span class="float-right" id="bv-${data.nojs}">
+                                                    <div class="">
+                                                        <span class="float-right mr-3" id="bv-${data.nojs}">
                                                         </span>
 
                                                         <span class="float-right mr-4" id="pms-${data.nojs}">
