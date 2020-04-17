@@ -6,11 +6,11 @@
 @endpush --}}
 
 @section('content1')
-    <div class="container mt-3 mb-3 " auth="{{ env('Auth') }}" id="auth">
+    <div class="container mt-3 mb-3 " id="auth" auth="{{ env('Auth') }}" url="{{ route('servicecalls.index') }}">
         <div class="card text-white bg-primary">
         <div class="card-header font-weight-bold text-center">
-            <a class="btn btn-success" data-toggle="collapse" href="#activedTab" dism="{{ route('servicecalls.index','status=OPEN') }}" role="button" aria-expanded="false" aria-controls="activedTab" id="serviceopen">Actived Tab</a>
-            <a class="btn btn-success" data-toggle="collapse" href="#logTab"  dism="{{ route('servicecalls.index','status=CLOSED') }}" role="button" aria-expanded="false" aria-controls="logTab" id="serviceclose">Log Tab</a>
+            <a class="btn btn-success" data-toggle="collapse" href="#activedTab" role="button" aria-expanded="false" aria-controls="activedTab" id="serviceopen">Actived Tab</a>
+            <a class="btn btn-success" data-toggle="collapse" href="#logTab"  role="button" aria-expanded="false" aria-controls="logTab" id="serviceclose">Log Tab</a>
         </div>
 
             <div class="card-body bg-light text-dark">

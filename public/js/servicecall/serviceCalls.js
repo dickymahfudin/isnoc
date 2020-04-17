@@ -1,6 +1,6 @@
 var status;
-var url;
-let auth = $("#auth").attr("auth");
+let auth = $("#auth").attr("auth"),
+    url = $("#auth").attr("url");
 $('.btn').click(function (e) {
     $(".active").removeClass("active");
     $(this).addClass("active");
@@ -70,7 +70,7 @@ let activeTable = $('#activeTable').DataTable({
     },
     ajax: {
         "type": "GET",
-        "url": "http://127.0.0.1:8000/api/servicecalls",
+        "url": url,
         "beforeSend": function (xhr) {
             xhr.setRequestHeader(
                 "Authorization",
@@ -202,7 +202,7 @@ let logTable = $('#logTable').DataTable({
     },
     ajax: {
         "type": "GET",
-        "url": "http://127.0.0.1:8000/api/servicecalls",
+        "url": url,
         "beforeSend": function (xhr) {
             xhr.setRequestHeader(
                 "Authorization",
@@ -296,4 +296,4 @@ setInterval(function () {
     } else if (status == 'serviceclose') {
         logTable.ajax.reload();
     }
-}, 50000);
+}, 1000 * 50);
