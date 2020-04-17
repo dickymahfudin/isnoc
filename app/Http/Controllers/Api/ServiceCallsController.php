@@ -6,6 +6,7 @@ use App\models\ServiceCall;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ServiceCallsController extends Controller
 {
@@ -58,5 +59,62 @@ class ServiceCallsController extends Controller
         ]);
         $serviceCall->update($request->all());
         return response($serviceCall, 200);
+    }
+
+    public static function ceckService($data)
+    {
+        $nojs = $data->nojs;
+        $valueError = null;
+        $error = 0;
+
+        // if ($data->eh1 === $valueError) $error = 1;
+        // if ($data->eh2 === $valueError) $error = 2;
+        // if ($data->batt_volt1 === $valueError) $error = 3;
+        // if ($data->edl1 === $valueError) $error = 4;
+        // if ($data->edl2 === $valueError) $error = 5;
+
+        $cek = ServiceCall::where('nojs', $nojs)
+            ->where('status', 'OPEN')
+            ->get();
+
+        if (($data->eh1 === $valueError) && ($data->eh2 === $valueError) && ($data->batt_volt1 === $valueError) && ($data->edl1 === $valueError) && ($data->edl2 === $valueError)) {
+            $error = 'VPN';
+            $open_time = Carbon::now();
+            $service = ServiceCall::orderBy('created_at', 'desc')->first();
+            if (count($cek) === 0 && $service !== null) {
+                $service_id =  $service->service_id;
+                $new_service_id = substr($service_id, 3 - (strlen($service_id))) + 1;
+
+                $new_data = ([
+                    'service_id' => '#SC' . $new_service_id,
+                    'nojs' => $nojs,
+                    'open_time' => $open_time,
+                    'error' => $error,
+                    'status' => 'OPEN'
+                ]);
+                ServiceCall::create($new_data);
+            } elseif ($service === null) {
+                $new_data = ([
+                    'service_id' => '#SC1',
+                    'nojs' => $nojs,
+                    'open_time' => $open_time,
+                    'error' => $error,
+                    'status' => 'OPEN'
+                ]);
+                ServiceCall::create($new_data);
+            }
+        } else {
+            if (count($cek) !== 0) {
+                $id = $cek[0]->service_id;
+                $closed_time = Carbon::now();
+                $new_data = ([
+                    'closed_time' => $closed_time,
+                    'status' => 'CLOSED'
+                ]);
+                ServiceCall::where('service_id', $id)
+                    ->update($new_data);
+                echo 'closed';
+            }
+        }
     }
 }

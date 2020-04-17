@@ -6,6 +6,7 @@ use App\Models\NojsLogger;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Http\Controllers\Api\ServiceCallsController;
 
 class NojsLoggersController extends Controller
 {
@@ -58,6 +59,7 @@ class NojsLoggersController extends Controller
             // 'pms_state' => 'required',
         ]);
         $dataLogger = NojsLogger::create($request->all());
+        $this->ceckService($request);
         return response($dataLogger, 201);
     }
 
@@ -225,5 +227,10 @@ class NojsLoggersController extends Controller
             }
         }
         return $datas[$loop]->$data;
+    }
+
+    public function ceckService($data)
+    {
+        ServiceCallsController::ceckService($data);
     }
 }
