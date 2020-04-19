@@ -61,7 +61,7 @@ $(document).ready(function () {
                     ".container-chart"
                 ).append(`<div class="container-item" id="container-item-${data.nojs}">
                                                 <div class="js row" id="js-${data.nojs}">
-                                                    <div class="col border">
+                                                    <div class="col">
                                                         ${data.nojs} ${data.site}
                                                         <span class="float-right mr-3">
                                                             ${data.lc}

@@ -208,7 +208,7 @@ function renderChart(data) {
             scales: {
                 yAxes: [{
                     gridLines: {
-                        display: true
+                        display: false
                     },
                     ticks: {
                         min: data.min,
