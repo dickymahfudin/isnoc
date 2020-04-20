@@ -78,9 +78,11 @@ class ServiceCallsController extends Controller
             ->get();
 
         if (($data->eh1 === $valueError) && ($data->eh2 === $valueError) && ($data->batt_volt1 === $valueError) && ($data->edl1 === $valueError) && ($data->edl2 === $valueError)) {
-            $error = 'VPN';
+            $error = ' ';
             $open_time = Carbon::now();
-            $service = ServiceCall::orderBy('created_at', 'desc')->first();
+            $service = ServiceCall::orderBy('created_at', 'desc')
+                ->orderBy('service_id', 'desc')
+                ->first();
             if (count($cek) === 0 && $service !== null) {
                 $service_id =  $service->service_id;
                 $new_service_id = substr($service_id, 3 - (strlen($service_id))) + 1;
