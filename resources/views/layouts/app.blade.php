@@ -115,10 +115,14 @@
     <script>
         $(document).ready(function () {
         setInterval(function () {
+            function checkTime(i) {
+            if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+            return i;
+            }
             let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             let clock = new Date();
             $('.clock').html(
-                `${days[clock.getDay()]}, ${clock.getHours()}:${clock.getMinutes()}:${clock.getSeconds()}`);
+                `${days[clock.getDay()]}, ${checkTime(clock.getHours())}:${checkTime(clock.getMinutes())}:${checkTime(clock.getSeconds())}`);
         }, 1000);
         });
     </script>
