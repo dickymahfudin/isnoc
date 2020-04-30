@@ -5,11 +5,11 @@ import {
 } from "./getdata.js";
 
 $(document).ready(function () {
-    let js = [];
     let DatasLogger = [];
     let chartEh1, chartEh2, chartBv, chartedl1, chartedl2;
     let GetLogger = new GetData();
-
+    let searchParams = new URLSearchParams(window.location.search);
+    let page = searchParams.get("page");
     let me = $("#pagination"),
         url = me.attr("url"),
         log = me.attr("urllog"),
@@ -33,6 +33,7 @@ $(document).ready(function () {
                 }
             });
         },
+        pageNumber: page,
         pageSize: 15,
         className: "paginationjs-theme-blue",
         ajax: {
@@ -41,7 +42,22 @@ $(document).ready(function () {
             }
         },
         callback: function (response, pagination) {
+            let set = searchParams.set("page", pagination.pageNumber);
             $(".container-chart").html("");
+            $(".container-chart").addClass('d-none');
+            $("#loading").removeClass("d-none");
+            $("#loading").append(`  <div class="d-flex justify-content-center">
+                                        <div class="lds-roller">
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                        </div>
+                                    </div>`);
             DatasLogger = [];
             response.forEach(function (data, index) {
                 let temp = GetLogger.GetDataLoggers({
@@ -98,6 +114,9 @@ $(document).ready(function () {
                                         </div>`);
                 SetidChart(DatasLogger[index]);
             });
+            $(".container-chart").removeClass("d-none");
+            $("#loading").html("");
+            $("#loading").addClass("d-none");
         }
     });
 
