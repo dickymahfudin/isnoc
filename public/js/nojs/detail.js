@@ -1,8 +1,8 @@
 $(document).ready(function () {
     $.datetimepicker.setDateFormatter('moment');
     let url = $('.selectpicker').attr('url'),
-        logger = $('.selectpicker').attr('urllog'),
-        auth = $('.selectpicker').attr('auth');
+        logger = $('.selectpicker').attr('urllog');
+    let auth = $('#auth').attr('auth');
     let js = [];
     $.ajax({
         type: "GET",

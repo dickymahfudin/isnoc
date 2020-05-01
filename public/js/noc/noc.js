@@ -12,8 +12,8 @@ $(document).ready(function () {
     let page = searchParams.get("page");
     let me = $("#pagination"),
         url = me.attr("url"),
-        log = me.attr("urllog"),
-        auth = me.attr("auth");
+        log = me.attr("urllog");
+    let auth = $("#auth").attr("auth");
 
     // let a = GetLogger.GetDataLoggers({
     //     nojs: "JS10",
@@ -35,6 +35,11 @@ $(document).ready(function () {
         },
         pageNumber: page,
         pageSize: 15,
+        beforePageOnClick: function (res) {
+            let pageNum = res.currentTarget.dataset.num;
+            let host = window.location.host;
+            history.pushState(host, "Title", `?page=${pageNum}`)
+        },
         className: "paginationjs-theme-blue",
         ajax: {
             beforeSend: function () {
@@ -42,7 +47,6 @@ $(document).ready(function () {
             }
         },
         callback: function (response, pagination) {
-            let set = searchParams.set("page", pagination.pageNumber);
             $(".container-chart").html("");
             $(".container-chart").addClass('d-none');
             $("#loading").removeClass("d-none");

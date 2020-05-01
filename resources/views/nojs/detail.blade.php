@@ -2,7 +2,6 @@
 @extends('layouts.datatables')
 
 @push('styles1')
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.12/css/bootstrap-select.min.css">
     <link href="{{ asset('css/nojs/bootstrap-select.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/datetime/css/jquery.datetimepicker.min.css') }}" rel="stylesheet">
     <script src="{{ asset('js/nojs/bootstrap-select.min.js') }}" defer></script>
@@ -29,7 +28,7 @@
 
                 <div class="row justify-content-center">
                     <div class="form-group col-md-5 ">
-                        <select  data-live-search="true" class="form-control selectpicker h-50 d-inline-block" data-size="5" data-style="btn-primary" title="NOJS" url="{{ route('nojs.table') }}" urllog="{{ route('noc.logger') }}"  auth="{{ env('Auth') }}">
+                        <select  data-live-search="true" class="form-control selectpicker h-50 d-inline-block" data-size="5" data-style="btn-primary" title="NOJS" url="{{ route('nojs.table') }}" urllog="{{ route('noc.logger') }}">
                         </select>
                     </div>
 
