@@ -39,7 +39,10 @@ Route::group(['prefix' => 'nojs', 'middleware' => 'auth'], function () {
     Route::get('/{nojsUser}/edit', 'NojsUsersController@edit')->name('nojs.edit');
 });
 
-
 Route::get('/servicecalls', function () {
     return view('servicecalls.index');
 })->name('servicecalls')->middleware('auth');
+
+Route::get('/slaprtg', function () {
+    return view('slaprtg.index');
+})->name('slaprtg')->middleware('auth');

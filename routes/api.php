@@ -33,3 +33,7 @@ Route::prefix('logger')->group(function () {
 Route::prefix('nojs')->group(function () {
     Route::get('/', 'Api\ApiNojsUserController@index');
 });
+
+Route::prefix('prtg')->group(function () {
+    Route::get('/', 'Api\PrtgController@getDataTotals')->name('apislaprtg');
+});
