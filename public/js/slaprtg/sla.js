@@ -11,7 +11,7 @@ $(document).ready(function () {
     let sdate, edate;
     $.ajax({
         type: "GET",
-        url: "js/slaprtg/data.json",
+        url: "../js/slaprtg/data.json",
         dataType: "json",
         success: function (response) {
             tempSite = response;
@@ -22,6 +22,7 @@ $(document).ready(function () {
             $('.selectpicker').selectpicker('refresh');
         }
     });
+
     $('#start').datetimepicker({
         timepicker: true,
         datetimepicker: true,
@@ -36,6 +37,7 @@ $(document).ready(function () {
             });
         }
     });
+
     $('#toggleStart').on('click', function () {
         $('#start').datetimepicker('toggle');
     })
@@ -54,6 +56,7 @@ $(document).ready(function () {
             });
         }
     });
+
     $('#toggleEnd').on('click', function () {
         $('#end').datetimepicker('toggle');
     })
@@ -66,27 +69,48 @@ $(document).ready(function () {
         let tempPicker = $('.selectpicker').selectpicker('val');
         let temp = (tempPicker == 'all') ? tempSite : tempSite.find(e => e.site == tempPicker);
         if ((start < end) && start != '') {
-            sdate = (start.replace(':', '-')).replace(' ', '-');
-            edate = (end.replace(':', '-')).replace(' ', '-');
-            console.log(sdate);
-            console.log(edate);
+            if (temp) {
+                sdate = (start.replace(':', '-')).replace(' ', '-');
+                edate = (end.replace(':', '-')).replace(' ', '-');
+                console.log(sdate);
+                console.log(edate);
 
-            $('#btnstart').addClass('disabled');
-            $('#btnstart').text('');
-            $('#btnstart').append('<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> Loading');
-            sla = [];
+                $('#btnstart').addClass('disabled');
+                $('#btnstart').text('');
+                $('#btnstart').append('<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> Loading');
+                sla = [];
 
-            if (tempPicker == 'all') {
-                temp.forEach((data, index) => {
+                if (tempPicker == 'all') {
+                    temp.forEach((data, index) => {
+                        getSla({
+                            data: data,
+                            sdate: sdate,
+                            edate: edate
+                        });
+                        sla.push({
+                            no: index + 1,
+                            site: site,
+                            lc: data.lc,
+                            sla_lvdvsat: vsat,
+                            up_lvdvsat: upvisat,
+                            sla_dlvdvsat: dvisat,
+                            down_lvdvisat: downvisat,
+                            sla_ping: ping,
+                            avg_batvolt: batvolt,
+                            avg_vsatcurr: vsatcurr,
+                            avg_btscurr: btscurr,
+                        });
+                    });
+                } else {
                     getSla({
-                        data: data,
+                        data: temp,
                         sdate: sdate,
                         edate: edate
                     });
                     sla.push({
-                        no: index + 1,
+                        no: 1,
                         site: site,
-                        lc: data.lc,
+                        lc: temp.lc,
                         sla_lvdvsat: vsat,
                         up_lvdvsat: upvisat,
                         sla_dlvdvsat: dvisat,
@@ -96,29 +120,15 @@ $(document).ready(function () {
                         avg_vsatcurr: vsatcurr,
                         avg_btscurr: btscurr,
                     });
-                });
+                }
+                pushDataTable(sla);
             } else {
-                getSla({
-                    data: temp,
-                    sdate: sdate,
-                    edate: edate
-                });
-                sla.push({
-                    no: 1,
-                    site: site,
-                    lc: temp.lc,
-                    sla_lvdvsat: vsat,
-                    up_lvdvsat: upvisat,
-                    sla_dlvdvsat: dvisat,
-                    down_lvdvisat: downvisat,
-                    sla_ping: ping,
-                    avg_batvolt: batvolt,
-                    avg_vsatcurr: vsatcurr,
-                    avg_btscurr: btscurr,
+                swal({
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Select Site'
                 });
             }
-            pushDataTable(sla);
-
         } else {
             swal({
                 type: 'error',
