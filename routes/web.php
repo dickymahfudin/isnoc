@@ -43,6 +43,12 @@ Route::get('/servicecalls', function () {
     return view('servicecalls.index');
 })->name('servicecalls')->middleware('auth');
 
-Route::get('/slaprtg', function () {
-    return view('slaprtg.index');
-})->name('slaprtg')->middleware('auth');
+Route::group(['prefix' => 'prtg', 'middleware' => 'auth'], function () {
+    Route::get('/sla', function () {
+        return view('slaprtg.index');
+    })->name('sla.prtg')->middleware('auth');
+
+    Route::get('/state', function () {
+        return view('slaprtg.state');
+    })->name('state.prtg')->middleware('auth');
+});

@@ -61,13 +61,20 @@
                                 </li>
 
                                 <li class="nav-item dropdown h5">
-                                    <a class="nav-link dropdown-toggle {{ Request::is('nojs') ? 'bg-warning text-dark' : ''}} {{ Request::is('nojs/detail') ? 'bg-warning text-dark' : ''}} {{ Request::is('slaprtg') ? 'bg-warning text-dark' : ''}}" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Nojs</a>
+                                    <a class="nav-link dropdown-toggle {{ Request::is('nojs') ? 'bg-warning text-dark' : ''}} {{ Request::is('nojs/detail') ? 'bg-warning text-dark' : ''}}" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Nojs</a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                         <a class="dropdown-item {{ Request::is('nojs') ? 'bg-warning text-dark' : ''}}" href="{{route('nojs.index')}}">Nojs</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item {{ Request::is('nojs/detail') ? 'bg-warning text-dark' : ''}}" href="{{route('nojs.detail')}}">Detail</a>
+                                    </div>
+                                </li>
+
+                                <li class="nav-item dropdown h5">
+                                    <a class="nav-link dropdown-toggle {{ Request::is('prtg/sla') ? 'bg-warning text-dark' : ''}} {{ Request::is('prtg/state') ? 'bg-warning text-dark' : ''}}" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">PRTG</a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <a class="dropdown-item {{ Request::is('prtg/sla') ? 'bg-warning text-dark' : ''}}" href="{{route('sla.prtg')}}">SLA</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item {{ Request::is('slaprtg') ? 'bg-warning text-dark' : ''}}"" href="{{route('slaprtg')}}">SLA Prtg</a>
+                                        <a class="dropdown-item {{ Request::is('prtg/state') ? 'bg-warning text-dark' : ''}}" href="{{route('state.prtg')}}">State</a>
                                     </div>
                                 </li>
 

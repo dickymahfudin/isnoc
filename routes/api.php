@@ -36,4 +36,5 @@ Route::prefix('nojs')->group(function () {
 
 Route::prefix('prtg')->group(function () {
     Route::get('/', 'Api\PrtgController@getDataTotals')->name('apislaprtg');
+    Route::get('/state', 'Api\PrtgController@stateHistory')->name('apistateprtg');
 });
