@@ -110,8 +110,8 @@ $(document).ready(function () {
 
     function getState(data) {
         let site = data.data.site;
-        let sdate = data.start;
-        let edate = data.end;
+        let startDate = data.start;
+        let endDate = data.end;
         $.ajax({
             url: url,
             type: "GET",
@@ -128,71 +128,61 @@ $(document).ready(function () {
             dataType: "json",
             async: false,
             success: function (response) {
+                console.log(response);
                 let log = response.log.histdata;
                 let length = response.state.statehistory.length;
                 response.state.statehistory.forEach((data, index) => {
                     let datetime;
                     if (index == 0) {
                         datetime = data.datetime.split("-");
-                        let temp = new Date(sdate);
+                        let temp = new Date(startDate);
                         let time = formatAMPM(temp);
                         let newSdate = `${temp.getMonth()+1}/${temp.getDate()}/${temp.getFullYear()} ${time}`;
 
                         sdatetime = newSdate;
                         edatetime = log[0].datetime;
                         status_raw = data.status_raw;
-                        status =
-                            status_raw == 1 ?
-                            "Up" :
-                            status_raw == 2 ?
-                            "Unknown" :
-                            "Down";
+                        status = (status_raw) == 1 ? "Up" : (status_raw) == 2 ? "Unknown" : "Down";
                     } else if (index == 1) {
                         if (length == 2) {
                             datetime = data.datetime.split("-");
-                            let temp = new Date(edate);
+                            let temp = new Date(endDate);
                             let time = formatAMPM(temp);
                             let newSdate = `${temp.getMonth()+1}/${temp.getDate()}/${temp.getFullYear()} ${time}`;
 
                             sdatetime = log[0].datetime;
                             edatetime = newSdate;
                             status_raw = data.status_raw;
-                            status =
-                                status_raw == 1 ?
-                                "Up" :
-                                status_raw == 2 ?
-                                "Unknown" :
-                                "Down";
+                            status = (status_raw) == 1 ? "Up" : (status_raw) == 2 ? "Unknown" : "Down";
                         } else {
                             datetime = data.datetime.split("-");
-                            let temp = new Date(sdate);
+                            let temp = new Date(edate);
                             let time = formatAMPM(temp);
                             let newSdate = `${temp.getMonth() +1}/${temp.getDate()}/${temp.getFullYear()} ${time}`;
 
-                            sdatetime = newSdate;
-                            edatetime = log[0].datetime;
+                            sdatetime = log[0].datetime;
+                            edatetime = datetime[1];
                             status_raw = data.status_raw;
-                            status =
-                                status_raw == 1 ?
-                                "Up" :
-                                status_raw == 2 ?
-                                "Unknown" :
-                                "Down";
+                            status = (status_raw) == 1 ? "Up" : (status_raw) == 2 ? "Unknown" : "Down";
                         }
+                    } else if ((index + 1) == length) {
+                        datetime = data.datetime.split("-");
+                        let temp = new Date(endDate);
+                        let time = formatAMPM(temp);
+                        let newSdate = `${temp.getMonth()+1}/${temp.getDate()}/${temp.getFullYear()} ${time}`;
+                        sdatetime = datetime[0];
+                        edatetime = newSdate;
+                        status_raw = data.status_raw;
+                        status = (status_raw) == 1 ? "Up" : (status_raw) == 2 ? "Unknown" : "Down";
                     } else {
                         datetime = data.datetime.split("-");
                         sdatetime = datetime[0];
                         edatetime = datetime[1];
                         status_raw = data.status_raw;
-                        status =
-                            status_raw == 1 ?
-                            "Up" :
-                            status_raw == 2 ?
-                            "Unknown" :
-                            "Down";
+                        status = (status_raw) == 1 ? "Up" : (status_raw) == 2 ? "Unknown" : "Down";
                     }
                     state.push({
-                        no: index++,
+                        no: index + 1,
                         site: site,
                         start: sdatetime,
                         end: edatetime,
