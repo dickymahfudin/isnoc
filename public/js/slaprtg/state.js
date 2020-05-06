@@ -232,36 +232,34 @@ $(document).ready(function () {
             buttons: {
                 dom: {
                     button: {
-                        tag: "button",
-                        className: ""
+                        tag: 'button',
+                        className: 'btn-group'
                     }
                 },
                 buttons: [{
-                        extend: "pageLength",
-                        className: "btn btn-sm btn-secondary",
-                        titleAttr: "Sort"
+                        extend: 'pageLength',
+                        className: 'btn btn-sm btn-secondary mr-2',
+                        titleAttr: 'Sort',
                     },
                     {
-                        extend: "excel",
-                        className: "btn btn-sm btn-success",
-                        titleAttr: "Excel export.",
-                        text: "Excel",
-                        filename: "excel-export",
-                        extension: ".xlsx"
+                        extend: 'excel',
+                        className: 'btn btn-sm btn-success mr-2',
+                        titleAttr: 'Excel export.',
+                        text: 'Excel',
+                        filename: 'excel-export',
+                        extension: '.xlsx'
+                    }, {
+                        extend: 'copy',
+                        className: 'btn btn-sm btn-primary mr-2',
+                        titleAttr: 'Copy table data.',
+                        text: 'Copy'
+                    }, {
+                        extend: 'pdf',
+                        className: 'btn btn-sm btn-warning mr-2',
+                        titleAttr: 'Pdf export.',
+                        text: 'Pdf',
+                        filename: 'pdf-export',
                     },
-                    {
-                        extend: "copy",
-                        className: "btn btn-sm btn-primary",
-                        titleAttr: "Copy table data.",
-                        text: "Copy"
-                    },
-                    {
-                        extend: "pdf",
-                        className: "btn btn-sm btn-warning",
-                        titleAttr: "Pdf export.",
-                        text: "Pdf",
-                        filename: "pdf-export"
-                    }
                 ]
             },
             data: data,

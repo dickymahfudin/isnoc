@@ -15,7 +15,6 @@ $(document).ready(function () {
         dataType: "json",
         success: function (response) {
             tempSite = response;
-            $('.selectpicker').append(`<option value="all">All SITE</option>`);
             response.forEach(data => {
                 $('.selectpicker').append(`<option value="${data.site}">${data.site} - ${data.lc}</option>`);
             });
@@ -67,7 +66,12 @@ $(document).ready(function () {
         let end = $('.end').val();
 
         let tempPicker = $('.selectpicker').selectpicker('val');
-        let temp = (tempPicker == 'all') ? tempSite : tempSite.find(e => e.site == tempPicker);
+        let temp = [];
+
+        for (let i = 0; i < tempPicker.length; i++) {
+            const data = tempPicker[i];
+            temp.push(tempSite.find(e => e.site == data));
+        }
         if ((start < end) && start != '') {
             if (temp) {
                 sdate = (start.replace(':', '-')).replace(' ', '-');
@@ -80,37 +84,16 @@ $(document).ready(function () {
                 $('#btnstart').append('<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> Loading');
                 sla = [];
 
-                if (tempPicker == 'all') {
-                    temp.forEach((data, index) => {
-                        getSla({
-                            data: data,
-                            sdate: sdate,
-                            edate: edate
-                        });
-                        sla.push({
-                            no: index + 1,
-                            site: site,
-                            lc: data.lc,
-                            sla_lvdvsat: vsat,
-                            up_lvdvsat: upvisat,
-                            sla_dlvdvsat: dvisat,
-                            down_lvdvisat: downvisat,
-                            sla_ping: ping,
-                            avg_batvolt: batvolt,
-                            avg_vsatcurr: vsatcurr,
-                            avg_btscurr: btscurr,
-                        });
-                    });
-                } else {
+                temp.forEach((data, index) => {
                     getSla({
-                        data: temp,
+                        data: data,
                         sdate: sdate,
                         edate: edate
                     });
                     sla.push({
-                        no: 1,
+                        no: index + 1,
                         site: site,
-                        lc: temp.lc,
+                        lc: data.lc,
                         sla_lvdvsat: vsat,
                         up_lvdvsat: upvisat,
                         sla_dlvdvsat: dvisat,
@@ -120,7 +103,8 @@ $(document).ready(function () {
                         avg_vsatcurr: vsatcurr,
                         avg_btscurr: btscurr,
                     });
-                }
+                });
+
                 pushDataTable(sla);
             } else {
                 swal({
@@ -364,29 +348,29 @@ $(document).ready(function () {
                 dom: {
                     button: {
                         tag: 'button',
-                        className: ''
+                        className: 'btn-group'
                     }
                 },
                 buttons: [{
                         extend: 'pageLength',
-                        className: 'btn btn-sm btn-secondary',
+                        className: 'btn btn-sm btn-secondary mr-2',
                         titleAttr: 'Sort',
                     },
                     {
                         extend: 'excel',
-                        className: 'btn btn-sm btn-success',
+                        className: 'btn btn-sm btn-success mr-2',
                         titleAttr: 'Excel export.',
                         text: 'Excel',
                         filename: 'excel-export',
                         extension: '.xlsx'
                     }, {
                         extend: 'copy',
-                        className: 'btn btn-sm btn-primary',
+                        className: 'btn btn-sm btn-primary mr-2',
                         titleAttr: 'Copy table data.',
                         text: 'Copy'
                     }, {
                         extend: 'pdf',
-                        className: 'btn btn-sm btn-warning',
+                        className: 'btn btn-sm btn-warning mr-2',
                         titleAttr: 'Pdf export.',
                         text: 'Pdf',
                         filename: 'pdf-export',
