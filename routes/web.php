@@ -31,6 +31,12 @@ Route::group(['prefix' => 'nojs', 'middleware' => 'auth'], function () {
     Route::get('/detail', function () {
         return view('nojs.detail');
     })->name('nojs.detail');
+    Route::get('/dataprocessing', function () {
+        return view('nojs.dataProcessing');
+    })->name('nojs.dataprocessing');
+    Route::get('/sla', function () {
+        return view('nojs.sla');
+    })->name('nojs.sla');
     Route::post('/', 'NojsUsersController@store')->name('nojs.store');
     Route::get('/create', 'NojsUsersController@create')->name('nojs.create');
     Route::get('/{nojsUser}', 'NojsUsersController@show')->name('nojs.show');

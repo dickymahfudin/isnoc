@@ -29,7 +29,7 @@
 
                 <div class="row justify-content-center">
                     <div class="form-group col-md-5 ">
-                        <select  data-live-search="true" class="form-control selectpicker h-50 d-inline-block" data-size="5" data-style="btn-primary" title="SITE">
+                        <select  data-live-search="true" class="form-control selectpicker h-50 d-inline-block" data-size="5" data-style="btn-primary" title="SITE"  multiple data-actions-box="true">
                         </select>
                     </div>
 

@@ -61,11 +61,15 @@
                                 </li>
 
                                 <li class="nav-item dropdown h5">
-                                    <a class="nav-link dropdown-toggle {{ Request::is('nojs') ? 'bg-warning text-dark' : ''}} {{ Request::is('nojs/detail') ? 'bg-warning text-dark' : ''}}" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Nojs</a>
+                                    <a class="nav-link dropdown-toggle {{ Request::is('nojs') ? 'bg-warning text-dark' : ''}} {{ Request::is('nojs/detail') ? 'bg-warning text-dark' : ''}} {{ Request::is('nojs/sla') ? 'bg-warning text-dark' : ''}}" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Nojs</a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                         <a class="dropdown-item {{ Request::is('nojs') ? 'bg-warning text-dark' : ''}}" href="{{route('nojs.index')}}">Nojs</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item {{ Request::is('nojs/detail') ? 'bg-warning text-dark' : ''}}" href="{{route('nojs.detail')}}">Detail</a>
+                                        {{-- <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item {{ Request::is('nojs/dataprocessing') ? 'bg-warning text-dark' : ''}}" href="{{route('nojs.dataprocessing')}}">Data</a> --}}
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item {{ Request::is('nojs/sla') ? 'bg-warning text-dark' : ''}}" href="{{route('nojs.sla')}}">SLA</a>
                                     </div>
                                 </li>
 
