@@ -73,7 +73,7 @@ $(document).ready(function () {
     $('body').on('click', '.modal-show', function (e) {
         e.preventDefault();
 
-        var me = $(this),
+        let me = $(this),
             url = me.attr('href'),
             title = me.attr('title');
 
@@ -93,7 +93,7 @@ $(document).ready(function () {
     $('#modal-btn-save').click(function (e) {
         e.preventDefault();
 
-        var form = $('#modal-body form'),
+        let form = $('#modal-body form'),
             url = form.attr('action'),
             dism = form.attr('dism'),
             method = $('input[name=_method]').val() == undefined ? 'POST' : 'PUT';
@@ -115,7 +115,7 @@ $(document).ready(function () {
                 });
             },
             error: function (xhr) {
-                var res = xhr.responseJSON;
+                let res = xhr.responseJSON;
                 if ($.isEmptyObject(res) == false) {
                     $.each(res.errors, function (key, value) {
                         $('#' + key)
@@ -133,7 +133,7 @@ $(document).ready(function () {
     $('body').on('click', '.btn-delete', function (e) {
         e.preventDefault();
 
-        var me = $(this),
+        let me = $(this),
             url = me.attr('href'),
             title = me.attr('title'),
             csrf_token = $('meta[name="csrf-token"]').attr('content'),
@@ -179,7 +179,7 @@ $(document).ready(function () {
     $('body').on('click', '.btn-show', function (e) {
         e.preventDefault();
 
-        var me = $(this),
+        let me = $(this),
             url = me.attr('href'),
             title = me.attr('title');
 
