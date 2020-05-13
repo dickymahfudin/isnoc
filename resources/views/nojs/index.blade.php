@@ -27,12 +27,11 @@
             </div>
         </div>
     </div>
+@include('nojs._modal')
 @endsection
 
 @push('scripts1')
-    {{-- <script src="{{asset('js/nojs/datatables.js')}}"></script> --}}
-    <script src="{{asset('js/nojs/nojs.js')}}" defer></script>
+    <script type="module" src="{{asset('js/nojs/nojs.js')}}" defer></script>
     <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}" defer></script>
 @endpush
 
-@include('nojs._modal')

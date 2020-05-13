@@ -32,6 +32,7 @@ Route::prefix('logger')->group(function () {
 
 Route::prefix('nojs')->group(function () {
     Route::get('/', 'Api\ApiNojsUserController@index');
+    Route::put('/', 'Api\ApiNojsUserController@update');
 });
 
 Route::prefix('prtg')->group(function () {

@@ -1,3 +1,7 @@
+import {
+    dataTables
+} from '../export/dataTables.js'
+
 $(document).ready(function () {
     $.datetimepicker.setDateFormatter('moment');
     let url = $('#datatable').attr('url');
@@ -5,6 +9,7 @@ $(document).ready(function () {
     let site, vsat, dvisat, upvisat, downvisat, ping, batvolt, vsatcurr, btscurr;
     let tempSite;
     let sla = [];
+    let dataTable = new dataTables;
 
     let username = 'Power APT';
     let password = 'APT12345';
@@ -333,52 +338,9 @@ $(document).ready(function () {
                         </tbody>
                     </table>`);
 
-        $('#tablesla').DataTable({
-            responsive: true,
-            processing: true,
-            retrieve: true,
-            dom: 'Bfrtip',
-            lengthChange: false,
-            processing: true,
-            lengthMenu: [
-                [10, 25, 50, -1],
-                ['10 rows', '25 rows', '50 rows', 'Show all']
-            ],
-            buttons: {
-                dom: {
-                    button: {
-                        tag: 'button',
-                        className: 'btn-group'
-                    }
-                },
-                buttons: [{
-                        extend: 'pageLength',
-                        className: 'btn btn-sm btn-secondary mr-2',
-                        titleAttr: 'Sort',
-                    },
-                    {
-                        extend: 'excel',
-                        className: 'btn btn-sm btn-success mr-2',
-                        titleAttr: 'Excel export.',
-                        text: 'Excel',
-                        filename: 'excel-export',
-                        extension: '.xlsx'
-                    }, {
-                        extend: 'copy',
-                        className: 'btn btn-sm btn-primary mr-2',
-                        titleAttr: 'Copy table data.',
-                        text: 'Copy'
-                    }, {
-                        extend: 'pdf',
-                        className: 'btn btn-sm btn-warning mr-2',
-                        titleAttr: 'Pdf export.',
-                        text: 'Pdf',
-                        filename: 'pdf-export',
-                    },
-                ]
-            },
+        dataTable.tables({
+            id: '#tablesla',
             data: data,
-
             columns: [{
                     "data": "no"
                 }, {

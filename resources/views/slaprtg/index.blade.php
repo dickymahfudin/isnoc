@@ -47,7 +47,7 @@
 @endsection
 
 @push('scripts1')
-    <script src="{{ asset('js/slaprtg/sla.js') }}" defer></script>
+    <script type="module" src="{{ asset('js/slaprtg/sla.js') }}" defer></script>
     <script src="{{ asset('vendor/datetime/js/moment.min.js') }}" defer></script>
     <script src="{{ asset('vendor/datetime/js/jquery.datetimepicker.full.js') }}" defer></script>
     <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}" defer></script>

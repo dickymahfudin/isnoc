@@ -1,21 +1,23 @@
+import {
+    dataSlaNoc
+} from '../export/getDataNoc.js'
+import {
+    dataTables
+} from '../export/dataTables.js'
+
 $(document).ready(function () {
     $.datetimepicker.setDateFormatter('moment');
     let url = $('.selectpicker').attr('url'),
         logger = $('.selectpicker').attr('urllog');
     let auth = $('#auth').attr('auth');
     let js = [];
-    $.ajax({
-        type: "GET",
-        url: url,
-        dataType: "json",
-        success: function (response) {
-            js = response.data;
-            response.data.forEach(data => {
-                $('.selectpicker').append(`<option value="${data.nojs}">${data.nojs} - ${data.site}</option>`);
-            });
-            $('.selectpicker').selectpicker('refresh');
-        }
+    let datasla = new dataSlaNoc;
+    let dataTable = new dataTables;
+
+    js = datasla.getDataJs({
+        url: url
     });
+
     $('#start').datetimepicker({
         timepicker: true,
         datetimepicker: true,
@@ -64,7 +66,6 @@ $(document).ready(function () {
             // edate = (end.replace(':', '-')).replace(' ', '-');
             console.log(start);
             console.log(end);
-
 
             $('#btnstart').addClass('disabled');
             $('#btnstart').text('');
@@ -117,55 +118,9 @@ $(document).ready(function () {
                         </tbody>
                     </table>
         `);
-        $('#tableLog').DataTable({
-            rowReorder: {
-                selector: 'td:nth-child(2)'
-            },
-            responsive: true,
-            procesing: true,
-            // serverSide: true,
-            dom: 'Bfrtip',
-            lengthChange: false,
-            lengthMenu: [
-                [10, 25, 50, -1],
-                ['10 rows', '25 rows', '50 rows', 'Show all']
-            ],
-            buttons: {
-                dom: {
-                    button: {
-                        tag: 'button',
-                        className: 'btn-group'
-                    }
-                },
-                buttons: [{
-                        extend: 'pageLength',
-                        className: 'btn btn-sm btn-secondary mr-2',
-                        titleAttr: 'Sort',
-                    },
-                    {
-                        extend: 'excel',
-                        className: 'btn btn-sm btn-success mr-2',
-                        titleAttr: 'Excel export.',
-                        text: 'Excel',
-                        filename: 'excel-export',
-                        extension: '.xlsx'
-                    }, {
-                        extend: 'copy',
-                        className: 'btn btn-sm btn-primary mr-2',
-                        titleAttr: 'Copy table data.',
-                        text: 'Copy'
-                    }, {
-                        extend: 'pdf',
-                        className: 'btn btn-sm btn-warning mr-2',
-                        titleAttr: 'Pdf export.',
-                        text: 'Pdf',
-                        filename: 'pdf-export',
-                    },
-                ]
-            },
-            drawCallback: function () {
-                $('.pagination').addClass("d-flex justify-content-center");
-            },
+
+        dataTable.tables({
+            id: '#tableLog',
             ajax: {
                 "type": "GET",
                 "url": data.url,

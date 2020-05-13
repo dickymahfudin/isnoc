@@ -37,6 +37,9 @@ Route::group(['prefix' => 'nojs', 'middleware' => 'auth'], function () {
     Route::get('/sla', function () {
         return view('nojs.sla');
     })->name('nojs.sla');
+    Route::get('/slacapture', function () {
+        return view('nojs.slaCapture');
+    })->name('nojs.slacapture');
     Route::post('/', 'NojsUsersController@store')->name('nojs.store');
     Route::get('/create', 'NojsUsersController@create')->name('nojs.create');
     Route::get('/{nojsUser}', 'NojsUsersController@show')->name('nojs.show');
@@ -45,9 +48,14 @@ Route::group(['prefix' => 'nojs', 'middleware' => 'auth'], function () {
     Route::get('/{nojsUser}/edit', 'NojsUsersController@edit')->name('nojs.edit');
 });
 
-Route::get('/servicecalls', function () {
-    return view('servicecalls.index');
-})->name('servicecalls')->middleware('auth');
+Route::group(['prefix' => 'servicecalls', 'middleware' => 'auth'], function () {
+    Route::get('/', function () {
+        return view('servicecalls.index');
+    })->name('servicecalls');
+    Route::redirect('/{serviceCall}', '/servicecalls', 301);
+    Route::put('/{serviceCall}', 'Api\ServiceCallsController@update')->name('serviceCall.update');
+    Route::get('/{serviceCall}/edit', 'Api\ServiceCallsController@edit');
+});
 
 Route::group(['prefix' => 'prtg', 'middleware' => 'auth'], function () {
     Route::get('/sla', function () {
