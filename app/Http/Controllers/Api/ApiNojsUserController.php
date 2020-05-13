@@ -85,9 +85,20 @@ class ApiNojsUserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        foreach ($request->data as $key => $value) {
+            $new_data = ([
+                "id_lvdvsat" => $value["id_lvdvsat"],
+                "id_ping" => $value["id_ping"],
+                "id_batvolt" => $value["id_batvolt"],
+                "id_vsatcurr" => $value["id_vsatcurr"],
+                "id_btscurr" => $value["id_btscurr"],
+            ]);
+            NojsUser::where('nojs', $value["nojs"])
+                ->update($new_data);
+        }
+        return response(201);
     }
 
     /**
