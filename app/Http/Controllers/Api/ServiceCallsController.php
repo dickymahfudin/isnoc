@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Http\Controllers\Api\NojsLoggersController;
+
 
 class ServiceCallsController extends Controller
 {
@@ -28,7 +30,7 @@ class ServiceCallsController extends Controller
             // $service = DB::table( 'service_calls')->where('status', $status )->get();
             $service = DB::table('service_calls')
                 ->join('nojs_users', 'service_calls.nojs', '=', 'nojs_users.nojs')
-                ->select('service_calls.*', 'nojs_users.site', 'nojs_users.lc')
+                ->select('service_calls.*', 'nojs_users.site', 'nojs_users.lc', 'nojs_users.mitra', 'nojs_users.id_lvdvsat')
                 ->where('status', 'like', '%' . $request->status . '%')
                 ->get();
         } elseif ($nojs && $status) {
@@ -53,10 +55,10 @@ class ServiceCallsController extends Controller
 
     public function update(Request $request, ServiceCall $serviceCall)
     {
-        $this->validate($request, [
-            'closed_time' => 'required',
-            'status' => 'required',
-        ]);
+        // $this->validate($request, [
+        //     'closed_time' => 'required',
+        //     'status' => 'required',
+        // ]);
         $serviceCall->update($request->all());
         return response($serviceCall, 200);
     }
@@ -76,8 +78,8 @@ class ServiceCallsController extends Controller
         $cek = ServiceCall::where('nojs', $nojs)
             ->where('status', 'OPEN')
             ->get();
-
-        if (($data->eh1 === $valueError) && ($data->eh2 === $valueError) && ($data->batt_volt1 === $valueError) && ($data->edl1 === $valueError) && ($data->edl2 === $valueError)) {
+        $pms = NojsLoggersController::pmsConvert($data->pms_state);
+        if (($data->eh1 === $valueError) && ($data->eh2 === $valueError) && ($data->batt_volt1 === $valueError) && ($data->edl1 === $valueError) && ($data->edl2 === $valueError) || $pms < 16) {
             $error = ' ';
             $open_time = Carbon::now();
             $service = ServiceCall::orderBy('created_at', 'desc')
@@ -85,28 +87,29 @@ class ServiceCallsController extends Controller
                 ->first();
             if (count($cek) === 0 && $service !== null) {
                 $service_id =  $service->service_id;
-                $new_service_id = substr($service_id, 3 - (strlen($service_id))) + 1;
+                $new_service_id = substr($service_id, 2 - (strlen($service_id))) + 1;
 
                 $new_data = ([
-                    'service_id' => '#SC' . $new_service_id,
+                    'service_id' => 'SC' . $new_service_id,
                     'nojs' => $nojs,
                     'open_time' => $open_time,
                     'error' => $error,
-                    'status' => 'OPEN'
+                    'status' => 'OPEN',
+                    'pms_state' => $pms
                 ]);
-                ServiceCall::create($new_data);
             } elseif ($service === null) {
                 $new_data = ([
-                    'service_id' => '#SC1',
+                    'service_id' => 'SC0',
                     'nojs' => $nojs,
                     'open_time' => $open_time,
                     'error' => $error,
-                    'status' => 'OPEN'
+                    'status' => 'OPEN',
+                    'pms_state' => $pms
                 ]);
-                ServiceCall::create($new_data);
             }
+            ServiceCall::create($new_data);
         } else {
-            if (count($cek) !== 0) {
+            if (count($cek) !== 0 && $pms == 16) {
                 $id = $cek[0]->service_id;
                 $closed_time = Carbon::now();
                 $new_data = ([
@@ -115,8 +118,14 @@ class ServiceCallsController extends Controller
                 ]);
                 ServiceCall::where('service_id', $id)
                     ->update($new_data);
-                echo 'closed';
             }
         }
+    }
+
+    public function edit(ServiceCall $serviceCall)
+    {
+        return view('servicecalls.edit', [
+            'serviceCall' => $serviceCall
+        ]);
     }
 }

@@ -1,15 +1,25 @@
-$(document).ready(function () {
+import {
+    dataSlaPrtg
+} from '../export/getDataPrtg.js'
+import {
+    dataTables
+} from '../export/dataTables.js'
 
-    var status;
+$(document).ready(function () {
+    let status;
     let auth = $("#auth").attr("auth"),
-        url = $("#url").attr("url");
+        url = $("#url").attr("url"),
+        urlsla = $("#url").attr('sla');
+    let dataPrtg = new dataSlaPrtg;
+    let dataTable = new dataTables;
+
     $('.btn').click(function (e) {
         $(".active").removeClass("active");
         $(this).addClass("active");
 
         $(".show").removeClass("show");
         $(this.collapse).addClass("show");
-        var me = $(this),
+        let me = $(this),
             dism = me.attr('dism'),
             id = me.attr('id');
         status = id;
@@ -20,223 +30,153 @@ $(document).ready(function () {
             logTable.ajax.reload();
         }
     });
-
-    let activeTable = $('#activeTable').DataTable({
-        rowReorder: {
-            selector: 'td:nth-child(2)'
-        },
-        responsive: true,
-        procesing: true,
-        // serverSide: true,
-        dom: 'Bfrtip',
-        lengthChange: false,
-        lengthMenu: [
-            [10, 25, 50, -1],
-            ['10 rows', '25 rows', '50 rows', 'Show all']
-        ],
-        buttons: {
-            dom: {
-                button: {
-                    tag: 'button',
-                    className: 'btn-group'
-                }
-            },
-            buttons: [{
-                    extend: 'pageLength',
-                    className: 'btn btn-sm btn-secondary mr-2',
-                    titleAttr: 'Sort',
-                },
-                {
-                    extend: 'excel',
-                    className: 'btn btn-sm btn-success mr-2',
-                    titleAttr: 'Excel export.',
-                    text: 'Excel',
-                    filename: 'excel-export',
-                    extension: '.xlsx'
-                }, {
-                    extend: 'copy',
-                    className: 'btn btn-sm btn-primary mr-2',
-                    titleAttr: 'Copy table data.',
-                    text: 'Copy'
-                }, {
-                    extend: 'pdf',
-                    className: 'btn btn-sm btn-warning mr-2',
-                    titleAttr: 'Pdf export.',
-                    text: 'Pdf',
-                    filename: 'pdf-export',
-                },
-            ]
-        },
-        drawCallback: function () {
-            $('.pagination').addClass("d-flex justify-content-center");
-        },
+    let activeTable = dataTable.tables({
+        id: '#activeTable',
         ajax: {
-            "type": "GET",
-            "url": url,
-            "beforeSend": function (xhr) {
+            type: "GET",
+            url: url,
+            beforeSend: function (xhr) {
                 xhr.setRequestHeader(
                     "Authorization",
                     `Bearer ${auth}`
                 );
             },
-            "data": {
+            data: {
                 status: "OPEN"
             },
-            "dataType": "json",
-            "dataSrc": function (json) {
-                // console.log(json);
-                var return_data = [];
-                var time_open;
-                var databaru;
-                var tampil;
-                var site;
-                var today = new Date();
-                var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                var dateTime = date + ' ' + time;
-                // console.log(dateTime);
-                for (var i = 0; i < json.length; i++) {
+            dataType: "json",
+            dataSrc: function (json) {
+                let return_data = [];
+                let time_open;
+                let databaru;
+                let tampil, diff;
+                let today = new Date();
+                let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+                let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                let dateTime = date + ' ' + time;
 
-                    time_open = new Date(json[i].open_time);
+
+                json.forEach(data => {
+                    time_open = new Date(data.open_time);
                     databaru = new Date(dateTime);
                     diff = (databaru - time_open);
-                    // console.log(diff);
 
-                    var msec = diff;
+                    let msec = diff;
 
-                    var day = Math.floor(msec / 1000 / 60 / 60 / 24);
+                    let day = Math.floor(msec / 1000 / 60 / 60 / 24);
                     msec -= day * 1000 * 60 * 60 * 24;
-                    var hh = Math.floor(msec / 1000 / 60 / 60);
+                    let hh = Math.floor(msec / 1000 / 60 / 60);
                     msec -= hh * 1000 * 60 * 60;
-                    var mm = Math.floor(msec / 1000 / 60);
+                    let mm = Math.floor(msec / 1000 / 60);
                     msec -= mm * 1000 * 60;
-                    var ss = Math.floor(msec / 1000);
+                    let ss = Math.floor(msec / 1000);
                     msec -= ss * 1000;
 
                     (day != 0) ? tampil = (day + " day " + hh + " Hours "): (hh != 0) ? tampil = (hh + " Hours " + mm + " Minutes ") : tampil = (mm + " Minutes " + ss + " Seconds");
 
-                    return_data.push({
-                        'service_id': json[i].service_id,
-                        'nojs': json[i].nojs,
-                        'site': json[i].site,
-                        'open_time': tampil,
-                        'lc': json[i].lc,
-                        'error': json[i].error,
-                        'status': json[i].status,
+                    let slaDay = dataPrtg.slaRealtimeVsat({
+                        url: urlsla,
+                        id_lvdvsat: data.id_lvdvsat,
+                        status: "day"
+                    });
+                    let slaMonth = dataPrtg.slaRealtimeVsat({
+                        url: urlsla,
+                        id_lvdvsat: data.id_lvdvsat,
+                        status: "month"
                     })
-                }
+
+                    return_data.push({
+                        service_id: data.service_id,
+                        nojs: data.nojs,
+                        site: data.site,
+                        open_time: tampil,
+                        lc: data.lc,
+                        mitra: data.mitra,
+                        error: data.error,
+                        pms: data.pms_state,
+                        status: data.status,
+                        slaDay: slaDay.vsat,
+                        slaMonth: slaMonth.vsat,
+                        button: `<a href="servicecalls/${data.service_id}/edit" class="modal-show edit" title="${data.nojs} - ${data.site}"><i class="fa fa-edit" ></i></a>`
+                    })
+                });
                 return return_data;
             }
-
         },
         columns: [{
-                "data": "service_id"
+                data: "service_id"
             },
             {
-                "data": "nojs"
+                data: "nojs"
             },
             {
-                "data": "site"
+                data: "site"
             },
             {
-                "data": "open_time"
+                data: "pms"
             },
             {
-                "data": "lc"
+                data: "open_time"
             },
             {
-                "data": "error"
+                data: "lc"
             },
             {
-                "data": "status"
+                data: "mitra"
+            },
+            {
+                data: "error"
+            },
+            {
+                data: "status"
+            },
+            {
+                data: "slaDay"
+            },
+            {
+                data: "slaMonth"
+            },
+            {
+                data: "button"
             }
         ]
+
     });
 
-    let logTable = $('#logTable').DataTable({
-        rowReorder: {
-            selector: 'td:nth-child(2)'
-        },
-        responsive: true,
-        procesing: true,
-        // serverSide: true,
-        dom: 'Bfrtip',
-        lengthChange: false,
-        lengthMenu: [
-            [10, 25, 50, -1],
-            ['10 rows', '25 rows', '50 rows', 'Show all']
-        ],
-        buttons: {
-            dom: {
-                button: {
-                    tag: 'button',
-                    className: 'btn-group'
-                }
-            },
-            buttons: [{
-                    extend: 'pageLength',
-                    className: 'btn btn-sm btn-secondary mr-2',
-                    titleAttr: 'Sort',
-                },
-                {
-                    extend: 'excel',
-                    className: 'btn btn-sm btn-success mr-2',
-                    titleAttr: 'Excel export.',
-                    text: 'Excel',
-                    filename: 'excel-export',
-                    extension: '.xlsx'
-                }, {
-                    extend: 'copy',
-                    className: 'btn btn-sm btn-primary mr-2',
-                    titleAttr: 'Copy table data.',
-                    text: 'Copy'
-                }, {
-                    extend: 'pdf',
-                    className: 'btn btn-sm btn-warning mr-2',
-                    titleAttr: 'Pdf export.',
-                    text: 'Pdf',
-                    filename: 'pdf-export',
-                },
-            ]
-        },
-        drawCallback: function () {
-            $('.pagination').addClass("d-flex justify-content-center");
-        },
+    let logTable = dataTable.tables({
+        id: '#logTable',
         ajax: {
-            "type": "GET",
-            "url": url,
-            "beforeSend": function (xhr) {
+            type: "GET",
+            url: url,
+            beforeSend: function (xhr) {
                 xhr.setRequestHeader(
                     "Authorization",
                     `Bearer ${auth}`
                 );
             },
-            "data": {
+            data: {
                 status: "CLOSED"
             },
-            "dataType": "json",
+            dataType: "json",
             dataSrc: function (json) {
-                var return_data = [];
-                var time_to_closed;
-                var time_open;
-                var time_close;
-                var site;
-                var hasil;
-                var tampil;
-                for (var i = 0; i < json.length; i++) {
+                let return_data = [];
+                let time_to_closed;
+                let time_open;
+                let time_close, diff;
+                for (let i = 0; i < json.length; i++) {
 
                     time_open = new Date(json[i].open_time);
                     time_close = new Date(json[i].closed_time);
                     diff = time_close - time_open;
 
-                    var msec = diff;
-                    var day = Math.floor(msec / 1000 / 60 / 60 / 24);
+                    let msec = diff;
+                    let day = Math.floor(msec / 1000 / 60 / 60 / 24);
                     msec -= day * 1000 * 60 * 60 * 24;
-                    var hh = Math.floor(msec / 1000 / 60 / 60);
+                    let hh = Math.floor(msec / 1000 / 60 / 60);
                     msec -= hh * 1000 * 60 * 60;
-                    var mm = Math.floor(msec / 1000 / 60);
+                    let mm = Math.floor(msec / 1000 / 60);
                     msec -= mm * 1000 * 60;
-                    var ss = Math.floor(msec / 1000);
+                    let ss = Math.floor(msec / 1000);
                     msec -= ss * 1000;
 
                     day != 0 ?
@@ -292,11 +232,70 @@ $(document).ready(function () {
         ]
     });
 
+    $('body').on('click', '.modal-show', function (e) {
+        e.preventDefault();
+
+        let me = $(this),
+            url = me.attr('href'),
+            title = me.attr('title');
+        $('#modal-title').text(title);
+        $('#modal-btn-save').removeClass('d-none').text('Update');
+        $.ajax({
+            url: url,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(
+                    "Authorization",
+                    `Bearer ${auth}`
+                );
+            },
+            dataType: 'html',
+            success: function (response) {
+                $('#modal-body').html(response);
+            }
+        });
+
+        $('#modal').modal('show');
+    });
+
+    $('#modal-btn-save').click(function (e) {
+        e.preventDefault();
+
+        let form = $('#modal-body form'),
+            url = form.attr('action'),
+
+            method = $('input[name=_method]').val();
+        console.log(url);
+        console.log(method);
+        form.find('.invalid-feedback').remove();
+        form.find('.form-control').removeClass('is-invalid');
+        $.ajax({
+            url: url,
+            method: method,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(
+                    "Authorization",
+                    `Bearer ${auth}`
+                );
+            },
+            data: form.serialize(),
+            success: function (response) {
+                form.trigger('reset');
+                $('#modal').modal('hide');
+                activeTable.ajax.reload();
+                $('#activedTab').addClass("show");
+
+            },
+            error: function (xhr) {
+                var res = xhr.responseJSON;
+            }
+        });
+    });
+
+    $('#modal-footer .btn-secondary').addClass('d-none');
+
     setInterval(function () {
         if (status == 'serviceopen') {
             activeTable.ajax.reload();
-        } else if (status == 'serviceclose') {
-            logTable.ajax.reload();
         }
     }, 1000 * 50);
 });

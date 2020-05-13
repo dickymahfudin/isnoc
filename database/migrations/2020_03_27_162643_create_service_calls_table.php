@@ -15,7 +15,7 @@ class CreateServiceCallsTable extends Migration
     {
         Schema::create('service_calls', function (Blueprint $table) {
             $table->string('service_id')->primary();
-            $table->string('nojs',8);
+            $table->string('nojs', 8);
             $table->string('open_time', 20)->nullable()->default(null);
             $table->string('closed_time', 20)->nullable()->default(null);
             $table->string('error', 20)->nullable()->default(null);
