@@ -1,4 +1,7 @@
 import {
+    dataSlaPrtg
+} from "../export/getDataPrtg.js";
+import {
     dataTables
 } from '../export/dataTables.js'
 
@@ -6,13 +9,12 @@ $(document).ready(function () {
     $.datetimepicker.setDateFormatter('moment');
     let url = $('#datatable').attr('url');
     let auth = $('#auth').attr('auth');
-    let site, vsat, dvisat, upvisat, downvisat, ping, batvolt, vsatcurr, btscurr;
+    let vsat, ping, batvolt, vsatcurr, btscurr;
     let tempSite;
     let sla = [];
+    let dataPrtg = new dataSlaPrtg();
     let dataTable = new dataTables;
 
-    let username = 'Power APT';
-    let password = 'APT12345';
     let sdate, edate;
     $.ajax({
         type: "GET",
@@ -90,23 +92,48 @@ $(document).ready(function () {
                 sla = [];
 
                 temp.forEach((data, index) => {
-                    getSla({
-                        data: data,
+                    vsat = dataPrtg.getDataPrtg({
+                        id: data.id_lvdvsat,
+                        url: url,
+                        sdate: sdate,
+                        edate: edate
+                    });
+                    ping = dataPrtg.getDataPrtg({
+                        id: data.id_ping,
+                        url: url,
+                        sdate: sdate,
+                        edate: edate
+                    });
+                    batvolt = dataPrtg.getDataPrtg({
+                        id: data.id_batvolt,
+                        url: url,
+                        sdate: sdate,
+                        edate: edate
+                    });
+                    vsatcurr = dataPrtg.getDataPrtg({
+                        id: data.id_vsatcurr,
+                        url: url,
+                        sdate: sdate,
+                        edate: edate
+                    });
+                    btscurr = dataPrtg.getDataPrtg({
+                        id: data.id_btscurr,
+                        url: url,
                         sdate: sdate,
                         edate: edate
                     });
                     sla.push({
                         no: index + 1,
-                        site: site,
+                        site: data.site,
                         lc: data.lc,
-                        sla_lvdvsat: vsat,
-                        up_lvdvsat: upvisat,
-                        sla_dlvdvsat: dvisat,
-                        down_lvdvisat: downvisat,
-                        sla_ping: ping,
-                        avg_batvolt: batvolt,
-                        avg_vsatcurr: vsatcurr,
-                        avg_btscurr: btscurr,
+                        sla_lvdvsat: vsat.uptimepercent,
+                        up_lvdvsat: vsat.uptime,
+                        sla_dlvdvsat: vsat.downtimepercent,
+                        down_lvdvisat: vsat.downtime,
+                        sla_ping: ping.uptimepercent,
+                        avg_batvolt: parseInt(batvolt.average) / 1000,
+                        avg_vsatcurr: parseInt(vsatcurr.average) / 1000,
+                        avg_btscurr: parseInt(btscurr.average) / 1000,
                     });
                 });
 
@@ -126,189 +153,6 @@ $(document).ready(function () {
             });
         }
     });
-
-    function getSla(data) {
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader(
-                    "Authorization",
-                    `Bearer ${auth}`
-                );
-            },
-            data: {
-                id: data.data.id_lvdvsat,
-                sdate: data.sdate,
-                edate: data.edate,
-                username: username,
-                password: password,
-            },
-            async: false,
-            success: function (response) {
-                let parser = new DOMParser();
-                let xmlDoc = parser.parseFromString(response, "text/xml");
-                let cekData = xmlDoc.childNodes[0].childNodes.length;
-                if (cekData > 10) {
-                    $(xmlDoc).find('uptimepercent').each(function () {
-                        const data = $(this);
-                        vsat = (data[0].childNodes[1].data);
-                    });
-                    $(xmlDoc).find('downtimepercent').each(function () {
-                        const data = $(this);
-                        dvisat = (data[0].childNodes[1].data);
-                    });
-                    $(xmlDoc).find('uptime').each(function () {
-                        const data = $(this);
-                        upvisat = (data[0].childNodes[1].data);
-                    });
-                    $(xmlDoc).find('downtime').each(function () {
-                        const data = $(this);
-                        downvisat = (data[0].childNodes[1].data);
-                    });
-                    $(xmlDoc).find('parentdevicename').each(function () {
-                        const data = $(this);
-                        site = (data[0].childNodes[1].data.split('SNMP')[0]);
-                    });
-                } else {
-                    vsat = "Error";
-                }
-            }
-        });
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader(
-                    "Authorization",
-                    `Bearer ${auth}`
-                );
-            },
-            data: {
-                id: data.data.id_ping,
-                sdate: data.sdate,
-                edate: data.edate,
-                username: username,
-                password: password,
-            },
-            async: false,
-            success: function (response) {
-                let parser = new DOMParser();
-                let xmlDoc = parser.parseFromString(response, "text/xml");
-                let cekData = xmlDoc.childNodes[0].childNodes.length;
-                if (cekData > 10) {
-                    $(xmlDoc).find('uptimepercent').each(function () {
-                        const data = $(this);
-                        ping = (data[0].childNodes[1].data);
-                    });
-                    $(xmlDoc).find('parentdevicename').each(function () {
-                        const data = $(this);
-                        site = (data[0].childNodes[1].data.split('-')[0]);
-                    });
-                } else {
-                    ping = "Error";
-                }
-            }
-        });
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader(
-                    "Authorization",
-                    `Bearer ${auth}`
-                );
-            },
-            data: {
-                id: data.data.id_batvolt,
-                sdate: data.sdate,
-                edate: data.edate,
-                username: username,
-                password: password,
-            },
-            async: false,
-            success: function (response) {
-                let parser = new DOMParser();
-                let xmlDoc = parser.parseFromString(response, "text/xml");
-                let cekData = xmlDoc.childNodes[0].childNodes.length;
-                if (cekData > 10) {
-                    $(xmlDoc).find('average').each(function () {
-                        const data = $(this);
-                        batvolt = (parseInt(data[0].childNodes[1].data.split('.')[0])) / 1000;
-                    });
-                } else {
-                    batvolt = "Error";
-                }
-            }
-        });
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader(
-                    "Authorization",
-                    `Bearer ${auth}`
-                );
-            },
-            data: {
-                id: data.data.id_vsatcurr,
-                sdate: data.sdate,
-                edate: data.edate,
-                username: username,
-                password: password,
-            },
-            async: false,
-            success: function (response) {
-                let parser = new DOMParser();
-                let xmlDoc = parser.parseFromString(response, "text/xml");
-                let cekData = xmlDoc.childNodes[0].childNodes.length;
-                if (cekData > 10) {
-                    $(xmlDoc).find('average').each(function () {
-                        const data = $(this);
-                        vsatcurr = (parseInt(data[0].childNodes[1].data.split('.')[0])) / 1000;
-                    });
-                } else {
-                    vsatcurr = "Error";
-                }
-            }
-        });
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader(
-                    "Authorization",
-                    `Bearer ${auth}`
-                );
-            },
-            data: {
-                id: data.data.id_btscurr,
-                sdate: data.sdate,
-                edate: data.edate,
-                username: username,
-                password: password,
-            },
-            async: false,
-            success: function (response) {
-                let parser = new DOMParser();
-                let xmlDoc = parser.parseFromString(response, "text/xml");
-                let cekData = xmlDoc.childNodes[0].childNodes.length;
-                if (cekData > 10) {
-                    $(xmlDoc).find('average').each(function () {
-                        const data = $(this);
-                        btscurr = (parseInt(data[0].childNodes[1].data.split('.')[0])) / 1000;
-                    });
-                } else {
-                    btscurr = "Error";
-                }
-            }
-        });
-    }
 
     function pushDataTable(data) {
         $('#btnstart').html('');

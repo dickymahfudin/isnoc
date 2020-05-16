@@ -128,56 +128,55 @@ $(document).ready(function () {
             dataType: "json",
             async: false,
             success: function (response) {
-                console.log(response);
                 let log = response.log.histdata;
+                let log0 = new Date(log[0].datetime);
+                log0 = `${format(log0.getDate())}/${format(log0.getMonth()+1)}/${log0.getFullYear()} ${formatAMPM(log0)}`;
                 let length = response.state.statehistory.length;
                 response.state.statehistory.forEach((data, index) => {
                     let datetime;
+                    datetime = data.datetime.split("-");
+                    let temp0 = new Date(datetime[0]);
+                    let temp1 = new Date(datetime[1]);
+                    temp0 = `${format(temp0.getDate())}/${format(temp0.getMonth()+1)}/${temp0.getFullYear()} ${formatAMPM(temp0)}`;
+                    temp1 = `${format(temp1.getDate())}/${format(temp1.getMonth()+1)}/${temp1.getFullYear()} ${formatAMPM(temp1)}`;
+
                     if (index == 0) {
-                        datetime = data.datetime.split("-");
                         let temp = new Date(startDate);
                         let time = formatAMPM(temp);
-                        let newSdate = `${temp.getMonth()+1}/${temp.getDate()}/${temp.getFullYear()} ${time}`;
+                        let newSdate = `${format(temp.getDate())}/${format(temp.getMonth()+1)}/${temp.getFullYear()} ${time}`;
 
                         sdatetime = newSdate;
-                        edatetime = log[0].datetime;
+                        edatetime = log0;
                         status_raw = data.status_raw;
                         status = (status_raw) == 1 ? "Up" : (status_raw) == 2 ? "Unknown" : "Down";
                     } else if (index == 1) {
                         if (length == 2) {
-                            datetime = data.datetime.split("-");
                             let temp = new Date(endDate);
                             let time = formatAMPM(temp);
-                            let newSdate = `${temp.getMonth()+1}/${temp.getDate()}/${temp.getFullYear()} ${time}`;
+                            let newSdate = `${format(temp.getDate())}/${format(temp.getMonth()+1)}/${temp.getFullYear()} ${time}`;
 
-                            sdatetime = log[0].datetime;
+                            sdatetime = log0;
                             edatetime = newSdate;
                             status_raw = data.status_raw;
                             status = (status_raw) == 1 ? "Up" : (status_raw) == 2 ? "Unknown" : "Down";
                         } else {
-                            datetime = data.datetime.split("-");
-                            let temp = new Date(edate);
-                            let time = formatAMPM(temp);
-                            let newSdate = `${temp.getMonth() +1}/${temp.getDate()}/${temp.getFullYear()} ${time}`;
-
-                            sdatetime = log[0].datetime;
-                            edatetime = datetime[1];
+                            sdatetime = log0;
+                            edatetime = temp1;
                             status_raw = data.status_raw;
                             status = (status_raw) == 1 ? "Up" : (status_raw) == 2 ? "Unknown" : "Down";
                         }
                     } else if ((index + 1) == length) {
-                        datetime = data.datetime.split("-");
                         let temp = new Date(endDate);
                         let time = formatAMPM(temp);
-                        let newSdate = `${temp.getMonth()+1}/${temp.getDate()}/${temp.getFullYear()} ${time}`;
-                        sdatetime = datetime[0];
+                        let newSdate = `${format(temp.getDate())}/${format(temp.getMonth()+1)}/${temp.getFullYear()} ${time}`;
+
+                        sdatetime = temp0;
                         edatetime = newSdate;
                         status_raw = data.status_raw;
                         status = (status_raw) == 1 ? "Up" : (status_raw) == 2 ? "Unknown" : "Down";
                     } else {
-                        datetime = data.datetime.split("-");
-                        sdatetime = datetime[0];
-                        edatetime = datetime[1];
+                        sdatetime = temp0;
+                        edatetime = temp1;
                         status_raw = data.status_raw;
                         status = (status_raw) == 1 ? "Up" : (status_raw) == 2 ? "Unknown" : "Down";
                     }
@@ -293,9 +292,14 @@ $(document).ready(function () {
         let ampm = hours >= 12 ? "PM" : "AM";
         hours = hours % 12;
         hours = hours ? hours : 12; // the hour '0' should be '12'
+        hours = hours < 10 ? "0" + hours : hours;
         minutes = minutes < 10 ? "0" + minutes : minutes;
         seconds = seconds < 10 ? "0" + seconds : seconds;
         let strTime = `${hours}:${minutes}:${seconds} ${ampm}`;
         return strTime;
+    }
+
+    function format(data) {
+        return (data < 10) ? `0${data}` : data;
     }
 });
