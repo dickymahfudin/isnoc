@@ -41,3 +41,10 @@
     height: 42px;
     flex-direction: row;
 }
+
+.tooltip-inner {
+    text-align: center;
+    margin-bottom: 6px;
+    background-color: #0a0a0a;
+    font-size: 20px;
+}

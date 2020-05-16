@@ -80,7 +80,7 @@ $(document).ready(function () {
                 $(
                     ".container-chart"
                 ).append(`<div class="container-item" id="container-item-${data.nojs}">
-                                                <div class="js row" id="js-${data.nojs}">
+                                                <div class="js row" id="js-${data.nojs}" data-toggle="tooltip${data.nojs}" data-placement="bottom" title="IP ${data.ip}">
                                                     <div class="col">
                                                         ${data.nojs} ${data.site}
                                                         <span class="float-right mr-3">
@@ -117,6 +117,7 @@ $(document).ready(function () {
                                                 </div>
                                         </div>`);
                 SetidChart(DatasLogger[index]);
+                $(`[data-toggle="tooltip${data.nojs}"]`).tooltip();
             });
             $(".container-chart").removeClass("d-none");
             $("#loading").html("");
