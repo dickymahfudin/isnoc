@@ -87,18 +87,36 @@ class ApiNojsUserController extends Controller
      */
     public function update(Request $request)
     {
-        foreach ($request->data as $key => $value) {
-            $new_data = ([
-                "id_lvdvsat" => $value["id_lvdvsat"],
-                "id_ping" => $value["id_ping"],
-                "id_batvolt" => $value["id_batvolt"],
-                "id_vsatcurr" => $value["id_vsatcurr"],
-                "id_btscurr" => $value["id_btscurr"],
-            ]);
-            NojsUser::where('nojs', $value["nojs"])
-                ->update($new_data);
+        $data = $request->data;
+        if ($data) {
+            foreach ($data as $key => $value) {
+                $new_data = ([
+                    "provinsi" => $value["provinsi"],
+                    "mitra" => $value["mitra"],
+                    "latitude" => $value["latitude"],
+                    "longitude" => $value["longitude"],
+                    "id_lvdvsat" => $value["id_lvdvsat"],
+                    "id_ping" => $value["id_ping"],
+                    "id_batvolt" => $value["id_batvolt"],
+                    "id_vsatcurr" => $value["id_vsatcurr"],
+                    "id_btscurr" => $value["id_btscurr"],
+                ]);
+                NojsUser::where('nojs', $value["nojs"])
+                    ->update($new_data);
+                array_push($temp, $value);
+            }
+            $response = [
+                "data" => count($data),
+                "response" => 200
+            ];
+        } else {
+            $response = [
+                "data" => "Invalid Parameter",
+                "response" => 502
+            ];
         }
-        return response(201);
+
+        return response($response);
     }
 
     /**
