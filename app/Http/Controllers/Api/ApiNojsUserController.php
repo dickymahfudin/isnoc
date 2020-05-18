@@ -89,7 +89,7 @@ class ApiNojsUserController extends Controller
     {
         $data = $request->data;
         if ($data) {
-            foreach ($data as $key => $value) {
+            foreach ($data as $value) {
                 $new_data = ([
                     "provinsi" => $value["provinsi"],
                     "mitra" => $value["mitra"],
@@ -103,7 +103,6 @@ class ApiNojsUserController extends Controller
                 ]);
                 NojsUser::where('nojs', $value["nojs"])
                     ->update($new_data);
-                array_push($temp, $value);
             }
             $response = [
                 "data" => count($data),
