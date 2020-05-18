@@ -80,7 +80,7 @@ class ServiceCallsController extends Controller
             ->get();
         $pms = NojsLoggersController::pmsConvert($data->pms_state);
         if (($data->eh1 === $valueError) && ($data->eh2 === $valueError) && ($data->batt_volt1 === $valueError) && ($data->edl1 === $valueError) && ($data->edl2 === $valueError) || $pms < 16) {
-            $error = ' ';
+            $error = (16 - $pms) * 3;
             $open_time = Carbon::now();
             $service = ServiceCall::orderBy('created_at', 'desc')
                 ->orderBy('service_id', 'desc')
