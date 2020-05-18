@@ -9,10 +9,22 @@ $(document).ready(function () {
     let status = "serviceopen";
     let auth = $("#auth").attr("auth"),
         url = $("#url").attr("url"),
-        urlsla = $("#url").attr("sla");
+        urlsla = $("#url").attr("sla"),
+        urlnoc = $("#url").attr("urlnoc");
+    console.log(urlnoc);
+    let totalJs;
     let dataPrtg = new dataSlaPrtg();
     let dataTable = new dataTables();
     let sla = [];
+    $.ajax({
+        type: "GET",
+        url: urlnoc,
+        dataType: "json",
+        success: function (response) {
+            totalJs = (response.recordsTotal);
+
+        }
+    });
 
     $(".btn").click(function (e) {
         $(".active").removeClass("active");
@@ -65,7 +77,7 @@ $(document).ready(function () {
                 let dateTime = date + " " + time;
 
                 if (today.getMinutes() % 30 == 0) sla = [];
-
+                let error = 0;
                 json.forEach(data => {
                     time_open = new Date(data.open_time);
                     databaru = new Date(dateTime);
@@ -109,7 +121,7 @@ $(document).ready(function () {
                         });
                         temp = sla.find(e => e.nojs == data.nojs);
                     }
-
+                    error = error + parseInt(data.error);
                     return_data.push({
                         service_id: data.service_id,
                         nojs: data.nojs,
@@ -125,6 +137,9 @@ $(document).ready(function () {
                         button: `<a href="servicecalls/${data.service_id}/edit" class="modal-show edit" title="${data.nojs} - ${data.site}"><i class="fa fa-edit" ></i></a>`
                     });
                 });
+                error = error / totalJs;
+                $("#total").removeClass("d-none");
+                $("#total").html(`Error ${error}`);
                 return return_data;
             }
         },

@@ -187,7 +187,7 @@
         "ip": "10.161.2.59",
         "latitude": "",
         "id_lvdvsat": 35649,
-        "id_ping": 0,
+        "id_ping": 47665,
         "id_batvolt": 35648,
         "id_vsatcurr": 35651,
         "id_btscurr": 35652,
@@ -305,7 +305,6 @@
         "no_urut": 3
 
     },
-
     {
         "nojs": "JS74",
         "site": "Maan",
@@ -450,7 +449,6 @@
         "created_at": null,
         "updated_at": null,
         "no_urut": 11
-
     },
     {
         "nojs": "JS52",
@@ -1227,18 +1225,18 @@
         "no_urut": 78
     },
     {
-        "nojs": "JS34",
-        "site": "Artafe",
+        "nojs": "JS96",
+        "site": "Artafela",
         "provinsi": "",
         "lc": "IFORTE",
         "mitra": "",
         "ip": "172.23.0.138",
         "latitude": "",
         "id_lvdvsat": 35781,
-        "id_ping": 0,
-        "id_batvolt": 0,
-        "id_vsatcurr": 0,
-        "id_btscurr": 0,
+        "id_ping": 48049,
+        "id_batvolt": 35780,
+        "id_vsatcurr": 35783,
+        "id_btscurr": 35784,
         "longitude": "",
         "created_at": null,
         "updated_at": null,
@@ -1634,7 +1632,7 @@
         "id_ping": 36169,
         "id_batvolt": 35144,
         "id_vsatcurr": 35147,
-        "id_btscurr": 35158,
+        "id_btscurr": 35148,
         "longitude": "",
         "created_at": null,
         "updated_at": null,
