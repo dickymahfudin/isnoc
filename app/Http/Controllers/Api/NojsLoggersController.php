@@ -70,6 +70,7 @@ class NojsLoggersController extends Controller
         $sdate = $request->sdate;
         $edate = $request->edate;
         $calculate = $request->calculate;
+        $processing = $request->processing;
         $single = $request->single;
 
         if (($nojs && $limit) && !$sdate) {
@@ -124,6 +125,13 @@ class NojsLoggersController extends Controller
                     ->orderBy('time_local', 'desc')
                     ->get();
                 $data = $datas;
+            }
+            if ($processing) {
+                $datas = NojsLogger::where('nojs', $nojs)
+                    ->whereBetween('time_local', [$sdate, $edate])
+                    ->orderBy('time_local', 'asc')
+                    ->get();
+                $data = $this->rawDataProcessing($datas);
             }
         } else {
             $data = ["Error" => "parameter not found"];
@@ -204,7 +212,7 @@ class NojsLoggersController extends Controller
         return $array;
     }
 
-    public function pmsConvert($pms)
+    public static function pmsConvert($pms)
     {
         $count = 0;
         for ($i = 0; $i < strlen($pms); $i++) {
@@ -232,5 +240,115 @@ class NojsLoggersController extends Controller
     public function ceckService($data)
     {
         ServiceCallsController::ceckService($data);
+    }
+
+    public function rawDataProcessing($datas)
+    {
+        $valueError = null;
+        $temp = [];
+        $array = [];
+        if (count($datas) != 0) {
+            if (count($datas) > 1) {
+                for ($i = 0; $i < count($datas); $i++) {
+                    if ($i != 0) {
+                        if ($datas[$i]->batt_volt1 !== $valueError) {
+                            $time_local = $datas[$i]->time_local;
+                            $nojs = $datas[$i]->nojs;
+                            $batt_volt1 = $datas[$i]->batt_volt1;
+                            array_push($temp, $batt_volt1);
+
+                            array_push($array, [
+                                "time_local" => $time_local,
+                                "nojs" => $nojs,
+                                "batt_volt1" => $batt_volt1
+                            ]);
+                        } else {
+                            $time_local = $datas[$i]->time_local;
+                            $nojs = $datas[$i]->nojs;
+                            $test = $this->missedError($i, $temp, 'batt_volt1');
+                            if ($test !== $valueError) {
+                                $batt_volt1 = $this->missedError($i, $temp, 'batt_volt1');
+                                array_push($temp, $batt_volt1);
+
+                                array_push($array, [
+                                    "time_local" => $time_local,
+                                    "nojs" => $nojs,
+                                    "batt_volt1" => $batt_volt1
+                                ]);
+                            }
+                        }
+                    } else {
+                        if ($datas[$i]->batt_volt1 !== $valueError) {
+                            $time_local = $datas[$i]->time_local;
+                            $nojs = $datas[$i]->nojs;
+                            $batt_volt1 = $datas[$i]->batt_volt1;
+                            array_push($temp, $batt_volt1);
+
+                            array_push($array, [
+                                "time_local" => $time_local,
+                                "nojs" => $nojs,
+                                "batt_volt1" => $batt_volt1
+                            ]);
+                        }
+                    }
+                }
+                // $array = $this->deltaV($array);
+            }
+        } else {
+            $array = [];
+        }
+
+        return $array;
+    }
+
+    public function missedError($loop, $datas, $data)
+    {
+        $valueError = null;
+        $n = 0;
+
+        for ($i = $loop + 1; $i < count($datas) - 1; $i++) {
+            $n += 1;
+            if ($datas[$i]->$data !=  $valueError) {
+                return ($datas[$loop]->$data - $datas[$i]->$data) / $n;
+            }
+        }
+        return $datas[$loop]->$data;
+    }
+
+    public function deltaV($datas)
+    {
+        $loop = 3;
+        $temp = [];
+        $maxDelta = 30;
+        return $datas;
+        for ($i = 0; $i < count($datas); $i++) {
+            $array[$i]['time_local'] = $datas[$i]["time_local"];
+            $array[$i]['nojs'] = $datas[$i]["nojs"];
+            if ($i !== 0) {
+                if ($i === 1) {
+                    if ((abs($datas[$i]["batt_volt1"] - $datas[$i - 1]["batt_volt1"])) > $maxDelta) {
+                        array_push($temp, $temp[$i - 1]);
+                    } else {
+                        array_push($temp, $datas[$i]["batt_volt1"]);
+                    }
+                } elseif ($i === 2) {
+                    if ((abs($datas[$i]["batt_volt1"] - $datas[$i - 2]["batt_volt1"])) > $maxDelta) {
+                        array_push($temp, $temp[$i - 1]);
+                    } else {
+                        array_push($temp, $datas[$i]["batt_volt1"]);
+                    }
+                } else {
+                    if ((abs($datas[$i]["batt_volt1"] - $datas[$i - $loop]["batt_volt1"])) > $maxDelta) {
+                        array_push($temp, $temp[$i - 1]);
+                    } else {
+                        array_push($temp, $datas[$i]["batt_volt1"]);
+                    }
+                }
+            } else {
+                array_push($temp, $datas[$i]["batt_volt1"]);
+            }
+            $array[$i]['batt_volt1'] = $temp[$i];
+        }
+        return $array;
     }
 }
