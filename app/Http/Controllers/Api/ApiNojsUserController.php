@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\NojsUser;
+use function GuzzleHttp\json_encode;
 
 class ApiNojsUserController extends Controller
 {
@@ -33,6 +34,44 @@ class ApiNojsUserController extends Controller
             $datas = NojsUser::all();
         }
         return response($datas, 200);
+    }
+
+    public function bbc(Request $request)
+    {
+        $json = '[{
+                    "nojs": "JS65"
+                }, {
+                    "nojs": "JS27"
+                }, {
+                    "nojs": "JS53"
+                }, {
+                    "nojs": "JS102"
+                }, {
+                    "nojs": "JS31"
+                }, {
+                    "nojs": "JS55"
+                }, {
+                    "nojs": "JS75"
+                }, {
+                    "nojs": "JS58"
+                }, {
+                    "nojs": "JS40"
+                } ]';
+        $siteerror = (json_decode($json, true));
+        $lc = $request->lc;
+        $temp = [];
+        if ($lc) {
+            $datas = NojsUser::where('lc', $lc)
+                ->get();
+            foreach ($datas as $data) {
+                foreach ($siteerror as $site) {
+                    if ($data['nojs'] === $site['nojs']) {
+                        array_push($temp, $data);
+                    }
+                }
+            }
+        }
+        return response($temp, 200);
     }
 
     /**

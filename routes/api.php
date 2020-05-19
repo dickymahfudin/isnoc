@@ -32,10 +32,15 @@ Route::prefix('logger')->group(function () {
 
 Route::prefix('nojs')->group(function () {
     Route::get('/', 'Api\ApiNojsUserController@index');
+    Route::get('/error', 'Api\ApiNojsUserController@bbc');
     Route::put('/', 'Api\ApiNojsUserController@update');
 });
 
 Route::prefix('prtg')->group(function () {
     Route::get('/', 'Api\PrtgController@getDataTotals')->name('apislaprtg');
     Route::get('/state', 'Api\PrtgController@stateHistory')->name('apistateprtg');
+});
+
+Route::prefix('backup')->group(function () {
+    Route::post('/', 'Api\BackupLoggersController@store')->name('backuplogger');
 });
