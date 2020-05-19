@@ -66,7 +66,16 @@ class ApiNojsUserController extends Controller
             foreach ($datas as $data) {
                 foreach ($siteerror as $site) {
                     if ($data['nojs'] === $site['nojs']) {
-                        array_push($temp, $data);
+                        $ip = explode('.', $data->ip);
+                        $ipbbc = intval($ip[3]) + 1;
+                        $temp1 = $ip[0] . "." . $ip[1] . "." . $ip[2] . "." . $ipbbc;
+                        array_push($temp, [
+                            "nojs" => $data->nojs,
+                            "site" => $data->site,
+                            "lc" => $data->lc,
+                            "ip" => $data->ip,
+                            "ip_bbc" => $temp1
+                        ]);
                     }
                 }
             }
