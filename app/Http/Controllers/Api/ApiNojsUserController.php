@@ -38,26 +38,8 @@ class ApiNojsUserController extends Controller
 
     public function bbc(Request $request)
     {
-        $json = '[{
-                    "nojs": "JS65"
-                }, {
-                    "nojs": "JS27"
-                }, {
-                    "nojs": "JS53"
-                }, {
-                    "nojs": "JS102"
-                }, {
-                    "nojs": "JS31"
-                }, {
-                    "nojs": "JS55"
-                }, {
-                    "nojs": "JS75"
-                }, {
-                    "nojs": "JS58"
-                }, {
-                    "nojs": "JS40"
-                }]';
-        $siteerror = (json_decode($json, true));
+        $siteerror = NojsUser::where('no_urut', 1)
+            ->get();
         $lc = $request->lc;
         $temp = [];
         if ($lc) {
