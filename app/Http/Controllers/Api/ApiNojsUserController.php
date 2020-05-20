@@ -56,9 +56,7 @@ class ApiNojsUserController extends Controller
                     "nojs": "JS58"
                 }, {
                     "nojs": "JS40"
-                }, {
-                    "nojs": "JS18"
-                } ]';
+                }]';
         $siteerror = (json_decode($json, true));
         $lc = $request->lc;
         $temp = [];
