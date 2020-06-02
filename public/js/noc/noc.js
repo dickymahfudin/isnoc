@@ -195,19 +195,19 @@ $(document).ready(function() {
         $(`#bv-${data.nojs}`).text(batt_volt1.toFixed(1));
         if (batt_volt1.toFixed(1) > 52.0) {
             $(`#bv-${data.nojs}`).removeClass("bg-warning");
-            $(`#bv-${data.nojs}`).removeClass("bg-danger");
+            $(`#bv-${data.nojs}`).removeClass("bg-danger text-white");
             $(`#bv-${data.nojs}`).addClass("bg-success");
         } else if (
             batt_volt1.toFixed(1) <= 52.0 &&
             batt_volt1.toFixed(1) >= 51.0
         ) {
             $(`#bv-${data.nojs}`).removeClass("bg-success");
-            $(`#bv-${data.nojs}`).removeClass("bg-warning");
+            $(`#bv-${data.nojs}`).removeClass("bg-danger text-white");
             $(`#bv-${data.nojs}`).addClass("bg-warning");
         } else {
             $(`#bv-${data.nojs}`).removeClass("bg-success");
             $(`#bv-${data.nojs}`).removeClass("bg-warning");
-            $(`#bv-${data.nojs}`).addClass("bg-danger");
+            $(`#bv-${data.nojs}`).addClass("bg-danger text-white");
         }
 
         $(`#pms-${data.nojs}`).text(pms);
