@@ -1,10 +1,6 @@
-import {
-    GetData,
-    renderChart,
-    GetDataSingle
-} from "./getdata.js";
+import { GetData, renderChart, GetDataSingle } from "./getdata.js";
 
-$(document).ready(function () {
+$(document).ready(function() {
     let DatasLogger = [];
     let chartEh1, chartEh2, chartBv, chartedl1, chartedl2;
     let GetLogger = new GetData();
@@ -24,31 +20,31 @@ $(document).ready(function () {
     // console.log(a);
 
     $("#pagination").pagination({
-        dataSource: function (done) {
+        dataSource: function(done) {
             $.ajax({
                 type: "GET",
                 url: url,
-                success: function (response) {
+                success: function(response) {
                     done(response.data);
                 }
             });
         },
         pageNumber: page,
         pageSize: 15,
-        beforePageOnClick: function (res) {
+        beforePageOnClick: function(res) {
             let pageNum = res.currentTarget.dataset.num;
             let host = window.location.host;
-            history.pushState(host, "Title", `?page=${pageNum}`)
+            history.pushState(host, "Title", `?page=${pageNum}`);
         },
         className: "paginationjs-theme-blue",
         ajax: {
-            beforeSend: function () {
+            beforeSend: function() {
                 container.prev().html("Loading data");
             }
         },
-        callback: function (response, pagination) {
+        callback: function(response, pagination) {
             $(".container-chart").html("");
-            $(".container-chart").addClass('d-none');
+            $(".container-chart").addClass("d-none");
             $("#loading").removeClass("d-none");
             $("#loading").append(`  <div class="d-flex justify-content-center">
                                         <div class="lds-roller">
@@ -63,7 +59,7 @@ $(document).ready(function () {
                                         </div>
                                     </div>`);
             DatasLogger = [];
-            response.forEach(function (data, index) {
+            response.forEach(function(data, index) {
                 let temp = GetLogger.GetDataLoggers({
                     nojs: data.nojs,
                     limit: 36,
@@ -134,8 +130,12 @@ $(document).ready(function () {
         chartBv = document
             .getElementById(`batt_volt1-${data.nojs}`)
             .getContext("2d");
-        chartedl1 = document.getElementById(`edl1-${data.nojs}`).getContext("2d");
-        chartedl2 = document.getElementById(`edl2-${data.nojs}`).getContext("2d");
+        chartedl1 = document
+            .getElementById(`edl1-${data.nojs}`)
+            .getContext("2d");
+        chartedl2 = document
+            .getElementById(`edl2-${data.nojs}`)
+            .getContext("2d");
 
         renderChart({
             data: temp.eh1,
@@ -193,12 +193,21 @@ $(document).ready(function () {
             }
         }
         $(`#bv-${data.nojs}`).text(batt_volt1.toFixed(1));
-        if (batt_volt1.toFixed(1) >= 54.6) {
+        if (batt_volt1.toFixed(1) > 52.0) {
             $(`#bv-${data.nojs}`).removeClass("bg-warning");
+            $(`#bv-${data.nojs}`).removeClass("bg-danger");
             $(`#bv-${data.nojs}`).addClass("bg-success");
-        } else if (batt_volt1.toFixed(1) <= 52.0) {
+        } else if (
+            batt_volt1.toFixed(1) <= 52.0 &&
+            batt_volt1.toFixed(1) >= 51.0
+        ) {
             $(`#bv-${data.nojs}`).removeClass("bg-success");
+            $(`#bv-${data.nojs}`).removeClass("bg-warning");
             $(`#bv-${data.nojs}`).addClass("bg-warning");
+        } else {
+            $(`#bv-${data.nojs}`).removeClass("bg-success");
+            $(`#bv-${data.nojs}`).removeClass("bg-warning");
+            $(`#bv-${data.nojs}`).addClass("bg-danger");
         }
 
         $(`#pms-${data.nojs}`).text(pms);
@@ -207,11 +216,10 @@ $(document).ready(function () {
             $(`#pms-${data.nojs}`).addClass("bg-warning");
         } else {
             $(`#pms-${data.nojs}`).removeClass("bg-warning");
-
         }
     }
 
-    setInterval(function () {
+    setInterval(function() {
         for (let i = 0; i < DatasLogger.length; i++) {
             const data = DatasLogger[i];
             DatasLogger[i] = GetDataSingle(data, log, auth);
