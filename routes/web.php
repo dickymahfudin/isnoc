@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Auth\Events\Verified;
+use Symfony\Component\HttpFoundation\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,4 +66,33 @@ Route::group(['prefix' => 'prtg', 'middleware' => 'auth'], function () {
     Route::get('/state', function () {
         return view('slaprtg.state');
     })->name('state.prtg')->middleware('auth');
+});
+
+Route::group(['prefix' => 'other', 'middleware' => 'auth'], function () {
+    Route::get('/', function () {
+        return view('other.index');
+    })->name('other.index')->middleware('auth');
+});
+
+Route::get('/chint', function (Request $request) {
+    $url = $request->url;
+    $date_start = $request->date_start;
+    $date_end = $request->date_end;
+    $token = $request->token;
+    if ($url) {
+        $response = Http::withOptions([
+            "headers" => [
+                "Accept" => "application/json",
+                "Content-Type" => "application/json",
+                "Authorization" => "Token {$token}"
+            ],
+            "query" => [
+                "date_start" => $date_start,
+                "date_end" => $date_end
+            ]
+        ])->get($url);
+        return $response->json();
+    } else {
+        return redirect('/home');
+    }
 });

@@ -86,6 +86,10 @@
                                     <a class="nav-link {{ Request::is('servicecalls') ? 'bg-warning text-dark' : ''}}" href="{{route('servicecalls')}}">Service Calls</a>
                                 </li>
 
+                                <li class="nav-item h5">
+                                    <a class="nav-link {{ Request::is('other') ? 'bg-warning text-dark' : ''}}" href="{{route('other.index')}}">Other</a>
+                                </li>
+
                                 <li class="nav-item dropdown h5">
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         {{ Auth::user()->name }} <span class="caret"></span>
