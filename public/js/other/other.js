@@ -88,6 +88,7 @@ $(document).ready(function() {
         if (
             start < end &&
             start != "" &&
+            end != "" &&
             dataDataPoint != "" &&
             dataParam != "" &&
             dataProject != ""
@@ -114,9 +115,9 @@ $(document).ready(function() {
             let hostname = window.location.hostname;
 
             let temp = getDataApi({
-                // url: `http://${hostname}:8001/api/chint/hourly`,
+                url: `http://${hostname}:8001/api/${dataParam}/${dataDataPoint}`,
                 // url: `http://192.168.2.8:8001/api/chint/hourly`,
-                url: `http://192.168.2.8:8001/api/${dataParam}/${dataDataPoint}`,
+                // url: `http://192.168.2.8:8001/api/${dataParam}/${dataDataPoint}`,
                 // url: `http://119.18.158.238:8001/api/inverter/hourly`,
                 date_start: date_start,
                 date_end: date_end,
@@ -126,7 +127,7 @@ $(document).ready(function() {
             getTable(temp);
         } else if (
             dataDataPoint == "" ||
-            dataparam == "" ||
+            dataParam == "" ||
             dataProject == ""
         ) {
             swal({
