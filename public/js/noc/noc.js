@@ -211,11 +211,18 @@ $(document).ready(function() {
         }
 
         $(`#pms-${data.nojs}`).text(pms);
-        if (pms <= 15) {
-            // $(`#pms-${data.nojs}`).css("background-color", "yellow");
+        if (pms > 15) {
+            $(`#pms-${data.nojs}`).removeClass("bg-warning");
+            $(`#pms-${data.nojs}`).removeClass("bg-danger text-white");
+            $(`#pms-${data.nojs}`).addClass("bg-success");
+        } else if (pms <= 15 && pms > 13) {
+            $(`#pms-${data.nojs}`).removeClass("bg-success");
+            $(`#pms-${data.nojs}`).removeClass("bg-danger text-white");
             $(`#pms-${data.nojs}`).addClass("bg-warning");
         } else {
+            $(`#pms-${data.nojs}`).removeClass("bg-success");
             $(`#pms-${data.nojs}`).removeClass("bg-warning");
+            $(`#pms-${data.nojs}`).addClass("bg-danger text-white");
         }
     }
 
