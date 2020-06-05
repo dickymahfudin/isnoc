@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('sla:prtg')->dailyAt('00:02');
+        $schedule->command('service:call')->dailyAt('23:58');
     }
 
     /**
