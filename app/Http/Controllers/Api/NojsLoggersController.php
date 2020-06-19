@@ -255,16 +255,16 @@ class NojsLoggersController extends Controller
         if (count($datas) != 0) {
             if (count($datas) > 1) {
                 for ($i = 0; $i < count($datas); $i++) {
+                    $time_local = $datas[$i]->time_local;
+                    $nojs = $datas[$i]->nojs;
+                    $eh1 = $datas[$i]->eh1;
+                    $eh2 = $datas[$i]->eh2;
+                    $batt_volt1 = $datas[$i]->batt_volt1;
+                    $edl1 = $datas[$i]->edl1;
+                    $edl2 = $datas[$i]->edl2;
+
                     if ($i != 0) {
                         if ($datas[$i]->batt_volt1 !== $valueError) {
-                            $time_local = $datas[$i]->time_local;
-                            $nojs = $datas[$i]->nojs;
-                            $eh1 = $datas[$i]->eh1;
-                            $eh2 = $datas[$i]->eh2;
-                            $batt_volt1 = $datas[$i]->batt_volt1;
-                            $edl1 = $datas[$i]->edl1;
-                            $edl2 = $datas[$i]->edl2;
-
                             $tempEh1 = $eh1;
                             $tempEh2 = $eh2;
                             $tempBv = $batt_volt1;
@@ -282,7 +282,6 @@ class NojsLoggersController extends Controller
                             ]);
                         } else {
                             if ($tempBv !== 0) {
-                                $time_local = $datas[$i]->time_local;
                                 array_push($array, [
                                     "time_local" => $time_local,
                                     "nojs" => $nojs,
@@ -296,10 +295,6 @@ class NojsLoggersController extends Controller
                         }
                     } else {
                         if ($datas[$i]->batt_volt1 !== $valueError) {
-                            $time_local = $datas[$i]->time_local;
-                            $nojs = $datas[$i]->nojs;
-                            $batt_volt1 = $datas[$i]->batt_volt1;
-
                             array_push($array, [
                                 "time_local" => $time_local,
                                 "nojs" => $nojs,
