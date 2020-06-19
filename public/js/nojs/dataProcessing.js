@@ -1,6 +1,6 @@
 import { dataSlaNoc } from "../export/getDataNoc.js";
 import { dataTables } from "../export/dataTables.js";
-import { chartRender } from "../export/renderChart.js";
+// import { chartRender } from "../export/renderChart.js";
 
 $(document).ready(function() {
     $.datetimepicker.setDateFormatter("moment");
@@ -13,7 +13,7 @@ $(document).ready(function() {
     let dataChart = [];
     let datasla = new dataSlaNoc();
     let dataTable = new dataTables();
-    let render = new chartRender();
+    // let render = new chartRender();
 
     js = datasla.getDataJs({
         url: url
