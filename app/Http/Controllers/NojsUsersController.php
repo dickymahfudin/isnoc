@@ -151,7 +151,7 @@ class NojsUsersController extends Controller
 
     public function dataTable()
     {
-        $datas = NojsUser::query();
+        $datas = NojsUser::query()->orderBy('site', 'asc');
         return datatables()->of($datas)
             ->addColumn('action', function ($datas) {
                 return view('nojs._action', [
