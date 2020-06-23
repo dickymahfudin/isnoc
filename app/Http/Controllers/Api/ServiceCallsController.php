@@ -107,7 +107,11 @@ class ServiceCallsController extends Controller
                     'pms_state' => $pms
                 ]);
             }
-            ServiceCall::create($new_data);
+            try {
+                ServiceCall::create($new_data);
+            } catch (\Throwable $th) {
+                //throw $
+            }
         } else {
             if (count($cek) !== 0 && $pms == 16) {
                 $id = $cek[0]->service_id;
