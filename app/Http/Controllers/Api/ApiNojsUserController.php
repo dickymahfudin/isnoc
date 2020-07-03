@@ -24,11 +24,34 @@ class ApiNojsUserController extends Controller
     {
         $lc = $request->lc;
         $lc1 = $request->lc1;
+        $noc = $request->noc;
+
         if ($lc && !$lc1) {
             $datas = NojsUser::where('lc', $lc)
                 ->get();
         } elseif ($lc && $lc1) {
             $datas = NojsUser::whereIn('lc', array($lc, $lc1))
+                ->get();
+        } elseif ($noc === "site1") {
+            $datas = NojsUser::where('lc', "!=", "IPT")
+                ->orderBy('lc', 'asc')
+                ->orderBy('nojs', 'asc')
+                ->skip(0)
+                ->take(29)
+                ->get();
+        } elseif ($noc === "site2") {
+            $datas = NojsUser::where('lc', "!=", "IPT")
+                ->orderBy('lc', 'asc')
+                ->orderBy('nojs', 'asc')
+                ->skip(29)
+                ->take(29)
+                ->get();
+        } elseif ($noc === "site3") {
+            $datas = NojsUser::where('lc', "!=", "IPT")
+                ->orderBy('lc', 'asc')
+                ->orderBy('nojs', 'asc')
+                ->skip(58)
+                ->take(29)
                 ->get();
         } else {
             $datas = NojsUser::all();
