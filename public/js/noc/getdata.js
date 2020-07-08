@@ -4,21 +4,17 @@ class GetData {
         $.ajax({
             type: "GET",
             url: data.url,
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader(
-                    "Authorization",
-                    `Bearer ${data.auth}`
-                );
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", `Bearer ${data.auth}`);
             },
             data: {
-                limit: data.limit,
                 nojs: data.nojs,
-                single: data.single,
-                calculate: true
+                noc: true,
+                single: data.single
             },
             async: false,
             dataType: "json",
-            success: function (response) {
+            success: function(response) {
                 log.push(DataProcessing(response, data.multi));
             }
         });
@@ -55,7 +51,7 @@ function DataProcessing(data, multi) {
 
     // console.log(data);
 
-    data.forEach(function (data, index) {
+    data.forEach(function(data, index) {
         if (data.eh1 == null) {
             eh1.push(100);
             colorEh1.push(black);
@@ -184,12 +180,14 @@ function renderChart(data) {
         type: "bar",
         data: {
             labels: data.label,
-            datasets: [{
-                // barPercentage: 1.0,
-                label: '# of Votes',
-                data: data.data,
-                backgroundColor: data.color
-            }]
+            datasets: [
+                {
+                    // barPercentage: 1.0,
+                    label: "# of Votes",
+                    data: data.data,
+                    backgroundColor: data.color
+                }
+            ]
         },
         options: {
             legend: {
@@ -206,28 +204,32 @@ function renderChart(data) {
             maintainAspectRatio: false,
             responsive: true,
             scales: {
-                yAxes: [{
-                    gridLines: {
-                        display: false
-                    },
-                    ticks: {
-                        min: data.min,
-                        max: data.max,
-                        display: false,
-                        beginAtZero: true
+                yAxes: [
+                    {
+                        gridLines: {
+                            display: false
+                        },
+                        ticks: {
+                            min: data.min,
+                            max: data.max,
+                            display: false,
+                            beginAtZero: true
+                        }
                     }
-                }],
-                xAxes: [{
-                    barPercentage: 1,
-                    categorySpacing: 3,
-                    gridLines: {
-                        display: false
-                    },
-                    ticks: {
-                        display: false,
-                        beginAtZero: true
+                ],
+                xAxes: [
+                    {
+                        barPercentage: 1,
+                        categorySpacing: 3,
+                        gridLines: {
+                            display: false
+                        },
+                        ticks: {
+                            display: false,
+                            beginAtZero: true
+                        }
                     }
-                }]
+                ]
             }
         }
     });
@@ -266,7 +268,6 @@ function GetDataSingle(data, url, auth) {
         temp_data.color_edl2.push(temp[0].color_edl2[0]);
         temp_data.label.push(36);
 
-
         temp_data.time_local.splice(0, 1);
         temp_data.eh1.splice(0, 1);
         temp_data.eh2.splice(0, 1);
@@ -292,8 +293,4 @@ function GetDataSingle(data, url, auth) {
     return chart;
 }
 
-export {
-    GetData,
-    renderChart,
-    GetDataSingle
-};
+export { GetData, renderChart, GetDataSingle };

@@ -72,6 +72,7 @@ class NojsLoggersController extends Controller
         $calculate = $request->calculate;
         $processing = $request->processing;
         $single = $request->single;
+        $noc = $request->noc;
 
         if (($nojs && $limit) && !$sdate) {
             if ($calculate === "true") {
@@ -84,7 +85,6 @@ class NojsLoggersController extends Controller
                     (count($data) === 0)  ?  $data = [] : $data = [$data[0]];
                 } else {
                     $datas = NojsLogger::where('nojs', $nojs)
-                        ->whereNotNull('eh1')
                         ->orderBy('time_local', 'desc')
                         ->limit($limit + 1)
                         ->get();
@@ -133,6 +133,28 @@ class NojsLoggersController extends Controller
                     ->orderBy('time_local', 'asc')
                     ->get();
                 $data = $this->rawDataProcessing($datas);
+            }
+        } elseif ($noc && $nojs) {
+            if ($single === "true") {
+                $datas = NojsLogger::where('nojs', $nojs)
+                    ->orderBy('time_local', 'desc')
+                    ->limit($limit + 36)
+                    ->get();
+                $data = $this->dataCalculate($datas);
+                (count($data) === 0)  ?  $data = [] : $data = [$data[0]];
+            } else {
+                // $start = (new Carbon())->subHours(3)->subMinutes(10)->format('Y-m-d H:i:s');
+                // $end = (new Carbon())->format('Y-m-d H:i:s');
+                $start = "2020-07-06 07:10:01";
+                $end = "2020-07-06 10:20:01";
+                $datas = NojsLogger::where('nojs', $nojs)
+                    ->whereNotNull('eh1')
+                    ->whereBetween('time_local', [$start, $end])
+                    ->orderBy('time_local', 'desc')
+                    ->get();
+                $data = $this->resultFiveMinutes($datas);
+                $data = $this->dataCalculate($data);
+                $data = array_slice($data, 0, 36);
             }
         } else {
             $data = ["Error" => "parameter not found"];
@@ -232,7 +254,7 @@ class NojsLoggersController extends Controller
         for ($i = $loop + 1; $i < count($datas) - 1; $i++) {
             $n += 1;
             if ($datas[$i]->$data !=  $valueError) {
-                return ($datas[$loop]->$data - $datas[$i]->$data) / $n;
+                return ($datas[$loop]->$data - $datas[$i]->$data) / ($n - 1);
             }
         }
         return $datas[$loop]->$data;
@@ -428,6 +450,26 @@ class NojsLoggersController extends Controller
             "max" => max($edl2),
             "avg" => array_sum($edl2) / count($edl2)
         ];
+        return $result;
+    }
+
+    public function resultFiveMinutes($datas)
+    {
+        try {
+            $result = [];
+            array_push($result, $datas[0]);
+            $temp = $datas[0]["time_local"];
+
+            foreach ($datas as $key => $data) {
+                $time =  Carbon::parse($temp)->diffInMinutes(Carbon::parse($data["time_local"]));
+                if ($time >= 3 && $time < 7) {
+                    array_push($result, $data);
+                    $temp = $data["time_local"];
+                }
+            }
+        } catch (\Throwable $th) {
+            $result = $datas;
+        }
         return $result;
     }
 }
