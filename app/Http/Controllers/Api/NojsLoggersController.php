@@ -84,6 +84,7 @@ class NojsLoggersController extends Controller
                     (count($data) === 0)  ?  $data = [] : $data = [$data[0]];
                 } else {
                     $datas = NojsLogger::where('nojs', $nojs)
+                        ->whereNotNull('eh1')
                         ->orderBy('time_local', 'desc')
                         ->limit($limit + 1)
                         ->get();
