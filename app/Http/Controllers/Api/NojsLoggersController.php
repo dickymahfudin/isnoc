@@ -143,7 +143,7 @@ class NojsLoggersController extends Controller
                 $data = $this->dataCalculate($datas);
                 (count($data) === 0)  ?  $data = [] : $data = [$data[0]];
             } else {
-                $start = (new Carbon())->subHours(3)->subMinutes(10)->format('Y-m-d H:i:s');
+                $start = (new Carbon())->subHours(4)->format('Y-m-d H:i:s');
                 $end = (new Carbon())->format('Y-m-d H:i:s');
                 // $start = "2020-07-06 07:10:01";
                 // $end = "2020-07-06 10:20:01";
