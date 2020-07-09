@@ -33,25 +33,32 @@ class ApiNojsUserController extends Controller
             $datas = NojsUser::whereIn('lc', array($lc, $lc1))
                 ->get();
         } elseif ($noc === "site1") {
-            $datas = NojsUser::where('lc', "!=", "IPT")
+            $datas = NojsUser::query()
                 ->orderBy('lc', 'asc')
                 ->orderBy('nojs', 'asc')
                 ->skip(0)
-                ->take(29)
+                ->take(25)
                 ->get();
         } elseif ($noc === "site2") {
-            $datas = NojsUser::where('lc', "!=", "IPT")
+            $datas = NojsUser::query()
                 ->orderBy('lc', 'asc')
                 ->orderBy('nojs', 'asc')
-                ->skip(29)
-                ->take(29)
+                ->skip(25)
+                ->take(25)
                 ->get();
         } elseif ($noc === "site3") {
-            $datas = NojsUser::where('lc', "!=", "IPT")
+            $datas = NojsUser::query()
                 ->orderBy('lc', 'asc')
                 ->orderBy('nojs', 'asc')
-                ->skip(58)
-                ->take(29)
+                ->skip(50)
+                ->take(25)
+                ->get();
+        } elseif ($noc === "site4") {
+            $datas = NojsUser::query()
+                ->orderBy('lc', 'asc')
+                ->orderBy('nojs', 'asc')
+                ->skip(75)
+                ->take(25)
                 ->get();
         } else {
             $datas = NojsUser::all();

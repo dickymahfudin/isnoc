@@ -44,3 +44,9 @@ Route::prefix('prtg')->group(function () {
 Route::prefix('backup')->group(function () {
     Route::post('/', 'Api\BackupLoggersController@store')->name('backuplogger');
 });
+
+Route::prefix('raspi')->group(function () {
+    Route::get('/', 'Api\QueueRaspisController@index')->name('raspi.index');
+    Route::post('/', 'Api\QueueRaspisController@store')->name('raspi.store');
+    Route::put('/{queueRaspi}', 'Api\QueueRaspisController@update')->name('raspi.update');
+});
