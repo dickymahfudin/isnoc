@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('sla:prtg')->dailyAt('00:02');
         $schedule->command('service:call')->dailyAt('23:58');
+        $schedule->command('email:service')->weeklyOn(1, '8:45');
     }
 
     /**
