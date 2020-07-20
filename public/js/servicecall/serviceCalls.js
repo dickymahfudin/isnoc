@@ -7,11 +7,79 @@ $(document).ready(function() {
         url = $("#url").attr("url"),
         urlsla = $("#url").attr("sla"),
         urlnoc = $("#url").attr("urlnoc");
-
     let totalJs;
     let dataPrtg = new dataSlaPrtg();
     let dataTable = new dataTables();
     let sla = [];
+
+    $.datetimepicker.setDateFormatter("moment");
+
+    $("#start").datetimepicker({
+        timepicker: true,
+        datetimepicker: true,
+        format: "YYYY-MM-DD",
+        yearStart: 2019,
+        yearEnd: 2025,
+        // theme: 'dark',
+        onShow: function(ct) {
+            this.setOptions({
+                maxDate: $("#end").val() ? $("#end").val() : false
+            });
+            $("#radio input:radio:checked").prop("checked", false);
+        }
+    });
+    $("#toggleStart").on("click", function() {
+        $("#start").datetimepicker("toggle");
+    });
+
+    $("#end").datetimepicker({
+        timepicker: true,
+        datetimepicker: true,
+        format: "YYYY-MM-DD",
+        yearStart: 2019,
+        yearEnd: 2025,
+        // theme: 'dark',
+        onShow: function(ct) {
+            this.setOptions({
+                minDate: $("#start").val() ? $("#start").val() : false
+            });
+            $("#radio input:radio:checked").prop("checked", false);
+        }
+    });
+    $("#toggleEnd").on("click", function() {
+        $("#end").datetimepicker("toggle");
+    });
+
+    $("#radio").click(function(e) {
+        $(".start").val("");
+        $(".end").val("");
+    });
+
+    $("#btnstart").click(function(e) {
+        e.preventDefault();
+        let data;
+        let radio = $("#radio input:radio:checked").val();
+        let start = $(".start").val();
+        let end = $(".end").val();
+        if (radio) {
+            data = {
+                param: radio
+            };
+        } else if (start && end) {
+            data = {
+                start: start,
+                end: end
+            };
+        } else {
+            swal({
+                type: "error",
+                title: "Oops...",
+                text: "End date has to be after Start date"
+            });
+        }
+        getDataKPI(data);
+    });
+
     $.ajax({
         type: "GET",
         url: urlnoc,
@@ -171,91 +239,87 @@ $(document).ready(function() {
         ]
     });
 
-    let logTable = dataTable.tables({
-        id: "#logTable",
-        ajax: {
+    function getDataKPI(data) {
+        $.ajax({
             type: "GET",
-            url: url,
+            url: "/api/servicecount",
             beforeSend: function(xhr) {
                 xhr.setRequestHeader("Authorization", `Bearer ${auth}`);
             },
-            data: {
-                status: "CLOSED"
-            },
+            data: data,
             dataType: "json",
-            dataSrc: function(json) {
-                let return_data = [];
-                let time_to_closed;
-                let time_open;
-                let time_close, diff;
-                for (let i = 0; i < json.length; i++) {
-                    time_open = new Date(json[i].open_time);
-                    time_close = new Date(json[i].closed_time);
-                    diff = time_close - time_open;
+            success: function(response) {
+                let data = [];
+                let label = [];
+                let temp = response.sum;
+                temp.forEach(e => {
+                    data.push(e.sum);
+                    label.push(e.time_local);
+                });
+                $(".chart-service").html(`
+                        <canvas id="chart" height="100"></canvas>
 
-                    let msec = diff;
-                    let day = Math.floor(msec / 1000 / 60 / 60 / 24);
-                    msec -= day * 1000 * 60 * 60 * 24;
-                    let hh = Math.floor(msec / 1000 / 60 / 60);
-                    msec -= hh * 1000 * 60 * 60;
-                    let mm = Math.floor(msec / 1000 / 60);
-                    msec -= mm * 1000 * 60;
-                    let ss = Math.floor(msec / 1000);
-                    msec -= ss * 1000;
+                        <div class="mt-5">
+                            <table id="tablechart" class="table table-striped table-bordered dt-responsive" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Time Local</th>
+                                        <th scope="col">Value</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>`);
+                chart({
+                    label: label,
+                    data: data,
+                    table: temp
+                });
+            }
+        });
+    }
 
-                    day != 0
-                        ? (time_to_closed = day + " day " + hh + " Hours ")
-                        : hh != 0
-                        ? (time_to_closed = hh + " Hours " + mm + " Minutes ")
-                        : (time_to_closed = mm + " Minutes " + ss + " Seconds");
-
-                    // (day != 0) ? time_to_closed = (day + " day " + hh + " Hours " + mm + " Minutes " + ss + " Seconds"): (hh != 0) ? time_to_closed = (hh + " Hours " + mm + " Minutes " + ss + " Seconds") : time_to_closed = (mm + " Minutes " + ss + " Seconds");
-
-                    return_data.push({
-                        service_id: json[i].service_id,
-                        nojs: json[i].nojs,
-                        site: json[i].site,
-                        open_time: json[i].open_time,
-                        lc: json[i].lc,
-                        closed_time: json[i].closed_time,
-                        time_to_close: time_to_closed,
-                        error: json[i].error,
-                        status: json[i].status
-                    });
+    function chart(data) {
+        let ctx = document.getElementById("chart").getContext("2d");
+        let myChart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: data.label,
+                datasets: [
+                    {
+                        label: "Service Call",
+                        data: data.data,
+                        borderColor: "#3e95cd",
+                        backgroundColor: "rgba(255, 99, 132, 0.2)",
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    yAxes: [
+                        {
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }
+                    ]
                 }
-                return return_data;
             }
-        },
-        columns: [
-            {
-                data: "service_id"
-            },
-            {
-                data: "nojs"
-            },
-            {
-                data: "site"
-            },
-            {
-                data: "open_time"
-            },
-            {
-                data: "closed_time"
-            },
-            {
-                data: "time_to_close"
-            },
-            {
-                data: "lc"
-            },
-            {
-                data: "error"
-            },
-            {
-                data: "status"
-            }
-        ]
-    });
+        });
+
+        let logTable = dataTable.tables({
+            id: "#tablechart",
+            data: data.table,
+            columns: [
+                {
+                    data: "time_local"
+                },
+                {
+                    data: "sum"
+                }
+            ]
+        });
+    }
 
     $("body").on("click", ".modal-show", function(e) {
         e.preventDefault();

@@ -23,12 +23,31 @@ class ServiceCallsDailyController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->weekly) {
-            // $today = Carbon::now()->format('Y-m-d');
-            $today = '2020-07-14';
+        $param = $request->param;
+        $paramStart = $request->start;
+        $paramEnd = $request->end;
+
+        if ($param === "1week") {
+            $today = Carbon::now()->format('Y-m-d');
+            // $today = '2020-07-14';
             $end = (new Carbon($today))->subDays(1)->format('Y-m-d');
             $start = (new Carbon($end))->subDays(6)->format('Y-m-d');
+        } elseif ($param === "2week") {
+            $today = Carbon::now()->format('Y-m-d');
+            // $today = '2020-07-14';
+            $end = (new Carbon($today))->subDays(1)->format('Y-m-d');
+            $start = (new Carbon($end))->subDays(12)->format('Y-m-d');
+        } elseif ($param === "1month") {
+            $today = Carbon::now()->format('Y-m-d');
+            // $today = '2020-07-14';
+            $end = (new Carbon($today))->subDays(1)->format('Y-m-d');
+            $start = (new Carbon($end))->subMonth(1)->format('Y-m-d');
+        } elseif ($paramStart && $paramEnd) {
+            $start = $paramStart;
+            $end = $paramEnd;
         }
+
+
         $datas = ServiceCallDailys::whereBetween('time_local', [$start,  $end])
             ->orderBy('time_local', 'asc')
             ->get()
@@ -42,7 +61,7 @@ class ServiceCallsDailyController extends Controller
                 $error += $temp->error;
             }
             $array[$index]["time_local"] = $date;
-            $array[$index]["sum"] = $error;
+            $array[$index]["sum"] = $error / 100;
             $index++;
         }
         $response = [
