@@ -1,17 +1,13 @@
-import {
-    dataSlaPrtg
-} from "../export/getDataPrtg.js";
-import {
-    dataTables
-} from "../export/dataTables.js";
+import { dataSlaPrtg } from "../export/getDataPrtg.js";
+import { dataTables } from "../export/dataTables.js";
 
-$(document).ready(function () {
+$(document).ready(function() {
     let status = "serviceopen";
     let auth = $("#auth").attr("auth"),
         url = $("#url").attr("url"),
         urlsla = $("#url").attr("sla"),
         urlnoc = $("#url").attr("urlnoc");
-    console.log(urlnoc);
+
     let totalJs;
     let dataPrtg = new dataSlaPrtg();
     let dataTable = new dataTables();
@@ -20,13 +16,12 @@ $(document).ready(function () {
         type: "GET",
         url: urlnoc,
         dataType: "json",
-        success: function (response) {
-            totalJs = (response.recordsTotal);
-
+        success: function(response) {
+            totalJs = response.recordsTotal;
         }
     });
 
-    $(".btn").click(function (e) {
+    $(".btn").click(function(e) {
         $(".active").removeClass("active");
         $(this).addClass("active");
 
@@ -49,14 +44,14 @@ $(document).ready(function () {
         ajax: {
             type: "GET",
             url: url,
-            beforeSend: function (xhr) {
+            beforeSend: function(xhr) {
                 xhr.setRequestHeader("Authorization", `Bearer ${auth}`);
             },
             data: {
                 status: "OPEN"
             },
             dataType: "json",
-            dataSrc: function (json) {
+            dataSrc: function(json) {
                 let return_data = [];
                 let time_open;
                 let databaru;
@@ -94,30 +89,21 @@ $(document).ready(function () {
                     let ss = Math.floor(msec / 1000);
                     msec -= ss * 1000;
 
-                    day != 0 ?
-                        (tampil = day + " day ") :
-                        hh != 0 ?
-                        (tampil = hh + " Hours ") :
-                        (tampil = mm + " Minutes ");
+                    day != 0
+                        ? (tampil = day + " day ")
+                        : hh != 0
+                        ? (tampil = hh + " Hours ")
+                        : (tampil = mm + " Minutes ");
 
                     let temp = sla.find(e => e.nojs == data.nojs);
-                    let slaDay, slaMonth;
 
                     if (temp == undefined) {
-                        slaDay = dataPrtg.slaRealtime({
-                            url: urlsla,
-                            id: data.id_lvdvsat,
-                            status: "day"
-                        });
-                        slaMonth = dataPrtg.slaRealtime({
-                            url: urlsla,
-                            id: data.id_lvdvsat,
-                            status: "month"
-                        });
+                        let tempSla = dataPrtg.slaLocal(data.nojs);
+
                         sla.push({
                             nojs: data.nojs,
-                            slaDay: slaDay,
-                            slaMonth: slaMonth
+                            slaDay: tempSla.daily,
+                            slaMonth: tempSla.monthly
                         });
                         temp = sla.find(e => e.nojs == data.nojs);
                     }
@@ -132,18 +118,21 @@ $(document).ready(function () {
                         error: data.error,
                         pms: data.pms_state,
                         status: data.status,
-                        slaDay: parseFloat((temp.slaDay.uptimepercent).toFixed(1)),
-                        slaMonth: parseFloat((temp.slaMonth.uptimepercent).toFixed(1)),
+                        slaDay: 0,
+                        slaMonth: 0,
+                        slaDay: temp.slaDay,
+                        slaMonth: temp.slaMonth,
                         button: `<a href="servicecalls/${data.service_id}/edit" class="modal-show edit" title="${data.nojs} - ${data.site}"><i class="fa fa-edit" ></i></a>`
                     });
                 });
-                error = error / totalJs;
+                error = error / 100;
                 $("#total").removeClass("d-none");
                 $("#total").html(`Error ${error}`);
                 return return_data;
             }
         },
-        columns: [{
+        columns: [
+            {
                 data: "service_id"
             },
             {
@@ -187,14 +176,14 @@ $(document).ready(function () {
         ajax: {
             type: "GET",
             url: url,
-            beforeSend: function (xhr) {
+            beforeSend: function(xhr) {
                 xhr.setRequestHeader("Authorization", `Bearer ${auth}`);
             },
             data: {
                 status: "CLOSED"
             },
             dataType: "json",
-            dataSrc: function (json) {
+            dataSrc: function(json) {
                 let return_data = [];
                 let time_to_closed;
                 let time_open;
@@ -214,11 +203,11 @@ $(document).ready(function () {
                     let ss = Math.floor(msec / 1000);
                     msec -= ss * 1000;
 
-                    day != 0 ?
-                        (time_to_closed = day + " day " + hh + " Hours ") :
-                        hh != 0 ?
-                        (time_to_closed = hh + " Hours " + mm + " Minutes ") :
-                        (time_to_closed = mm + " Minutes " + ss + " Seconds");
+                    day != 0
+                        ? (time_to_closed = day + " day " + hh + " Hours ")
+                        : hh != 0
+                        ? (time_to_closed = hh + " Hours " + mm + " Minutes ")
+                        : (time_to_closed = mm + " Minutes " + ss + " Seconds");
 
                     // (day != 0) ? time_to_closed = (day + " day " + hh + " Hours " + mm + " Minutes " + ss + " Seconds"): (hh != 0) ? time_to_closed = (hh + " Hours " + mm + " Minutes " + ss + " Seconds") : time_to_closed = (mm + " Minutes " + ss + " Seconds");
 
@@ -237,7 +226,8 @@ $(document).ready(function () {
                 return return_data;
             }
         },
-        columns: [{
+        columns: [
+            {
                 data: "service_id"
             },
             {
@@ -267,7 +257,7 @@ $(document).ready(function () {
         ]
     });
 
-    $("body").on("click", ".modal-show", function (e) {
+    $("body").on("click", ".modal-show", function(e) {
         e.preventDefault();
 
         let me = $(this),
@@ -279,11 +269,11 @@ $(document).ready(function () {
             .text("Update");
         $.ajax({
             url: url,
-            beforeSend: function (xhr) {
+            beforeSend: function(xhr) {
                 xhr.setRequestHeader("Authorization", `Bearer ${auth}`);
             },
             dataType: "html",
-            success: function (response) {
+            success: function(response) {
                 $("#modal-body").html(response);
             }
         });
@@ -291,7 +281,7 @@ $(document).ready(function () {
         $("#modal").modal("show");
     });
 
-    $("#modal-btn-save").click(function (e) {
+    $("#modal-btn-save").click(function(e) {
         e.preventDefault();
 
         let form = $("#modal-body form"),
@@ -302,18 +292,18 @@ $(document).ready(function () {
         $.ajax({
             url: url,
             method: method,
-            beforeSend: function (xhr) {
+            beforeSend: function(xhr) {
                 xhr.setRequestHeader("Authorization", `Bearer ${auth}`);
             },
             data: form.serialize(),
-            success: function (response) {
+            success: function(response) {
                 form.trigger("reset");
                 $("#modal").modal("hide");
                 activeTable.ajax.reload();
                 $("#activedTab").addClass("show");
                 status = "serviceopen";
             },
-            error: function (xhr) {
+            error: function(xhr) {
                 var res = xhr.responseJSON;
                 status = "serviceopen";
             }
@@ -322,7 +312,7 @@ $(document).ready(function () {
 
     $("#modal-footer .btn-secondary").addClass("d-none");
 
-    setInterval(function () {
+    setInterval(function() {
         if (status == "serviceopen") {
             activeTable.ajax.reload();
         }

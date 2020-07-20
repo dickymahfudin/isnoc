@@ -97,6 +97,16 @@ class ServiceCallsController extends Controller
                     'status' => 'OPEN',
                     'pms_state' => $pms
                 ]);
+            } elseif (count($cek) === 1) {
+                $data = $cek[0];
+                if ($data->error < 50) {
+                    $new_data = ([
+                        'pms_state' => $pms,
+                        'error' => $error
+                    ]);
+                    ServiceCall::where('service_id', $cek[0]->service_id)
+                        ->update($new_data);
+                }
             } elseif ($service === null) {
                 $new_data = ([
                     'service_id' => 'SC0',
