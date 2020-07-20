@@ -30,8 +30,51 @@ class ServiceCallMail extends Mailable
     public function build()
     {
         $data = ServiceCallsDailyController::weekly();
+        $time_local = [];
+        $sum = [];
+        foreach ($data["sum"] as $value) {
+            array_push($time_local, $value["time_local"]);
+            array_push($sum, $value["sum"] / 100);
+        };
+
+        $chartConfigArr = array(
+            'type' => 'line',
+            'data' => [
+                'labels' => $time_local,
+                'datasets' => [
+                    [
+                        'label' => "service",
+                        "borderColor" => "#3e95cd",
+
+                        'data' => $sum,
+                        "fill" => false
+
+                    ]
+                ]
+            ],
+            'options' => [
+                'scales' => [
+                    'yAxes' => [
+                        'ticks' => [
+                            'beginAtzero' => true
+                        ]
+                    ]
+                ],
+                'legend' => [
+                    'display' => false,
+                    'labels' => [
+                        'defaultFontSize' => 7
+                    ]
+                ]
+            ]
+        );
+
+        $chartConfig = json_encode($chartConfigArr);
+        $chartUrl = 'https://quickchart.io/chart?w=450&h=150&c=' . urlencode($chartConfig);
+
         return $this->subject('Service Calls Weekly')->view('emails.emailWeekly', [
-            "data" => $data["sum"]
+            "data" => $data["sum"],
+            "url" => $chartUrl
         ]);
 
         // return $this->view('layouts.emailWeekly', [

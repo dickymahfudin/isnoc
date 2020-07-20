@@ -28,6 +28,8 @@
     <p>Dear Pak Maurice</p>
     <p>Berikut Data Service Call 1 Minggu</p>
 
+    <img src={{$url}}>
+
     <table>
         <tr>
             <th>Time</th>
