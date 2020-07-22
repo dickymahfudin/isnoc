@@ -4,7 +4,9 @@
     <div class="container mt-3 mb-3">
         <div class="card text-white bg-primary">
         <div class="card-header font-weight-bold">Nojs User
-            <a href="{{ route('nojs.create') }}" class="btn btn-success modal-show float-right" title="Create User"><i class="fa fa-plus"></i> Create</a>
+            @if ( Auth::user()->name === "malek" || Auth::user()->name === "dicky")
+                <a href="{{ route('nojs.create') }}" class="btn btn-success modal-show float-right" title="Create User"><i class="fa fa-plus"></i> Create</a>
+            @endif
         </div>
 
             <div class="card-body bg-light text-dark">
