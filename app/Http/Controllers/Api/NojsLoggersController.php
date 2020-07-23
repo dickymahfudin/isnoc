@@ -143,10 +143,10 @@ class NojsLoggersController extends Controller
                 $data = $this->dataCalculate($datas);
                 (count($data) === 0)  ?  $data = [] : $data = [$data[0]];
             } else {
-                // $start = (new Carbon())->subHours(4)->format('Y-m-d H:i:s');
-                // $end = (new Carbon())->format('Y-m-d H:i:s');
-                $start = "2020-07-14 11:35:02";
-                $end = "2020-07-14 15:35:02";
+                $start = (new Carbon())->subHours(4)->format('Y-m-d H:i:s');
+                $end = (new Carbon())->format('Y-m-d H:i:s');
+                // $start = "2020-07-14 11:35:02";
+                // $end = "2020-07-14 15:35:02";
                 $datas = NojsLogger::where('nojs', $nojs)
                     ->whereNotNull('eh1')
                     ->whereBetween('time_local', [$start, $end])
