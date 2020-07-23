@@ -143,10 +143,10 @@ class NojsLoggersController extends Controller
                 $data = $this->dataCalculate($datas);
                 (count($data) === 0)  ?  $data = [] : $data = [$data[0]];
             } else {
-                $start = (new Carbon())->subHours(4)->format('Y-m-d H:i:s');
-                $end = (new Carbon())->format('Y-m-d H:i:s');
-                // $start = "2020-07-06 07:10:01";
-                // $end = "2020-07-06 10:20:01";
+                // $start = (new Carbon())->subHours(4)->format('Y-m-d H:i:s');
+                // $end = (new Carbon())->format('Y-m-d H:i:s');
+                $start = "2020-07-14 11:35:02";
+                $end = "2020-07-14 15:35:02";
                 $datas = NojsLogger::where('nojs', $nojs)
                     ->whereNotNull('eh1')
                     ->whereBetween('time_local', [$start, $end])
@@ -168,65 +168,65 @@ class NojsLoggersController extends Controller
         if (count($datas) != 0) {
             if (count($datas) > 1) {
                 for ($i = 0; $i < count($datas) - 1; $i++) {
-                    $array[$i]['time_local'] = $datas[$i]->time_local;
-                    $array[$i]['nojs'] = $datas[$i]->nojs;
+                    $array[$i]['time_local'] = $datas[$i]["time_local"];
+                    $array[$i]['nojs'] = $datas[$i]["nojs"];
 
-                    if (($datas[$i]->eh1 !== $valueError) && ($datas[$i + 1]->eh1 !== $valueError)) {
-                        $array[$i]['eh1'] = $datas[$i]->eh1 - $datas[$i + 1]->eh1;
-                    } else if (($datas[$i]->eh1 !== $valueError) && ($datas[$i + 1]->eh1 === $valueError)) {
+                    if (($datas[$i]["eh1"] !== $valueError) && ($datas[$i + 1]["eh1"] !== $valueError)) {
+                        $array[$i]['eh1'] = $datas[$i]["eh1"] - $datas[$i + 1]["eh1"];
+                    } else if (($datas[$i]["eh1"] !== $valueError) && ($datas[$i + 1]["eh1"] === $valueError)) {
                         $array[$i]['eh1'] =  $this->missedData($i, $datas, 'eh1');
-                    } else if (($datas[$i]->eh1 === $valueError) && ($datas[$i + 1]->eh1 !== $valueError) || ($datas[$i]->eh1 == $valueError) && ($datas[$i + 1]->eh1 === $valueError)) {
+                    } else if (($datas[$i]["eh1"] === $valueError) && ($datas[$i + 1]["eh1"] !== $valueError) || ($datas[$i]["eh1"] == $valueError) && ($datas[$i + 1]["eh1"] === $valueError)) {
                         $array[$i]['eh1'] = $valueError;
                     }
 
-                    if (($datas[$i]->eh2 !== $valueError) && ($datas[$i + 1]->eh2 !== $valueError)) {
-                        $array[$i]['eh2'] = $datas[$i]->eh2 - $datas[$i + 1]->eh2;
-                    } else if (($datas[$i]->eh2 !== $valueError) && ($datas[$i + 1]->eh2 === $valueError)) {
+                    if (($datas[$i]["eh2"] !== $valueError) && ($datas[$i + 1]["eh2"] !== $valueError)) {
+                        $array[$i]['eh2'] = $datas[$i]["eh2"] - $datas[$i + 1]["eh2"];
+                    } else if (($datas[$i]["eh2"] !== $valueError) && ($datas[$i + 1]["eh2"] === $valueError)) {
                         $array[$i]['eh2'] =  $this->missedData($i, $datas, 'eh2');
-                    } else if (($datas[$i]->eh2 === $valueError) && ($datas[$i + 1]->eh2 !== $valueError) || ($datas[$i]->eh2 === $valueError) && ($datas[$i + 1]->eh2 === $valueError)) {
+                    } else if (($datas[$i]["eh2"] === $valueError) && ($datas[$i + 1]["eh2"] !== $valueError) || ($datas[$i]["eh2"] === $valueError) && ($datas[$i + 1]["eh2"] === $valueError)) {
                         $array[$i]['eh2'] = $valueError;
                     }
 
-                    if (($datas[$i]->batt_volt1 !== $valueError)) {
-                        $array[$i]['batt_volt1'] = $datas[$i]->batt_volt1 / 100;
+                    if (($datas[$i]["batt_volt1"] !== $valueError)) {
+                        $array[$i]['batt_volt1'] = $datas[$i]["batt_volt1"] / 100;
                     } else {
                         $array[$i]['batt_volt1'] = $valueError;
                     }
 
-                    if (($datas[$i]->edl1 !== $valueError) && ($datas[$i + 1]->edl1 !== $valueError)) {
-                        $array[$i]['edl1'] = ($datas[$i]->edl1 - $datas[$i + 1]->edl1) * -1;
-                    } else if (($datas[$i]->edl1 !== $valueError) && ($datas[$i + 1]->edl1 === $valueError)) {
+                    if (($datas[$i]["edl1"] !== $valueError) && ($datas[$i + 1]["edl1"] !== $valueError)) {
+                        $array[$i]['edl1'] = ($datas[$i]["edl1"] - $datas[$i + 1]["edl1"]) * -1;
+                    } else if (($datas[$i]["edl1"] !== $valueError) && ($datas[$i + 1]["edl1"] === $valueError)) {
                         $array[$i]['edl1'] =  $this->missedData($i, $datas, 'edl1');
-                    } else if (($datas[$i]->edl1 === $valueError) && ($datas[$i + 1]->edl1 !== $valueError) || ($datas[$i]->edl1 === $valueError) && ($datas[$i + 1]->edl1 === $valueError)) {
+                    } else if (($datas[$i]["edl1"] === $valueError) && ($datas[$i + 1]["edl1"] !== $valueError) || ($datas[$i]["edl1"] === $valueError) && ($datas[$i + 1]["edl1"] === $valueError)) {
                         $array[$i]['edl1'] = $valueError;
                     }
 
-                    if (($datas[$i]->edl2 !== $valueError) && ($datas[$i + 1]->edl2 !== $valueError)) {
-                        $array[$i]['edl2'] = ($datas[$i]->edl2 - $datas[$i + 1]->edl2) * -1;
-                    } else if (($datas[$i]->edl2 !== $valueError) && ($datas[$i + 1]->edl2 === $valueError)) {
+                    if (($datas[$i]["edl2"] !== $valueError) && ($datas[$i + 1]["edl2"] !== $valueError)) {
+                        $array[$i]['edl2'] = ($datas[$i]["edl2"] - $datas[$i + 1]["edl2"]) * -1;
+                    } else if (($datas[$i]["edl2"] !== $valueError) && ($datas[$i + 1]["edl2"] === $valueError)) {
                         $array[$i]['edl2'] =  $this->missedData($i, $datas, 'edl2');
-                    } else if (($datas[$i]->edl2 === $valueError) && ($datas[$i + 1]->edl2 !== $valueError) || ($datas[$i]->edl2 === $valueError) && ($datas[$i + 1]->edl2 === $valueError)) {
+                    } else if (($datas[$i]["edl2"] === $valueError) && ($datas[$i + 1]["edl2"] !== $valueError) || ($datas[$i]["edl2"] === $valueError) && ($datas[$i + 1]["edl2"] === $valueError)) {
                         $array[$i]['edl2'] = $valueError;
                     }
 
-                    if (($datas[$i]->pms_state !== $valueError)) {
-                        $array[$i]['pms'] =  $this->pmsconvert($datas[$i]->pms_state);
-                        $array[$i]['pms_state'] =  $datas[$i]->pms_state;
+                    if (($datas[$i]["pms_state"] !== $valueError)) {
+                        $array[$i]['pms'] =  $this->pmsconvert($datas[$i]["pms_state"]);
+                        $array[$i]['pms_state'] =  $datas[$i]["pms_state"];
                     } else {
                         $array[$i]['pms'] = $valueError;
                         $array[$i]['pms_state'] = $valueError;
                     }
                 }
             } else {
-                $array['time_local'] = $datas[0]->time_local;
-                $array['nojs'] = $datas[0]->nojs;
-                $array['eh1'] = (($datas[0]->eh1) != $valueError) ? $datas[0]->eh1 : $valueError;
-                $array['eh2'] = (($datas[0]->eh1) != $valueError) ? $datas[0]->eh2 : $valueError;
-                $array['batt_volt1'] = (($datas[0]->eh1) != $valueError) ? ($datas[0]->batt_volt1 / 100) : $valueError;
-                $array['edl1'] = (($datas[0]->eh1) != $valueError) ? $datas[0]->edl1 : $valueError;
-                $array['edl2'] = (($datas[0]->eh1) != $valueError) ? $datas[0]->edl2 : $valueError;
-                $array['pms_state'] = (($datas[0]->pms_state) != $valueError) ?  $datas[0]->pms_state : $valueError;
-                $array['pms'] = (($datas[0]->pms_state) != $valueError) ?  $this->pmsConvert($datas[0]->pms_state) : $valueError;
+                $array['time_local'] = $datas[0]["time_local"];
+                $array['nojs'] = $datas[0]["nojs"];
+                $array['eh1'] = (($datas[0]["eh1"]) != $valueError) ? $datas[0]["eh1"] : $valueError;
+                $array['eh2'] = (($datas[0]["eh1"]) != $valueError) ? $datas[0]["eh2"] : $valueError;
+                $array['batt_volt1'] = (($datas[0]["eh1"]) != $valueError) ? ($datas[0]["batt_volt1"] / 100) : $valueError;
+                $array['edl1'] = (($datas[0]["eh1"]) != $valueError) ? $datas[0]["edl1"] : $valueError;
+                $array['edl2'] = (($datas[0]["eh1"]) != $valueError) ? $datas[0]["edl2"] : $valueError;
+                $array['pms_state'] = (($datas[0]["pms_state"]) != $valueError) ?  $datas[0]["pms_state"] : $valueError;
+                $array['pms'] = (($datas[0]["pms_state"]) != $valueError) ?  $this["pmsConvert"]($datas[0]["pms_state"]) : $valueError;
                 return  [$array];
             }
         } else {
@@ -253,11 +253,11 @@ class NojsLoggersController extends Controller
 
         for ($i = $loop + 1; $i < count($datas) - 1; $i++) {
             $n += 1;
-            if ($datas[$i]->$data !=  $valueError) {
-                return ($datas[$loop]->$data - $datas[$i]->$data) / ($n - 1);
+            if ($datas[$i][$data] !=  $valueError) {
+                return ($datas[$loop][$data] - $datas[$i][$data]) / ($n - 1);
             }
         }
-        return $datas[$loop]->$data;
+        return $datas[$loop][$data];
     }
 
     public function ceckService($data)
@@ -459,11 +459,30 @@ class NojsLoggersController extends Controller
             $result = [];
             array_push($result, $datas[0]);
             $temp = $datas[0]["time_local"];
-
+            $errorValue = null;
             foreach ($datas as $key => $data) {
                 $time =  Carbon::parse($temp)->diffInMinutes(Carbon::parse($data["time_local"]));
                 if ($time >= 3 && $time < 7) {
                     array_push($result, $data);
+                    $temp = $data["time_local"];
+                } elseif ($time >= 9 && $time < 12) {
+                    $time_local = (new Carbon($data["time_local"]))->addMinute(5)->format('Y-m-d H:i:s');
+                    array_push($result, [
+                        "time_local" => $time_local,
+                        "nojs" => $data["nojs"],
+                        "eh1" => $errorValue,
+                        "eh2" => $errorValue,
+                        "vsat_curr" => $errorValue,
+                        "bts_curr" => $errorValue,
+                        "load3" => $errorValue,
+                        "batt_volt1" => $errorValue,
+                        "batt_volt2" => $errorValue,
+                        "edl1" => $errorValue,
+                        "edl2" => $errorValue,
+                        "pms_state" => $errorValue
+                    ]);
+                    array_push($result, $data);
+
                     $temp = $data["time_local"];
                 }
             }
