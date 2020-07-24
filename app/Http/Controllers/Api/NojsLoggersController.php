@@ -73,6 +73,7 @@ class NojsLoggersController extends Controller
         $processing = $request->processing;
         $single = $request->single;
         $noc = $request->noc;
+        $detail = $request->detail;
 
         if (($nojs && $limit) && !$sdate) {
             if ($calculate === "true") {
@@ -156,6 +157,13 @@ class NojsLoggersController extends Controller
                 $data = $this->dataCalculate($data);
                 $data = array_slice($data, 0, 36);
             }
+        } elseif ($detail && $nojs && $sdate && $edate) {
+            $datas = NojsLogger::where('nojs', $nojs)
+                ->whereNotNull('eh1')
+                ->whereBetween('time_local', [$sdate, $edate])
+                ->orderBy('time_local', 'desc')
+                ->get();
+            $data = $datas;
         } else {
             $data = ["Error" => "parameter not found"];
         }
@@ -226,7 +234,7 @@ class NojsLoggersController extends Controller
                 $array['edl1'] = (($datas[0]["eh1"]) != $valueError) ? $datas[0]["edl1"] : $valueError;
                 $array['edl2'] = (($datas[0]["eh1"]) != $valueError) ? $datas[0]["edl2"] : $valueError;
                 $array['pms_state'] = (($datas[0]["pms_state"]) != $valueError) ?  $datas[0]["pms_state"] : $valueError;
-                $array['pms'] = (($datas[0]["pms_state"]) != $valueError) ?  $this["pmsConvert"]($datas[0]["pms_state"]) : $valueError;
+                $array['pms'] = (($datas[0]["pms_state"]) != $valueError) ?  $this->pmsConvert($datas[0]["pms_state"]) : $valueError;
                 return  [$array];
             }
         } else {
@@ -465,24 +473,30 @@ class NojsLoggersController extends Controller
                 if ($time >= 3 && $time < 7) {
                     array_push($result, $data);
                     $temp = $data["time_local"];
-                } elseif ($time >= 9 && $time < 12) {
-                    $time_local = (new Carbon($data["time_local"]))->addMinute(5)->format('Y-m-d H:i:s');
-                    array_push($result, [
-                        "time_local" => $time_local,
-                        "nojs" => $data["nojs"],
-                        "eh1" => $errorValue,
-                        "eh2" => $errorValue,
-                        "vsat_curr" => $errorValue,
-                        "bts_curr" => $errorValue,
-                        "load3" => $errorValue,
-                        "batt_volt1" => $errorValue,
-                        "batt_volt2" => $errorValue,
-                        "edl1" => $errorValue,
-                        "edl2" => $errorValue,
-                        "pms_state" => $errorValue
-                    ]);
-                    array_push($result, $data);
+                } elseif ($time >= 9) {
+                    $timeNow = $temp;
+                    while (1) {
+                        $time_local = (new Carbon($timeNow))->subMinute(5)->format('Y-m-d H:i:s');
+                        $tempTime =  Carbon::parse($time_local)->diffInMinutes(Carbon::parse($data["time_local"]));
+                        array_push($result, [
+                            "time_local" => $time_local,
+                            "nojs" => $data["nojs"],
+                            "eh1" => $errorValue,
+                            "eh2" => $errorValue,
+                            "vsat_curr" => $errorValue,
+                            "bts_curr" => $errorValue,
+                            "load3" => $errorValue,
+                            "batt_volt1" => $errorValue,
+                            "batt_volt2" => $errorValue,
+                            "edl1" => $errorValue,
+                            "edl2" => $errorValue,
+                            "pms_state" => $errorValue
+                        ]);
+                        $timeNow = $time_local;
 
+                        if ($tempTime >= 3 && $tempTime < 7) break;
+                    }
+                    array_push($result, $data);
                     $temp = $data["time_local"];
                 }
             }
