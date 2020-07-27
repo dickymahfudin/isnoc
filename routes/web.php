@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Auth\Events\Verified;
 use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ServiceCallMail;
+use Illuminate\Support\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +26,13 @@ Auth::routes(['verify' => true]);
 
 Route::redirect('/', '/home', 301)->middleware('auth');
 // Route::redirect('/register', '/home', 301);
+
+Route::get('/email', function () {
+    Mail::to('dicky@sundaya.com')->send(new ServiceCallMail());
+    return new ServiceCallMail();
+    // return view('layouts.emailWeekly');
+});
+
 
 Route::get('/home', 'NocController@index')->name('noc')->middleware('auth');
 
@@ -95,4 +105,9 @@ Route::get('/chint', function (Request $request) {
     } else {
         return redirect('/home');
     }
+});
+
+Route::group(['prefix' => 'ajn', 'middleware' => 'auth'], function () {
+    Route::get('/', 'AjnLoggerController@index')->name('ajn.index');
+    Route::post('/', 'AjnLoggerController@store')->name('ajn.store');
 });

@@ -27,6 +27,7 @@ Route::prefix('servicecalls')->group(function () {
 
 Route::prefix('logger')->group(function () {
     Route::get('/', 'Api\NojsLoggersController@loggers')->name('noc.logger');
+    Route::get('/detail', 'Api\NojsLoggersController@detail');
     Route::post('/', 'Api\NojsLoggersController@store');
 });
 
@@ -54,4 +55,8 @@ Route::prefix('raspi')->group(function () {
 
 Route::prefix('servicecount')->group(function () {
     Route::get('/', 'Api\ServiceCallsDailyController@index');
+});
+
+Route::prefix('ajn')->group(function () {
+    Route::get('/', 'AjnLoggerController@getData');
 });
