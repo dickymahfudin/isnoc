@@ -103,7 +103,7 @@ class NojsLoggersController extends Controller
                 ->orderBy('time_local', 'desc')
                 ->get();
             $data = $datas;
-        } elseif ($sdate && $edate && $nojs) {
+        } elseif ($sdate && $edate && $nojs && !$detail) {
             if ($calculate === "true") {
                 if ($single === "true") {
                     $newsdate = (new Carbon($sdate))->subHours(3)->format('Y-m-d H:i:s');
@@ -158,16 +158,44 @@ class NojsLoggersController extends Controller
                 $data = array_slice($data, 0, 36);
             }
         } elseif ($detail && $nojs && $sdate && $edate) {
-            $datas = NojsLogger::where('nojs', $nojs)
-                ->whereNotNull('eh1')
-                ->whereBetween('time_local', [$sdate, $edate])
-                ->orderBy('time_local', 'desc')
-                ->get();
-            $data = $datas;
+            $data = $this->dataBinding([
+                "nojs" => $nojs,
+                "sdate" => $sdate,
+                "edate" => $edate
+            ]);
         } else {
             $data = ["Error" => "parameter not found"];
         }
         return response($data, 200);
+    }
+
+    public function dataBinding($data)
+    {
+        $nojs = $data["nojs"];
+        $sdate = $data["sdate"];
+        $edate = $data["edate"];
+
+        $datas = NojsLogger::where('nojs', $nojs)
+            ->whereNotNull('eh1')
+            ->whereBetween('time_local', [$sdate, $edate])
+            ->orderBy('time_local', 'desc')
+            ->get();
+        $logger = $this->resultFiveMinutes($datas);
+        $daily = $logger->groupBy(function ($item, $key) {
+            return substr($item["time_local"], 0, 10);
+        });
+        $daily = $this->daily($daily);
+        $result = [
+            "logger" => $logger,
+            "daily" => $daily
+        ];
+
+        return $result;
+    }
+
+    public static function sla2($data)
+    {
+        return (new static)->dataBinding($data);
     }
 
     public function dataCalculate($datas)
@@ -499,6 +527,61 @@ class NojsLoggersController extends Controller
                     array_push($result, $data);
                     $temp = $data["time_local"];
                 }
+            }
+        } catch (\Throwable $th) {
+            $result = $datas;
+        }
+        return collect($result);
+    }
+
+    public function daily($datas)
+    {
+        try {
+            $result = [];
+            $valueError = null;
+
+            foreach ($datas as $key => $data) {
+                $upTime = 0;
+                $temp = ($data[0]["time_local"] !== $valueError) ? $data[0]["time_local"] : 0;
+                foreach ($data as $value) {
+                    if ($value["eh1"] !== $valueError) {
+                        $up =  Carbon::parse($value["time_local"])->diffInSeconds(Carbon::parse($temp));
+                        $upTime += $up;
+                        $temp = $value["time_local"];
+                    } else {
+                        $temp = $value["time_local"];
+                    }
+                }
+
+                $nojs = $data[0]["nojs"];
+                $eh1 = intval(round($data->avg("eh1")));
+                $eh2 = intval(round($data->avg("eh2")));
+                $vsat_curr = intval(round($data->avg("vsat_curr")));
+                $bts_curr = intval(round($data->avg("bts_curr")));
+                $load3 = intval(round($data->avg("load3")));
+                $batt_volt1 = intval(round($data->avg("batt_volt1")));
+                $batt_volt2 = intval(round($data->avg("batt_volt2")));
+                $edl1 = intval(round($data->avg("edl1")));
+                $edl2 = intval(round($data->avg("edl2")));
+                $pms_state = intval(round($data->avg(function ($item) {
+                    return $this->pmsConvert($item["pms_state"]);
+                })));
+
+                array_push($result, [
+                    "time_local" => $key,
+                    "up_time" => gmdate("H:i:s", $upTime),
+                    "nojs" => $nojs,
+                    "eh1" => $eh1,
+                    "eh2" => $eh2,
+                    "vsat_curr" => round($vsat_curr / 100, 1),
+                    "bts_curr" => round($bts_curr / 100, 1),
+                    "load3" => round($load3 / 100, 1),
+                    "batt_volt1" => round($batt_volt1 / 100, 1),
+                    "batt_volt2" => round($batt_volt2 / 100, 1),
+                    "edl1" => $edl1,
+                    "edl2" => $edl2,
+                    // "pms_state" => $pms_state,
+                ]);
             }
         } catch (\Throwable $th) {
             $result = $datas;
