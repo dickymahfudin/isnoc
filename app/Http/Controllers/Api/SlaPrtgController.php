@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SlaPrtg;
 use Carbon\Carbon;
+use App\Models\NojsUser;
 
 class SlaPrtgController extends Controller
 {
@@ -41,5 +42,77 @@ class SlaPrtgController extends Controller
             $data = "Please Select Nojs";
         }
         return response($data, 200);
+    }
+
+    public static function monthly()
+    {
+        $users = NojsUser::orderBy('site', 'asc')->get();
+
+        // $sdate = "2020-07-09-00-00";
+        // $edate = "2020-07-14-00-00";
+
+        $edate = Carbon::now()->format('Y-m-d-00-00');
+        $sdate = (new Carbon($edate))->subMonths(1)->format('Y-m-d-00-00');
+
+        $username = "Power APT";
+        $password = "APT12345";
+        $start = (new Carbon($sdate))->format('Y-m-d H:i:s');
+        $end = (new Carbon($edate))->format('Y-m-d H:i:s');
+        $slaPrtg = [];
+        $sla2 = [];
+        $loop = [];
+
+        foreach ($users as $key => $data) {
+            $id = $data->id_lvdvsat;
+            $new_data = [
+                "id" => $id,
+                "sdate" => $sdate,
+                "edate" => $edate,
+                "username" => $username,
+                "password" => $password
+            ];
+            $temp = PrtgController::getPrtg($new_data);
+            $sla = $temp->original;
+            $uptimepercent = $sla["uptimepercent"];
+            $uptime = $sla["uptime"];
+            $downtime = $sla["downtime"];
+            array_push($slaPrtg, [
+                "nojs" => $data->nojs,
+                "site" => $data->site,
+                "lc" => $data->lc,
+                "lvd1_vsat" => $uptimepercent,
+                "uptime" => $uptime,
+                "downtime" => $downtime,
+            ]);
+            if ($uptimepercent <= 95) {
+                $dataSla2 = NojsLoggersController::sla2([
+                    "nojs" => $data->nojs,
+                    "sdate" => $start,
+                    "edate" => $end
+                ]);
+                array_push($sla2, [
+                    "detail" => [
+                        "nojs" => $data->nojs,
+                        "site" => $data->site,
+                        "lc" => $data->lc,
+                        "sla" => $uptimepercent
+                    ],
+                    "data" => $dataSla2["daily"]
+                ]);
+
+                array_push($loop, $key + 1);
+            }
+        }
+        return response([
+            "detail" => [
+                "start" => $start,
+                "end" => $end,
+                "up" => count($slaPrtg) - count($sla2),
+                "down" => count($sla2),
+                "site_loop" => $loop
+            ],
+            "sla_prtg" => $slaPrtg,
+            "sla_2" => $sla2
+        ], 200);
     }
 }
