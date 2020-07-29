@@ -51,7 +51,7 @@ class EmailSlaMonthly extends Command
         Excel::store(new SlaMonthlyMultipleSheet($data), 'sla.xls');
 
         $to = ['pungki@sundaya.com', 'malik@sundaya.com'];
-        $cc = ['dicky@sundaya.com'];
+        $cc = ['maurice.adema@sundaya.com', 'desy@sundaya.com', 'tri@sundaya.com', 'dicky@sundaya.com'];
 
         Mail::to($to)
             ->cc($cc)
