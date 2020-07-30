@@ -16,8 +16,9 @@ use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Illuminate\Support\Carbon;
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 
-class SlaMonthly implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, WithEvents
+class SlaMonthly implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, WithEvents, WithStrictNullComparison
 {
     /**
      * @return \Illuminate\Support\Collection
