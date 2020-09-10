@@ -522,7 +522,7 @@ class NojsLoggersController extends Controller
                         ]);
                         $timeNow = $time_local;
 
-                        if ($tempTime >= 3 && $tempTime < 7) break;
+                        if ($tempTime >= 3 && $tempTime < 8) break;
                     }
                     array_push($result, $data);
                     $temp = $data["time_local"];
