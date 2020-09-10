@@ -25,6 +25,8 @@ class ApiNojsUserController extends Controller
         $lc = $request->lc;
         $lc1 = $request->lc1;
         $noc = $request->noc;
+        $start = $request->start;
+        $take = $request->take;
 
         if ($lc && !$lc1) {
             $datas = NojsUser::where('lc', $lc)
@@ -59,6 +61,20 @@ class ApiNojsUserController extends Controller
                 ->orderBy('nojs', 'asc')
                 ->skip(75)
                 ->take(25)
+                ->get();
+        } elseif ($start === 0 && $take) {
+            $datas = NojsUser::query()
+                ->orderBy('lc', 'asc')
+                ->orderBy('nojs', 'asc')
+                ->skip(0)
+                ->take($take)
+                ->get();
+        } elseif ($start !== 0 && $take) {
+            $datas = NojsUser::query()
+                ->orderBy('lc', 'asc')
+                ->orderBy('nojs', 'asc')
+                ->skip($start)
+                ->take($take)
                 ->get();
         } else {
             $datas = NojsUser::all();
@@ -113,7 +129,17 @@ class ApiNojsUserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'nojs' => 'required|unique:nojs_users,nojs',
+            'site' => 'required|string|max:20',
+            'provinsi' => 'required|string|max:20',
+            'lc' => 'required',
+            'mitra' => 'required',
+            'ip' => 'required|string|max:15',
+        ]);
+
+        $datanojs = NojsUser::create($request->all());
+        return $datanojs;
     }
 
     /**
@@ -122,9 +148,9 @@ class ApiNojsUserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(NojsUser $nojsUser)
     {
-        //
+        return ($nojsUser);
     }
 
     /**
@@ -133,9 +159,19 @@ class ApiNojsUserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, NojsUser $nojsUser)
     {
-        //
+        $this->validate($request, [
+            'nojs' => 'required',
+            'site' => 'required|string|max:20',
+            'provinsi' => 'required|string|max:20',
+            'lc' => 'required',
+            'ip' => 'required|string|max:15',
+
+        ]);
+
+        $result = $nojsUser->update($request->all());
+        return response($result);
     }
 
     /**
