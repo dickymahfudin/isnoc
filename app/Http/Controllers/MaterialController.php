@@ -39,9 +39,8 @@ class MaterialController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'nama_barang' => 'required|unique:nojs_users,nojs',
-            'serial' => 'required|string|max:20',
-            'jumlah_barang' => 'required|string|max:20',
+            'nama_barang' => 'required',
+            'jumlah_barang' => 'required',
             'mitra' => 'required',
             'status' => 'required',
         ]);
