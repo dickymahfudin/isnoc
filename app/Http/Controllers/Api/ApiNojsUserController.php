@@ -77,7 +77,7 @@ class ApiNojsUserController extends Controller
                 ->take($take)
                 ->get();
         } else {
-            $datas = NojsUser::all();
+            $datas = NojsUser::orderBy('site', 'asc')->get();
         }
         return response($datas, 200);
     }
