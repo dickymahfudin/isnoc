@@ -26,10 +26,11 @@
                                     <th scope="col">Tanggal Terima</th>
                                     <th scope="col">Tanggal Pemasangan</th>
                                     <th scope="col">Nojs</th>
-                                    <th scope="col">Site</th>
+                                    <th scope="col">Site Stock</th>
+                                    <th scope="col">Site Pemasangan</th>
                                     <th scope="col">Teknisi</th>
                                     <th scope="col">Status</th>
-                                    @if ( Auth::user()->name === "malek" || Auth::user()->name === "dicky")
+                                    @if ( Auth::user()->name === "malek" || Auth::user()->name === "dicky" || Auth::user()->name === "admin")
                                     <th scope="col">Action</th>
                                     @endif
                                 </tr>
@@ -50,7 +51,8 @@
                                 <th scope="col">Tanggal Terima</th>
                                 <th scope="col">Tanggal Pemasangan</th>
                                 <th scope="col">Nojs</th>
-                                <th scope="col">Site</th>
+                                <th scope="col">Site Stock</th>
+                                <th scope="col">Site Pemasangan</th>
                                 <th scope="col">Teknisi</th>
                                 <th scope="col">Status</th>
                             </tr>

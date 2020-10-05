@@ -46,8 +46,13 @@
     </div>
 
     <div class="form-group">
-        <label for="" class="control-label">Site</label>
-        {{  Form::text('site', null, ['class' => 'form-control', 'id' => 'site'])  }}
+        <label for="" class="control-label">Site Stock</label>
+        {{  Form::text('site_stock', null, ['class' => 'form-control', 'id' => 'site_stock'])  }}
+    </div>
+
+    <div class="form-group">
+        <label for="" class="control-label">Site Pemasangan</label>
+        {{  Form::text('site_pemasangan', null, ['class' => 'form-control', 'id' => 'site_pemasangan'])  }}
     </div>
 
     <div class="form-group">

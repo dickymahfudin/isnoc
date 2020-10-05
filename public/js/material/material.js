@@ -17,7 +17,8 @@ $(document).ready(function() {
             { data: "tanggal_terima" },
             { data: "tanggal_pemasangan" },
             { data: "nojs" },
-            { data: "site" },
+            { data: "site_stock" },
+            { data: "site_pemasangan" },
             { data: "teknisi" },
             { data: "status" },
             { data: "action" }
@@ -43,7 +44,8 @@ $(document).ready(function() {
             { data: "tanggal_terima" },
             { data: "tanggal_pemasangan" },
             { data: "nojs" },
-            { data: "site" },
+            { data: "site_stock" },
+            { data: "site_pemasangan" },
             { data: "teknisi" },
             { data: "status" }
         ]
@@ -55,6 +57,7 @@ $(document).ready(function() {
 
         $(".show").removeClass("show");
         $(this.collapse).addClass("show");
+        tableCadangan.ajax.reload();
     });
 
     $("body").on("click", ".modal-show", function(e) {
