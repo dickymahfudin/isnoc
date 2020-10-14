@@ -64,10 +64,18 @@ class ServiceCallsDailyController extends Controller
             $array[$index]["sum"] = $error / 100;
             $index++;
         }
-        $response = [
-            "data_logs" => $datas,
-            "sum" => $array,
-        ];
+        try {
+            $response = [
+                "data_logs" => $datas,
+                "sum" => $array,
+            ];
+        } catch (\Throwable $th) {
+            $response = [
+                "data_logs" => 0,
+                "sum" => 0,
+            ];
+        }
+
         return response($response, 200);
     }
 
@@ -98,5 +106,19 @@ class ServiceCallsDailyController extends Controller
             "sum" => $array,
         ];
         return $response;
+    }
+
+    public static function powerDown($data)
+    {
+        $start = $data["start"];
+        $end = $data["end"];
+        $nojs = $data["nojs"];
+
+        $datas = ServiceCallDailys::where("nojs", $nojs)
+            ->whereBetween('time_local', [$start,  $end])
+            ->where('error', "100")
+            ->count();
+
+        return $datas;
     }
 }

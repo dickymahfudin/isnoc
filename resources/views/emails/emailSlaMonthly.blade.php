@@ -40,6 +40,58 @@
             </tr>
         @endforeach
     </table>
+
+    <div style="margin-top: 30px;">
+        <p>Berikut daftar KPI :</p>
+        <table style="width: 500px; height: 104px;">
+            <tr style="height: 30px;">
+                <th colspan="2"></th>
+                <th>Days</th>
+                <th>Down Time</th>
+            </tr>
+            <tr style="height: 29px;">
+                <td>KPI 1</td>
+                <td>Energy Down Time</td>
+                <td>{{$kpi["kpi1"]["days"]}}</td>
+                <td>{{$kpi["kpi1"]["avg"]}}%</td>
+            </tr>
+            <tr style="height: 29px;">
+                <td>KPI 2</td>
+                <td>Data Down Time</td>
+                <td>{{$kpi["kpi2"]["days"]}}</td>
+                <td>{{$kpi["kpi2"]["avg"]}}%</td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <table style="width: 500px; height: 104px;">
+            <tr style="height: 30px;">
+                <th colspan="2"></th>
+                <th>Site Qty</th>
+                <th>SLA AVG</th>
+            </tr>
+            <tr style="height: 29px;">
+                <td>KPI 3</td>
+                <td>RED (SLA < 91)</td>
+                <td>{{$kpi["kpi3"]["qty"]}}</td>
+                <td>{{$kpi["kpi3"]["avg"]}}%</td>
+            </tr>
+            <tr style="height: 29px;">
+                <td>KPI 4</td>
+                <td>ORANGE (SLA <= 95 && SLA >= 91)</td>
+                <td>{{$kpi["kpi4"]["qty"]}}</td>
+                <td>{{$kpi["kpi4"]["avg"]}}%</td>
+            </tr>
+            <tr style="height: 29px;">
+                <td>KPI 5</td>
+                <td>GREEN (SLA > 95)</td>
+                <td>{{$kpi["kpi5"]["qty"]}}</td>
+                <td>{{$kpi["kpi5"]["avg"]}}%</td>
+            </tr>
+        </table>
+    </div>
+
     <p>Kami akan selalu menjaga agar performance SLA di atas 95%</p>
 @else
     <p>Semua Site SLA diatas 95%</p>

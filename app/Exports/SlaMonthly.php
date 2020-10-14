@@ -63,9 +63,10 @@ class SlaMonthly implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, 
                     'Nojs',
                     'Site',
                     'LC',
-                    'Sla lvd1 Vsat',
-                    'Up time',
-                    'Down time',
+                    'SLA lvd1 Vsat',
+                    'Data Up time',
+                    'Data Down time',
+                    'Energy Down time',
                 ]
             ];
         } else {
@@ -142,7 +143,7 @@ class SlaMonthly implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, 
             ],
         ];
 
-        $styleSla = [
+        $styleSlaRed = [
             'font' => [
                 'color' => [
                     'argb' => 'FFFFFFFF',
@@ -156,24 +157,58 @@ class SlaMonthly implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, 
             ],
         ];
 
+        $styleSlaYellow = [
+            'font' => [
+                'color' => [
+                    'argb' => 'FF000000',
+                ]
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'color' => [
+                    'argb' => 'FFF9F44D',
+                ]
+            ],
+        ];
+
+        $styleSlaGreen = [
+            'font' => [
+                'color' => [
+                    'argb' => 'FFFFFFFF',
+                ]
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'color' => [
+                    'argb' => 'FF2CAA54',
+                ]
+            ],
+        ];
+
         if ($this->title === "SLA") {
             return [
-                AfterSheet::class => function (AfterSheet $event) use ($styleHeader, $styleDescription, $styleMain, $styleSla) {
+                AfterSheet::class => function (AfterSheet $event) use ($styleHeader, $styleDescription, $styleMain, $styleSlaRed, $styleSlaYellow, $styleSlaGreen) {
                     $dataCount = count($this->data) + 5;
-                    $slaMin = $this->detail["site_loop"];
-                    $event->sheet->getDelegate()->mergeCells('A1:F1');
-                    $event->sheet->getDelegate()->mergeCells('A2:F2');
-                    $event->sheet->getDelegate()->mergeCells('A3:F3');
-                    $event->sheet->getDelegate()->getStyle('A1:F1')->applyFromArray($styleDescription);
-                    $event->sheet->getDelegate()->getStyle('A2:F2')->applyFromArray($styleDescription);
-                    $event->sheet->getDelegate()->getStyle('A3:F3')->applyFromArray($styleDescription);
-                    $event->sheet->getDelegate()->getStyle('A5:F5')->applyFromArray($styleHeader);
-                    $event->sheet->getDelegate()->getStyle('A6:F' . $dataCount)->applyFromArray($styleMain);
 
-                    foreach ($slaMin as $value) {
-                        $temp = $value + 5;
-                        $row = "A$temp:F$temp";
-                        $event->sheet->getDelegate()->getStyle($row)->applyFromArray($styleSla);
+                    $event->sheet->getDelegate()->mergeCells('A1:G1');
+                    $event->sheet->getDelegate()->mergeCells('A2:G2');
+                    $event->sheet->getDelegate()->mergeCells('A3:G3');
+                    $event->sheet->getDelegate()->getStyle('A1:G1')->applyFromArray($styleDescription);
+                    $event->sheet->getDelegate()->getStyle('A2:G2')->applyFromArray($styleDescription);
+                    $event->sheet->getDelegate()->getStyle('A3:G3')->applyFromArray($styleDescription);
+                    $event->sheet->getDelegate()->getStyle('A5:G5')->applyFromArray($styleHeader);
+                    $event->sheet->getDelegate()->getStyle('A6:G' . $dataCount)->applyFromArray($styleMain);
+
+                    foreach ($this->data as $key => $value) {
+                        $temp = $key + 6;
+                        $row = "A$temp:G$temp";
+                        if ($value["lvd1_vsat"] < 91) {
+                            $event->sheet->getDelegate()->getStyle($row)->applyFromArray($styleSlaRed);
+                        } else if ($value["lvd1_vsat"] <= 95 && $value["lvd1_vsat"] >= 91) {
+                            $event->sheet->getDelegate()->getStyle($row)->applyFromArray($styleSlaYellow);
+                        } else {
+                            $event->sheet->getDelegate()->getStyle($row)->applyFromArray($styleSlaGreen);
+                        }
                     }
                 },
             ];
