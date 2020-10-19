@@ -26,8 +26,8 @@ class SlaPrtgController extends Controller
     public static function getSla($nojs)
     {
         try {
-            // $end = Carbon::now()->format('Y-m-d');
-            $end = '2020-07-14';
+            $end = Carbon::now()->format('Y-m-d');
+            // $end = '2020-07-14';
 
             $start = (new Carbon($end))->format('Y-m-01');
 
@@ -64,8 +64,8 @@ class SlaPrtgController extends Controller
     {
         $users = NojsUser::orderBy('site', 'asc')->get();
 
-        // $sdate = "2020-10-01-00-00";
-        // $edate = "2020-11-01-00-00";
+        // $sdate = "2020-09-01-00-00";
+        // $edate = "2020-10-01-00-00";
 
         $edate = Carbon::now()->format('Y-m-d-00-00');
         $sdate = (new Carbon($edate))->subMonths(1)->format('Y-m-d-00-00');
