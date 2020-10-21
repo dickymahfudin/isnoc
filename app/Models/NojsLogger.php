@@ -9,4 +9,8 @@ class NojsLogger extends Model
     public $incrementing = false;
     protected $keyType = 'string';
     protected $guarded = [];
+
+    protected $hidden = [
+        'created_at', 'updated_at',
+    ];
 }
