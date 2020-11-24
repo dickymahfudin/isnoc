@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Http\Controllers\Api\ServiceCallsController;
+use Illuminate\Support\Facades\DB;
+use App\Models\NojsUser;
 
 class NojsLoggersController extends Controller
 {
@@ -136,7 +138,7 @@ class NojsLoggersController extends Controller
                 $data = $this->rawDataProcessing($datas);
             }
         } elseif ($noc && $nojs) {
-            if ($single === "true") {
+            if ($single) {
                 $datas = NojsLogger::where('nojs', $nojs)
                     ->orderBy('time_local', 'desc')
                     ->limit($limit + 36)
@@ -146,8 +148,8 @@ class NojsLoggersController extends Controller
             } else {
                 $start = (new Carbon())->subHours(4)->format('Y-m-d H:i:s');
                 $end = (new Carbon())->format('Y-m-d H:i:s');
-                // $start = "2020-07-14 11:35:02";
-                // $end = "2020-07-14 15:35:02";
+                // $start = "2020-08-14 11:35:02";
+                // $end = "2020-08-14 15:35:02";
                 $datas = NojsLogger::where('nojs', $nojs)
                     ->whereNotNull('eh1')
                     ->whereBetween('time_local', [$start, $end])
@@ -191,6 +193,56 @@ class NojsLoggersController extends Controller
         ];
 
         return $result;
+    }
+
+    public function allSla(Request $request)
+    {
+        $sdate = $request->sdate;
+        $edate = $request->edate;
+        $nojs = $request->nojs;
+
+        if ($sdate && $edate && $nojs) {
+            $result = [];
+            $datas =  NojsLogger::whereIn('nojs', $nojs)
+                ->whereNotNull('eh1')
+                ->whereBetween('time_local', [$sdate, $edate])
+                ->orderBy('time_local', 'desc')
+                ->get();
+
+            $groups = $datas->groupBy(function ($item) {
+                return $item["nojs"];
+            });
+
+            foreach ($groups as $group) {
+                $logger = $this->resultFiveMinutes($group);
+                $time =  Carbon::parse($sdate)->diffInSeconds(Carbon::parse($edate));
+                $time = $time - 300;
+
+                $averageSla = $this->averageSla($logger, $time);
+                if (!$averageSla) {
+                    $averageSla = [
+                        "nojs" => $nojs,
+                        "up_time" => "0s",
+                        "unknown_time" => $this->secToTime(($time)),
+                        "up_persentase" => "0%",
+                        "unknown_persentase" => "100%",
+                        "eh1" => 0,
+                        "eh2" => 0,
+                        "vsat_curr" => 0,
+                        "bts_curr" => 0,
+                        "load3" => 0,
+                        "batt_volt1" => 0,
+                        "batt_volt2" => 0,
+                        "edl1" => 0,
+                        "edl2" => 0,
+                        "pms_state" => 0
+                    ];
+                }
+                array_push($result, $averageSla);
+            }
+
+            return response($result, 200);
+        }
     }
 
     public static function sla2($data)
@@ -587,5 +639,86 @@ class NojsLoggersController extends Controller
             $result = $datas;
         }
         return $result;
+    }
+
+    public static function zeroPad($time)
+    {
+        return $time < 10 ? "0$time" : $time;
+    }
+
+    public static function secToTime($sec)
+    {
+        $msec = $sec;
+        $day = floor($msec /  60 / 60 / 24);
+        $msec -= $day *   60 * 60 * 24;
+        $hh = floor($msec   / 60 / 60);
+        $msec -= $hh *   60 * 60;
+        $mm = floor($msec  / 60);
+        $msec -= $mm *   60;
+        $ss =   floor($msec);
+
+        return ($day > 0 ? NojsLoggersController::zeroPad($day) . "d " . NojsLoggersController::zeroPad($hh) . "h " . NojsLoggersController::zeroPad($mm) . "m " . NojsLoggersController::zeroPad($ss) . "s" : NojsLoggersController::zeroPad($hh) . "h " . NojsLoggersController::zeroPad($mm) . "m " . NojsLoggersController::zeroPad($ss) . "s");
+    }
+
+    public function averageSla($datas, $time)
+    {
+        if (count($datas) !== 0) {
+            $result = [];
+            $valueError = null;
+            $upTime = 0;
+            $temp = ($datas[0]["time_local"] !== $valueError) ? $datas[0]["time_local"] : 0;
+            foreach ($datas as $key => $data) {
+                if ($data["eh1"] !== $valueError) {
+                    $up =  Carbon::parse($data["time_local"])->diffInSeconds(Carbon::parse($temp));
+                    $upTime += $up;
+                    $temp = $data["time_local"];
+                } else {
+                    $temp = $data["time_local"];
+                }
+            }
+
+            $nojs = $datas[0]["nojs"];
+            $eh1 = intval(round($datas->avg("eh1")));
+            $eh2 = intval(round($datas->avg("eh2")));
+            $vsat_curr = intval(round($datas->avg("vsat_curr")));
+            $bts_curr = intval(round($datas->avg("bts_curr")));
+            $load3 = intval(round($datas->avg("load3")));
+            $batt_volt1 = intval(round($datas->avg("batt_volt1")));
+            $batt_volt2 = intval(round($datas->avg("batt_volt2")));
+            $edl1 = intval(round($datas->avg("edl1")));
+            $edl2 = intval(round($datas->avg("edl2")));
+            $pms_state = intval(round($datas->avg(function ($item) {
+                return $this->pmsConvert($item["pms_state"]);
+            })));
+
+            $up_persentase = round(($upTime / $time) * 100);
+            $dataNojs = NojsUser::find($nojs);
+
+            $result = [
+                "nojs" => $nojs,
+                "site" => $dataNojs["site"],
+                "lc" => $dataNojs["lc"],
+                "up_time" => $this->secToTime($upTime),
+                "unknown_time" => $this->secToTime(($time - $upTime)),
+                "up_persentase" => $up_persentase . "%",
+                "unknown_persentase" => 100 - $up_persentase . "%",
+                "eh1" => $eh1,
+                "eh2" => $eh2,
+                "vsat_curr" => round(
+                    $vsat_curr / 100,
+                    1
+                ),
+                "bts_curr" => round($bts_curr / 100, 1),
+                "load3" => round($load3 / 100, 1),
+                "batt_volt1" => round($batt_volt1 / 100, 1),
+                "batt_volt2" => round($batt_volt2 / 100, 1),
+                "edl1" => $edl1,
+                "edl2" => $edl2,
+                "pms_state" => $pms_state
+            ];
+            return $result;
+        } else {
+            return false;
+        }
     }
 }
