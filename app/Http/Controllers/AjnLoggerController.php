@@ -191,8 +191,8 @@ class AjnLoggerController extends Controller
 
             array_push($result, [
                 'date' => $date,
-                'time' => $time,
                 'up_time' => gmdate("H:i:s", $time),
+                'SLA' => round((($time / 86200) * 100), 1),
                 'load1' => intval(round(array_sum($load1) / count($load1))),
                 'load2' => intval(round(array_sum($load2) / count($load2))),
                 'edl1' => intval(round(array_sum($edl1) / count($edl1))),
