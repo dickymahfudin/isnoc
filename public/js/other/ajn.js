@@ -17,12 +17,12 @@ $(document).ready(function() {
         $(".active").removeClass("active");
         $(this).addClass("active");
         let id = $(this).attr("id");
-        if (id == "loggers") {
-            $("#data-logger").html(`
-                <table class="table table-striped table-bordered dt-responsive nowrap" style="width:100%" id="table-logger"></table>;
-            `);
-            getTable(dataTemp.logger, "#table-logger");
-        }
+        // if (id == "loggers") {
+        //     $("#data-logger").html(`
+        //         <table class="table table-striped table-bordered dt-responsive nowrap" style="width:100%" id="table-logger"></table>;
+        //     `);
+        //     getTable(dataTemp.logger, "#table-logger");
+        // }
         $(".show").removeClass("show");
         $(this.collapse).addClass("show");
     });
@@ -71,7 +71,7 @@ $(document).ready(function() {
 
         if (start < end && start != "" && end != "" && site != "") {
             dataTemp = [];
-            $("#data-logger").html("");
+            // $("#data-logger").html("");
             $("#collapsebtn").addClass("d-none");
 
             $("#btnstart").addClass("disabled");
@@ -84,7 +84,11 @@ $(document).ready(function() {
             `);
 
             dataTemp = getData({ site, start, end });
+            window.open(
+                `/ajn/download?site=${site}&sdate=${start}&edate=${end}`
+            );
 
+            download({ site, start, end });
             $("#collapsebtn").removeClass("d-none");
             getTable(dataTemp.daily, "#table-daily");
         } else {
@@ -95,6 +99,22 @@ $(document).ready(function() {
             });
         }
     });
+
+    function download(data) {
+        $.ajax({
+            type: "GET",
+            url: "/ajn/download",
+            data: {
+                site: data.site,
+                sdate: data.start,
+                edate: data.end
+            },
+            async: false,
+            success: function(response) {
+                return response;
+            }
+        });
+    }
 
     function getData(data) {
         let temp = [];
@@ -108,20 +128,20 @@ $(document).ready(function() {
             },
             async: false,
             success: function(response) {
-                console.log(response);
-                const logger = response.loggers;
+                // console.log(response);
+                // const logger = response.loggers;
                 const daily = response.daily;
-                let clmLogger = Object.keys(logger[0]);
+                // let clmLogger = Object.keys(logger[0]);
                 let clmDaily = Object.keys(daily[0]);
                 let columnLogger = [];
                 let columnDaily = [];
 
-                clmLogger.forEach(data => {
-                    columnLogger.push({
-                        data: data,
-                        title: data
-                    });
-                });
+                // clmLogger.forEach(data => {
+                //     columnLogger.push({
+                //         data: data,
+                //         title: data
+                //     });
+                // });
                 clmDaily.forEach(data => {
                     columnDaily.push({
                         data: data,
@@ -130,10 +150,10 @@ $(document).ready(function() {
                 });
 
                 temp = {
-                    logger: {
-                        data: logger,
-                        columns: columnLogger
-                    },
+                    // logger: {
+                    //     data: logger,
+                    //     columns: columnLogger
+                    // },
                     daily: {
                         data: daily,
                         columns: columnDaily

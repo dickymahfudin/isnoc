@@ -81,19 +81,19 @@
                 </div>
 
                 <div class="row justify-content-center mt-3 d-none" id="collapsebtn">
-                    <div class="col-md-5">
+                    {{-- <div class="col-md-5">
                         <a class="btn btn-coll btn-success" data-toggle="collapse" href="#data-daily"  role="button" aria-expanded="false" id="daily">Daily</a>
                         <a class="btn btn-coll btn-success" data-toggle="collapse" href="#data-logger" role="button" aria-expanded="false" id="loggers">Logger</a>
                     </div>
                     <div class="col-md-5">
-                    </div>
+                    </div> --}}
 
 
                     <div class="collapse show active container mt-5" id="data-daily">
                     </div>
 
-                    <div class="collapse container mt-5" id="data-logger">
-                    </div>
+                    {{-- <div class="collapse container mt-5" id="data-logger">
+                    </div> --}}
                 </div>
 
 
