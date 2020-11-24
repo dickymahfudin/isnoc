@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\AjnImport;
 use App\Models\AjnLogger;
 use Carbon\Carbon;
+use App\Exports\AjnSlaMultipleSheet;
 
 class AjnLoggerController extends Controller
 {
@@ -71,6 +72,48 @@ class AjnLoggerController extends Controller
         }
     }
 
+    public function getSla(Request $request)
+    {
+        // $site = "toro";
+        // $sdate = "2020-05-01 00:00";
+        // $edate = "2020-11-24 00:00";
+        $site = $request->site;
+        $sdate = $request->sdate;
+        $edate = $request->edate;
+
+        // if ($site && $sdate && $edate) {
+        $datas = AjnLogger::select(
+            'time_local',
+            'site',
+            'load1',
+            'load2',
+            'edl1',
+            'edl2',
+            'edl3',
+            'pv_volt1',
+            'pv_curr1',
+            'batt_volt1',
+            'pv_volt2',
+            'pv_curr2',
+            'batt_volt2',
+        )
+            ->where('site', $site)
+            ->whereBetween('time_local', [$sdate, $edate])
+            ->orderBy('time_local', 'desc')
+            ->get();
+        $montly = $datas->groupBy(function ($item, $key) {
+            return substr($item["time_local"], 0, 7);
+        });
+        foreach ($montly as $key => $value) {
+            $sla = $value->groupBy(function ($item, $i) {
+                return substr($item["time_local"], 0, 10);
+            });
+            $sla =  $this->sla($sla);
+            $montly[$key] = $sla;
+        }
+        return Excel::download(new AjnSlaMultipleSheet($montly, $site), "$site.xls");
+    }
+
     public function daily($datas)
     {
         $result = [];
@@ -130,7 +173,7 @@ class AjnLoggerController extends Controller
             $pv_curr2 = [];
             $batt_volt2 = [];
             foreach ($value as $val) {
-                $date = $val["date"];
+                $date = (new Carbon($val["time_local"]))->format('Y-m-d');
                 array_push($time_local, $val["time_local"]);
                 array_push($load1, $val["load1"]);
                 array_push($load2, $val["load2"]);
@@ -148,6 +191,7 @@ class AjnLoggerController extends Controller
 
             array_push($result, [
                 'date' => $date,
+                'time' => $time,
                 'up_time' => gmdate("H:i:s", $time),
                 'load1' => intval(round(array_sum($load1) / count($load1))),
                 'load2' => intval(round(array_sum($load2) / count($load2))),

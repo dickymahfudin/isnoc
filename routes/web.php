@@ -3,16 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Auth\Events\Verified;
 use Symfony\Component\HttpFoundation\Request;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\ServiceCallMail;
-use Illuminate\Support\Carbon;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\SlaMonthly;
-use App\Http\Controllers\Api\SlaPrtgController;
-use App\Exports\SlaMonthlyMultipleSheet;
-use App\Mail\SlaPrtgMonthlyMail;
-use Illuminate\Support\Facades\Storage;
-use App\Exports\TestExport;
 
 /*
 |--------------------------------------------------------------------------
@@ -110,26 +100,14 @@ Route::get('/chint', function (Request $request) {
 Route::group(['prefix' => 'ajn', 'middleware' => 'auth'], function () {
     Route::get('/', 'AjnLoggerController@index')->name('ajn.index');
     Route::post('/', 'AjnLoggerController@store')->name('ajn.store');
+    Route::get('/download', 'AjnLoggerController@getSla');
 });
 
 Route::group(['prefix' => 'material', 'middleware' => 'auth'], function () {
     Route::get('/', 'MaterialController@index')->name('material.index');
     Route::get('/table', 'MaterialController@dataTable')->name('material.table');
     Route::get('/create', 'MaterialController@create')->name('material.create');
-    // Route::get('/detail', function () {
-    //     return view('nojs.detail');
-    // })->name('nojs.detail');
-    // Route::get('/dataprocessing', function () {
-    //     return view('nojs.dataProcessing');
-    // })->name('nojs.dataprocessing');
-    // Route::get('/sla', function () {
-    //     return view('nojs.sla');
-    // })->name('nojs.sla');
-    // Route::get('/slacapture', function () {
-    //     return view('nojs.slaCapture');
-    // })->name('nojs.slacapture');
     Route::post('/', 'MaterialController@store')->name('material.store');
-    // Route::get('/{nojsUser}', 'NojsUsersController@show')->name('nojs.show');
     Route::put('/{listMaterial}', 'MaterialController@update')->name('material.update');
     Route::delete('/{listMaterial}', 'MaterialController@destroy')->name('material.destroy');
     Route::get('/{listMaterial}/edit', 'MaterialController@edit')->name('material.edit');
