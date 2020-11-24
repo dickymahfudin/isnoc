@@ -27,7 +27,7 @@ Route::prefix('servicecalls')->group(function () {
 
 Route::prefix('logger')->group(function () {
     Route::get('/', 'Api\NojsLoggersController@loggers')->name('noc.logger');
-    Route::get('/detail', 'Api\NojsLoggersController@detail');
+    Route::get('/sla', 'Api\NojsLoggersController@allSla');
     Route::post('/', 'Api\NojsLoggersController@store');
 });
 
@@ -35,6 +35,9 @@ Route::prefix('nojs')->group(function () {
     Route::get('/', 'Api\ApiNojsUserController@index');
     Route::get('/error', 'Api\ApiNojsUserController@bbc');
     Route::put('/', 'Api\ApiNojsUserController@update');
+    Route::get('/{nojsUser}', 'Api\ApiNojsUserController@show');
+    Route::post('/', 'Api\ApiNojsUserController@store');
+    Route::put('/{nojsUser}', 'Api\ApiNojsUserController@edit');
 });
 
 Route::prefix('prtg')->group(function () {
@@ -55,6 +58,10 @@ Route::prefix('raspi')->group(function () {
 
 Route::prefix('servicecount')->group(function () {
     Route::get('/', 'Api\ServiceCallsDailyController@index');
+});
+
+Route::prefix('servicewithsla')->group(function () {
+    Route::get('/', 'Api\ServiceCallsController@withSlaLocal');
 });
 
 Route::prefix('ajn')->group(function () {
