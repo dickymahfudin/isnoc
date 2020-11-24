@@ -28,10 +28,10 @@ class AjnSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, With
         $this->title = (new Carbon($title))->format('F Y');
         $this->site = $site;
         $collection = collect($data);
-        $this->sum = $collection->sum('time');
-        $endDate = (new Carbon($this->title))->addMonth(1)->format('F Y');
-        $timeSec = Carbon::parse($this->title)->diffInSeconds(Carbon::parse($endDate));
-        $this->sla = round((($this->sum / $timeSec) * 100), 2);
+        $this->sum = round($collection->sum('SLA') / count($collection), 1);
+        // $endDate = (new Carbon($this->title))->addMonth(1)->format('F Y');
+        // $timeSec = Carbon::parse($this->title)->diffInSeconds(Carbon::parse($endDate));
+        // $this->sla = round((($this->sum / $timeSec) * 100), 2);
     }
 
     public function array(): array
@@ -48,12 +48,12 @@ class AjnSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, With
             [
                 "$this->title"
             ], [
-                "Up Time Total: " . NojsLoggersController::secToTime($this->sum)
-            ], ["SLA : $this->sla%"],
+                "SLA", $this->sum
+            ], [],
             [
                 "Date",
-                "time",
                 "Up Time",
+                "SLA",
                 "Load1",
                 "Load2",
                 "edl1",
@@ -104,6 +104,10 @@ class AjnSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, With
         ];
 
         $styleMain = [
+            'font' => [
+                'bold' => false,
+                'size' => 12
+            ],
             'alignment' => [
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
             ],
@@ -162,10 +166,10 @@ class AjnSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, With
                 $event->sheet->getDelegate()->mergeCells('A1:N1');
                 $event->sheet->getDelegate()->mergeCells('A2:N2');
                 $event->sheet->getDelegate()->mergeCells('A3:N3');
-                $event->sheet->getDelegate()->mergeCells('A4:C4');
                 $event->sheet->getDelegate()->getStyle('A1:N1')->applyFromArray($styleDescription);
                 $event->sheet->getDelegate()->getStyle('A2:N2')->applyFromArray($styleDescription);
                 $event->sheet->getDelegate()->getStyle('A3:N3')->applyFromArray($styleDescription);
+                $event->sheet->getDelegate()->getStyle('A4:C4')->applyFromArray($styleDescription);
                 $event->sheet->getDelegate()->getStyle('A6:N6')->applyFromArray($styleHeader);
                 $event->sheet->getDelegate()->getStyle('A7:N' . $dataCount)->applyFromArray($styleMain);
 
