@@ -88,7 +88,6 @@ $(document).ready(function() {
                 `/ajn/download?site=${site}&sdate=${start}&edate=${end}`
             );
 
-            download({ site, start, end });
             $("#collapsebtn").removeClass("d-none");
             getTable(dataTemp.daily, "#table-daily");
         } else {
@@ -99,22 +98,6 @@ $(document).ready(function() {
             });
         }
     });
-
-    function download(data) {
-        $.ajax({
-            type: "GET",
-            url: "/ajn/download",
-            data: {
-                site: data.site,
-                sdate: data.start,
-                edate: data.end
-            },
-            async: false,
-            success: function(response) {
-                return response;
-            }
-        });
-    }
 
     function getData(data) {
         let temp = [];
