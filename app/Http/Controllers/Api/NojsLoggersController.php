@@ -138,7 +138,7 @@ class NojsLoggersController extends Controller
                 $data = $this->rawDataProcessing($datas);
             }
         } elseif ($noc && $nojs) {
-            if ($single) {
+            if ($single === "true") {
                 $datas = NojsLogger::where('nojs', $nojs)
                     ->orderBy('time_local', 'desc')
                     ->limit($limit + 36)
