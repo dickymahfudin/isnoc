@@ -188,11 +188,11 @@ class AjnLoggerController extends Controller
                 array_push($batt_volt2, $val["batt_volt2"]);
             }
             $time =  Carbon::parse($time_local[0])->diffInSeconds(Carbon::parse($time_local[count($time_local) - 1]));
-
+            $sla = round((($time / 86000) * 100), 1);
             array_push($result, [
                 'date' => $date,
                 'up_time' => gmdate("H:i:s", $time),
-                'SLA' => round((($time / 86200) * 100), 1),
+                'SLA' => ($sla > 100) ? 100 : $sla,
                 'load1' => intval(round(array_sum($load1) / count($load1))),
                 'load2' => intval(round(array_sum($load2) / count($load2))),
                 'edl1' => intval(round(array_sum($edl1) / count($edl1))),
