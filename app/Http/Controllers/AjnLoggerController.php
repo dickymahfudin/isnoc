@@ -172,6 +172,14 @@ class AjnLoggerController extends Controller
             $pv_volt2 = [];
             $pv_curr2 = [];
             $batt_volt2 = [];
+            $h1 = 0;
+            $h2 = 0;
+
+            $tempPvVolt1 = $value[0]["pv_volt1"];
+            $tempPvVolt2 = $value[0]["pv_volt2"];
+
+            $tempPvcurr1 = $value[0]["pv_curr1"];
+            $tempPvcurr2 = $value[0]["pv_curr2"];
             foreach ($value as $val) {
                 $date = (new Carbon($val["time_local"]))->format('Y-m-d');
                 array_push($time_local, $val["time_local"]);
@@ -186,26 +194,50 @@ class AjnLoggerController extends Controller
                 array_push($pv_volt2, $val["pv_volt2"]);
                 array_push($pv_curr2, $val["pv_curr2"]);
                 array_push($batt_volt2, $val["batt_volt2"]);
+
+                $tempH1 = round((($val["pv_volt1"] * $val["pv_curr1"]) * 300) / 10000000);
+                $tempH2 = round((($val["pv_volt2"] * $val["pv_curr2"]) * 300) / 10000000);
+                $h1 += $tempH1;
+                $h2 += $tempH2;
+
+
+                // $tempPvVolt1 = $value["pv_volt1"] == null ?$tempPvVolt1:$value["pv_volt1"] ;
+                // $tempPvVolt2 = $value["pv_volt2"] == null ?$tempPvVolt2:$value["pv_volt2"] ;
+
+                // $tempPvcurr1 = $value["pv_curr1"] == null ?$tempPvcurr1:$value["pv_curr1"] ;
+                // $tempPvcurr2 = $value["pv_curr2"] == null ?$tempPvcurr2:$value["pv_curr2"] ;
             }
             $time =  Carbon::parse($time_local[0])->diffInSeconds(Carbon::parse($time_local[count($time_local) - 1]));
             $sla = round((($time / 86000) * 100), 1);
+            $up = ($sla > 100) ? 100 : $sla;
+            $e1 = round(array_sum($edl1) * 0.00027778, 2);
+            $e2 = round(array_sum($edl2) * 0.00027778, 2);
+            $e3 = round(array_sum($edl3) * 0.00027778, 2);
+            $v_min = min($batt_volt1) / 100;
+            $v_max = max($batt_volt1) / 100;
+            $v_avg = (intval(round(array_sum($batt_volt1) / count($batt_volt1)))) / 100;
+            $dv = round($v_max - $v_min, 2);
+            $harvest1 = round(((1.5 / 100) * $e1) + $e1, 2);
+            $harvest2 = round(((1.5 / 100) * $e2) + $e2, 2);
             array_push($result, [
                 'date' => $date,
-                'up_time' => gmdate("H:i:s", $time),
-                'SLA' => ($sla > 100) ? 100 : $sla,
-                'load1' => intval(round(array_sum($load1) / count($load1))),
-                'load2' => intval(round(array_sum($load2) / count($load2))),
-                'edl1' => intval(round(array_sum($edl1) / count($edl1))),
-                'edl2' => intval(round(array_sum($edl2) / count($edl2))),
-                'edl3' => intval(round(array_sum($edl3) / count($edl3))),
-                'pv_volt1' => intval(round(array_sum($pv_volt1) / count($pv_volt1))),
-                'pv_curr1' => intval(round(array_sum($pv_curr1) / count($pv_curr1))),
-                'batt_volt1' => intval(round(array_sum($batt_volt1) / count($batt_volt1))),
-                'pv_volt2' => intval(round(array_sum($pv_volt2) / count($pv_volt2))),
-                'pv_curr2' => intval(round(array_sum($pv_curr2) / count($pv_curr2))),
-                'batt_volt2' => intval(round(array_sum($batt_volt2) / count($batt_volt2))),
+                'up_time' => gmdate(" H: i: s ",  $time),
+                'SLA' =>  $up,
+                'H1' =>  $harvest1,
+                'H2' =>  $harvest2,
+                'H' =>  $harvest1 +  $harvest2,
+                " v_min " =>  $v_min,
+                " v_avg " =>  $v_avg,
+                " v_max " =>  $v_max,
+                " dv " =>  $dv,
+                'E1' =>  $e1,
+                'E2' =>  $e2,
+                'E3' =>  $e3,
+                'E' =>  $e1 +  $e2 +  $e3,
+                'Data' => (100 -  $up),
+                'Energy' => 0.00
             ]);
         }
-        return $result;
+        return  $result;
     }
 }

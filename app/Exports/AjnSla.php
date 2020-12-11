@@ -48,23 +48,25 @@ class AjnSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, With
             [
                 "$this->title"
             ], [
-                "SLA", $this->sum
+                "AVG SLA", $this->sum
             ], [],
             [
                 "Date",
                 "Up Time",
-                "SLA",
-                "Load1",
-                "Load2",
-                "edl1",
-                "edl2",
-                "edl3",
-                "pv_volt1",
-                "pv_curr1",
-                "batt_volt1",
-                "pv_volt2",
-                "pv_curr2",
-                "batt_volt2",
+                "SLA (%)",
+                "H1",
+                "H2",
+                "H",
+                "V min",
+                "V avg",
+                "V max",
+                "DV",
+                "E1",
+                "E2",
+                "E3",
+                "E",
+                "Data",
+                "Energy",
             ]
         ];
     }
@@ -118,11 +120,18 @@ class AjnSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, With
             ],
         ];
 
-        $styleSlaRed = [
+        $styleHeaderRed = [
             'font' => [
-                'color' => [
-                    'argb' => 'FFFFFFFF',
-                ]
+                'bold' => true,
+                'size' => 12.5
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                ],
             ],
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
@@ -132,11 +141,39 @@ class AjnSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, With
             ],
         ];
 
-        $styleSlaYellow = [
+        $styleHeaderBlue = [
             'font' => [
+                'bold' => true,
+                'size' => 12.5
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                ],
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                 'color' => [
-                    'argb' => 'FF000000',
+                    'argb' => 'FF02FCFF',
                 ]
+            ],
+        ];
+
+        $styleHeaderYellow = [
+            'font' => [
+                'bold' => true,
+                'size' => 12.5
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                ],
             ],
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
@@ -146,11 +183,18 @@ class AjnSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, With
             ],
         ];
 
-        $styleSlaGreen = [
+        $styleHeaderGreen = [
             'font' => [
-                'color' => [
-                    'argb' => 'FFFFFFFF',
-                ]
+                'bold' => true,
+                'size' => 12.5
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                ],
             ],
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
@@ -160,18 +204,36 @@ class AjnSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, With
             ],
         ];
         return [
-            AfterSheet::class => function (AfterSheet $event) use ($styleHeader, $styleDescription, $styleMain, $styleSlaRed, $styleSlaYellow, $styleSlaGreen) {
+            AfterSheet::class => function (AfterSheet $event) use ($styleHeader, $styleDescription, $styleMain, $styleHeaderRed, $styleHeaderBlue, $styleHeaderYellow, $styleHeaderGreen) {
                 $dataCount = count($this->data) + 6;
 
                 $event->sheet->getDelegate()->mergeCells('A1:N1');
                 $event->sheet->getDelegate()->mergeCells('A2:N2');
                 $event->sheet->getDelegate()->mergeCells('A3:N3');
+                $event->sheet->getDelegate()->mergeCells('D5:F5');
+                $event->sheet->getDelegate()->mergeCells('G5:J5');
+                $event->sheet->getDelegate()->mergeCells('K5:N5');
+                $event->sheet->getDelegate()->mergeCells('O5:P5');
+                $event->sheet->setCellValue('D5', 'Harvest (kWh/day)');
+                $event->sheet->setCellValue('G5', 'Store Voltage (V)');
+                $event->sheet->setCellValue('K5', 'Enjoy (kWh/day)');
+                $event->sheet->setCellValue('O5', 'System Down Time (%)');
                 $event->sheet->getDelegate()->getStyle('A1:N1')->applyFromArray($styleDescription);
                 $event->sheet->getDelegate()->getStyle('A2:N2')->applyFromArray($styleDescription);
                 $event->sheet->getDelegate()->getStyle('A3:N3')->applyFromArray($styleDescription);
                 $event->sheet->getDelegate()->getStyle('A4:C4')->applyFromArray($styleDescription);
+                $event->sheet->getDelegate()->getStyle('D5:F5')->applyFromArray($styleHeaderGreen);
+                $event->sheet->getDelegate()->getStyle('G5:J5')->applyFromArray($styleHeaderBlue);
+                $event->sheet->getDelegate()->getStyle('K5:N5')->applyFromArray($styleHeaderRed);
+                $event->sheet->getDelegate()->getStyle('O5:P5')->applyFromArray($styleHeaderYellow);
                 $event->sheet->getDelegate()->getStyle('A6:N6')->applyFromArray($styleHeader);
-                $event->sheet->getDelegate()->getStyle('A7:N' . $dataCount)->applyFromArray($styleMain);
+
+                $event->sheet->getDelegate()->getStyle('D6:F6')->applyFromArray($styleHeaderGreen);
+                $event->sheet->getDelegate()->getStyle('G6:J6')->applyFromArray($styleHeaderBlue);
+                $event->sheet->getDelegate()->getStyle('K6:N6')->applyFromArray($styleHeaderRed);
+                $event->sheet->getDelegate()->getStyle('O6:P6')->applyFromArray($styleHeaderYellow);
+
+                $event->sheet->getDelegate()->getStyle('A7:P' . $dataCount)->applyFromArray($styleMain);
 
                 // foreach ($this->data as $key => $value) {
                 //     $temp = $key + 6;
