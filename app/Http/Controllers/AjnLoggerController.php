@@ -217,8 +217,11 @@ class AjnLoggerController extends Controller
             $v_max = max($batt_volt1) / 100;
             $v_avg = (intval(round(array_sum($batt_volt1) / count($batt_volt1)))) / 100;
             $dv = round($v_max - $v_min, 2);
-            $harvest1 = round(((1.5 / 100) * $e1) + $e1, 2);
-            $harvest2 = round(((1.5 / 100) * $e2) + $e2, 2);
+            $e = $e1 + $e2 + $e3;
+            $temph = round(((3 / 100) * $e) + $e, 2);
+            $harvest1 = round(((60 / 100) * $temph), 2);
+            $harvest2 = round(((40 / 100) * $temph), 2);
+            $dataDown = (100 -  $up);
             array_push($result, [
                 'date' => $date,
                 'up_time' => gmdate(" H: i: s ",  $time),
@@ -233,9 +236,9 @@ class AjnLoggerController extends Controller
                 'E1' =>  $e1,
                 'E2' =>  $e2,
                 'E3' =>  $e3,
-                'E' =>  $e1 +  $e2 +  $e3,
-                'Data' => (100 -  $up),
-                'Energy' => 0.00
+                'E' =>  $e,
+                'Data' => ($dataDown === 0) ? '-' : $dataDown,
+                'Energy' => '-'
             ]);
         }
         return  $result;
