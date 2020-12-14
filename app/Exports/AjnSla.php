@@ -14,7 +14,12 @@ use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use App\Http\Controllers\Api\NojsLoggersController;
 
-class AjnSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, WithEvents, WithStrictNullComparison
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithMapping;
+
+class AjnSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, WithEvents, WithStrictNullComparison, WithColumnFormatting
 {
     /**
      * @return \Illuminate\Support\Collection
@@ -37,6 +42,14 @@ class AjnSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, With
     public function array(): array
     {
         return $this->data;
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'F' => '#,##0',
+            'N' => '#,##0',
+        ];
     }
 
     public function headings(): array
@@ -111,7 +124,7 @@ class AjnSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, With
                 'size' => 12
             ],
             'alignment' => [
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
             ],
             'borders' => [
                 'allBorders' => [
