@@ -12,6 +12,8 @@ class BotTelegramController extends Controller
 {
     public static function send()
     {
+        $token = env('TOKEN_TELEGRAM');
+        $id = env('ID_CHAT');
         $end = Carbon::now()->format('Y-m-d H:i:s');
         $start = (new Carbon($end))->subMinute(7)->format('Y-m-d H:i:s');
         $logger =  NojsLogger::whereBetween('time_local', [$start, $end])
@@ -33,6 +35,6 @@ class BotTelegramController extends Controller
                 "Content-Type" => "application/json"
             ],
             "verify" => false,
-        ])->get("https://api.telegram.org/bot1067636842:AAH9elgutKUL2bLnoc3H9aAThMSjSQJ92zE/sendMessage?chat_id=-419064911&text={$text}");
+        ])->get("https://api.telegram.org/bot{$token}/sendMessage?chat_id={$id}&text={$text}");
     }
 }
