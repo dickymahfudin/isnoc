@@ -132,7 +132,7 @@ class ApiNojsUserController extends Controller
         $this->validate($request, [
             'nojs' => 'required|unique:nojs_users,nojs',
             'site' => 'required|string|max:20',
-            'provinsi' => 'required|string|max:20',
+            // 'provinsi' => 'required|string|max:20',
             'lc' => 'required',
             'mitra' => 'required',
             'ip' => 'required|string|max:15',
