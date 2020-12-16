@@ -40,7 +40,7 @@ class EmailService extends Command
     public function handle()
     {
         $to = 'maurice.adema@sundaya.com';
-        $cc = ['malik@sundaya.com', 'pungki@sundaya.com', 'dicky@sundaya.com'];
+        $cc = ['malik@sundaya.com', 'pungki@sundaya.com', 'verena@sundaya.com'];
         Mail::to($to)
             ->cc($cc)
             ->send(new ServiceCallMail());
