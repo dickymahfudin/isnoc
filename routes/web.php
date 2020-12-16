@@ -113,3 +113,13 @@ Route::group(['prefix' => 'material', 'middleware' => 'auth'], function () {
     Route::get('/{listMaterial}/edit', 'MaterialController@edit')->name('material.edit');
     Route::get('/cadangan', 'MaterialController@getCadangan')->name('material.cadangan');
 });
+
+
+Route::group(['prefix' => 'report', 'middleware' => 'auth'], function () {
+    Route::get('/', function () {
+        return view('report.index');
+    })->name('report.index');
+    Route::get('/download', 'ReportController@download')->name('report.download');
+});
+
+Route::get('/test', 'BotTelegramController@send');

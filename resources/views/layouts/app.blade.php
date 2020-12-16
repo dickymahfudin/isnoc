@@ -90,6 +90,10 @@
                                     <a class="nav-link {{ Request::is('material') ? 'bg-warning text-dark' : ''}}" href="{{route('material.index')}}">Material</a>
                                 </li>
 
+                                <li class="nav-item h5">
+                                    <a class="nav-link {{ Request::is('report') ? 'bg-warning text-dark' : ''}}" href="{{route('report.index')}}">Report</a>
+                                </li>
+
                                 <li class="nav-item dropdown h5">
                                     <a class="nav-link dropdown-toggle {{ Request::is('other') ? 'bg-warning text-dark' : ''}} {{ Request::is('ajn') ? 'bg-warning text-dark' : ''}}" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other</a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
