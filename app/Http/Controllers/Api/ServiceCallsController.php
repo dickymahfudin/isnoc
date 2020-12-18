@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Http\Controllers\Api\NojsLoggersController;
-
+use Spatie\Backup\Helpers\Format;
 
 class ServiceCallsController extends Controller
 {
@@ -40,6 +40,48 @@ class ServiceCallsController extends Controller
             $service = ServiceCall::all();
         }
         return response($service, 200);
+    }
+
+    public function withSlaLocal()
+    {
+        $service = DB::table('service_calls')
+            ->join('nojs_users', 'service_calls.nojs', '=', 'nojs_users.nojs')
+            ->select('service_calls.*', 'nojs_users.site', 'nojs_users.lc', 'nojs_users.mitra', 'nojs_users.id_lvdvsat')
+            ->where('status', 'like', '%OPEN%')
+            ->get();
+        $data = [];
+        foreach ($service as  $value) {
+            $now = Carbon::now();
+            $time = new Carbon($value->open_time);
+
+            $msec = ($now->diffInMilliseconds($time));
+            $day = floor($msec / 1000 / 60 / 60 / 24);
+            $msec -= $day * 1000 * 60 * 60 * 24;
+            $hh = floor($msec / 1000 / 60 / 60);
+            $msec -= $hh * 1000 * 60 * 60;
+            $mm = floor($msec / 1000 / 60);
+            $msec -= $mm * 1000 * 60;
+            $ss =  floor($msec / 1000);
+            $msec -= $ss * 1000;
+
+            $openTime = ($day != 0) ? "$day day" : (($hh != 0) ? "$hh Hours" : "$mm Minutes");
+
+            $result =  SlaPrtgController::getSla($value->nojs);
+            array_push($data, [
+                "service_id" => $value->service_id,
+                "nojs" => $value->nojs,
+                "site" => $value->site,
+                "pms " => $value->pms_state,
+                "open_time" => $openTime,
+                "lc" => $value->lc,
+                "mitra" => $value->mitra,
+                "error" => $value->error,
+                "status" => "OPEN",
+                "sla_prtg_day" => $result["daily"],
+                "sla_prtg_month" => $result["monthly"],
+            ]);
+        }
+        return response($data, 200);
     }
 
     public function store(Request $request)
