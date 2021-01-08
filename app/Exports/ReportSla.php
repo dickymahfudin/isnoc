@@ -49,17 +49,17 @@ class ReportSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, W
             ], ["Batt Volt", $this->sumBattVolt],
             [
                 "Date Time",
-                "Eh1",
-                "Eh2",
-                "Vsat Curr",
-                "Bts Curr",
-                "Batt Volt",
-                "Edl1",
-                "Edl2",
-                "LVD1",
-                "LVD2",
-                "Duration",
-                "Real",
+                "Eh1 (Joule / 5 Menit)",
+                "Eh2 (Joule / 5 Menit)",
+                "Vsat Curr (Ampere)",
+                "Bts Curr (Ampere)",
+                "Batt Volt (Volt)",
+                "Edl1 (Joule / 5 Menit)",
+                "Edl2 (Joule / 5 Menit)",
+                "LVD1 (Volt)",
+                "LVD2 (Volt)",
+                "Duration (Detik)",
+                "Real (Detik)",
             ]
         ];
     }

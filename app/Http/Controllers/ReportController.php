@@ -44,6 +44,7 @@ class ReportController extends Controller
                     $duration = $tempTime > 300 ? 300 : $tempTime;
                     $sumDuration += $duration;
                     $sumBattVolt +=  $value["batt_volt1"];
+                    $batt_volt = $value["batt_volt1"]/100;
                     array_push($tempResult, [
                         "date Time" => $value['time_local'],
                         // "nojs" => $value["nojs"],
@@ -52,11 +53,11 @@ class ReportController extends Controller
                         "vsat curr" => $value['vsat_curr'] / 100,
                         "bts curr" => $value["bts_curr"] / 100,
                         // "load3" => $value["load3"],
-                        "batt volt" => $value["batt_volt1"],
+                        "batt volt" => $batt_volt,
                         "edl1" => $value["edl1"],
                         "edl2" => $value["edl2"],
-                        "lvd1" => (($value['vsat_curr'] / 100) > 0) ? $value["batt_volt1"] : 0,
-                        "lvd2" => (($value['bts_curr'] / 100) > 0) ? $value["batt_volt1"] : 0,
+                        "lvd1" => (($value['vsat_curr'] / 100) > 0) ? $batt_volt : 0,
+                        "lvd2" => (($value['bts_curr'] / 100) > 0) ? $batt_volt : 0,
                         "duration" => $duration,
                         'real' => $tempTime
                     ]);
