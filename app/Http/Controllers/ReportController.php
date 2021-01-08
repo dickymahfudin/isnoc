@@ -55,6 +55,8 @@ class ReportController extends Controller
                         "batt volt" => $value["batt_volt1"],
                         "edl1" => $value["edl1"],
                         "edl2" => $value["edl2"],
+                        "lvd1" => (($value['vsat_curr'] / 100) > 0) ? $value["batt_volt1"] : 0,
+                        "lvd2" => (($value['bts_curr'] / 100) > 0) ? $value["batt_volt1"] : 0,
                         "duration" => $duration,
                         'real' => $tempTime
                     ]);

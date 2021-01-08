@@ -56,6 +56,8 @@ class ReportSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, W
                 "Batt Volt",
                 "Edl1",
                 "Edl2",
+                "LVD1",
+                "LVD2",
                 "Duration",
                 "Real",
             ]
@@ -198,17 +200,17 @@ class ReportSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, W
             AfterSheet::class => function (AfterSheet $event) use ($styleHeader, $styleDescription, $styleMain, $styleHeaderRed, $styleHeaderBlue, $styleHeaderYellow, $styleHeaderGreen) {
                 $dataCount = count($this->data) + 6;
 
-                $event->sheet->getDelegate()->mergeCells('A1:J1');
-                $event->sheet->getDelegate()->mergeCells('A2:J2');
-                $event->sheet->getDelegate()->mergeCells('A3:J3');
-                $event->sheet->getDelegate()->getStyle('A1:J1')->applyFromArray($styleDescription);
-                $event->sheet->getDelegate()->getStyle('A2:J2')->applyFromArray($styleDescription);
-                $event->sheet->getDelegate()->getStyle('A3:J3')->applyFromArray($styleDescription);
+                $event->sheet->getDelegate()->mergeCells('A1:L1');
+                $event->sheet->getDelegate()->mergeCells('A2:L2');
+                $event->sheet->getDelegate()->mergeCells('A3:L3');
+                $event->sheet->getDelegate()->getStyle('A1:L1')->applyFromArray($styleDescription);
+                $event->sheet->getDelegate()->getStyle('A2:L2')->applyFromArray($styleDescription);
+                $event->sheet->getDelegate()->getStyle('A3:L3')->applyFromArray($styleDescription);
                 $event->sheet->getDelegate()->getStyle('A4:C4')->applyFromArray($styleDescription);
                 $event->sheet->getDelegate()->getStyle('A5:C5')->applyFromArray($styleDescription);
-                $event->sheet->getDelegate()->getStyle('A6:J6')->applyFromArray($styleHeader);
+                $event->sheet->getDelegate()->getStyle('A6:L6')->applyFromArray($styleHeader);
 
-                $event->sheet->getDelegate()->getStyle('A7:J' . $dataCount)->applyFromArray($styleMain);
+                $event->sheet->getDelegate()->getStyle('A7:L' . $dataCount)->applyFromArray($styleMain);
             },
         ];
     }
