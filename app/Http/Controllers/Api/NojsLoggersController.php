@@ -549,6 +549,10 @@ class NojsLoggersController extends Controller
             $temp = $datas[0]["time_local"];
             $errorValue = null;
             foreach ($datas as $key => $data) {
+                $tempDataEh1 = $data["eh1"];
+                $tempDataEh2 = $data["eh2"];
+                $tempDataEdl1 = $data["edl1"];
+                $tempDataEdl2 = $data["edl2"];
                 $time =  Carbon::parse($temp)->diffInMinutes(Carbon::parse($data["time_local"]));
                 if ($time >= 3 && $time < 7) {
                     array_push($result, $data);
@@ -558,18 +562,22 @@ class NojsLoggersController extends Controller
                     while (1) {
                         $time_local = (new Carbon($timeNow))->subMinute(5)->format('Y-m-d H:i:s');
                         $tempTime =  Carbon::parse($time_local)->diffInMinutes(Carbon::parse($data["time_local"]));
+                        $tempDataEh1 = $tempDataEh1 - 7;
+                        $tempDataEh2 = $tempDataEh2 - 7;
+                        $tempDataEdl1 = $tempDataEdl1 - 7;
+                        $tempDataEdl2 = $tempDataEdl2 - 7;
                         array_push($result, [
                             "time_local" => $time_local,
                             "nojs" => $data["nojs"],
-                            "eh1" => $data["eh1"],
-                            "eh2" => $data["eh2"],
+                            "eh1" => $tempDataEh1,
+                            "eh2" => $tempDataEh2,
                             "vsat_curr" => $data["vsat_curr"],
                             "bts_curr" => $data["bts_curr"],
                             "load3" => $data["load3"],
                             "batt_volt1" => $data["batt_volt1"],
                             "batt_volt2" => $data["batt_volt2"],
-                            "edl1" => $data["edl1"],
-                            "edl2" => $data["edl2"],
+                            "edl1" => $tempDataEdl1,
+                            "edl2" => $tempDataEdl2,
                             "pms_state" => $data["pms_state"]
                         ]);
                         $timeNow = $time_local;
