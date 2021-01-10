@@ -569,15 +569,15 @@ class NojsLoggersController extends Controller
                         array_push($result, [
                             "time_local" => $time_local,
                             "nojs" => $data["nojs"],
-                            "eh1" => $tempDataEh1,
-                            "eh2" => $tempDataEh2,
+                            "eh1" => ($tempDataEh1 > 0) ? $tempDataEh1 : 0,
+                            "eh2" => ($tempDataEh2 > 0) ? $tempDataEh2 : 0,
                             "vsat_curr" => $data["vsat_curr"],
                             "bts_curr" => $data["bts_curr"],
                             "load3" => $data["load3"],
                             "batt_volt1" => $data["batt_volt1"],
                             "batt_volt2" => $data["batt_volt2"],
-                            "edl1" => $tempDataEdl1,
-                            "edl2" => $tempDataEdl2,
+                            "edl1" => ($tempDataEdl1 > 0) ? $tempDataEdl1 : 0,
+                            "edl2" => ($tempDataEdl2 > 0) ? $tempDataEdl2 : 0,
                             "pms_state" => $data["pms_state"]
                         ]);
                         $timeNow = $time_local;
