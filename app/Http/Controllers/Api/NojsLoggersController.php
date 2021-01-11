@@ -216,7 +216,7 @@ class NojsLoggersController extends Controller
             foreach ($groups as $group) {
                 $logger = $this->resultFiveMinutes($group);
                 $time =  Carbon::parse($sdate)->diffInSeconds(Carbon::parse($edate));
-                $time = $time - 300;
+                $time = $time;
 
                 $averageSla = $this->averageSla($logger, $time);
                 if (!$averageSla) {
@@ -676,13 +676,17 @@ class NojsLoggersController extends Controller
             $upTime = 0;
             $temp = ($datas[0]["time_local"] !== $valueError) ? $datas[0]["time_local"] : 0;
             foreach ($datas as $key => $data) {
-                if ($data["eh1"] !== $valueError) {
-                    $up =  Carbon::parse($data["time_local"])->diffInSeconds(Carbon::parse($temp));
-                    $upTime += $up;
-                    $temp = $data["time_local"];
-                } else {
-                    $temp = $data["time_local"];
-                }
+                // if ($data["eh1"] !== $valueError) {
+                //     $up =  Carbon::parse($data["time_local"])->diffInSeconds(Carbon::parse($temp));
+                //     $upTime += $up > 300 ? 300 : $up;
+                //     $temp = $data["time_local"];
+                // } else {
+                //     $temp = $data["time_local"];
+                // }
+                $timeNext = $key + 1 < count($datas) ? $datas[$key + 1]['time_local'] : $data['time_local'];
+                $tempTime =  Carbon::parse($timeNext)->diffInSeconds(Carbon::parse($data['time_local']));
+                $duration = $tempTime > 300 ? 300 : $tempTime;
+                $upTime += $duration;
             }
 
             $nojs = $datas[0]["nojs"];
@@ -699,7 +703,7 @@ class NojsLoggersController extends Controller
                 return $this->pmsConvert($item["pms_state"]);
             })));
 
-            $up_persentase = round(($upTime / $time) * 100);
+            $up_persentase = round(($upTime / $time) * 100, 2);
             $dataNojs = NojsUser::find($nojs);
 
             $result = [
