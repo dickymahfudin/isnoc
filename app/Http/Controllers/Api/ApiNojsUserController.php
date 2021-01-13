@@ -35,49 +35,49 @@ class ApiNojsUserController extends Controller
             $datas = NojsUser::whereIn('lc', array($lc, $lc1))
                 ->get();
         } elseif ($noc === "site1") {
-            $datas = NojsUser::query()
+            $datas = NojsUser::where('ehub_version', '!=', true)
                 ->orderBy('lc', 'asc')
                 ->orderBy('nojs', 'asc')
                 ->skip(0)
                 ->take(25)
                 ->get();
         } elseif ($noc === "site2") {
-            $datas = NojsUser::query()
+            $datas = NojsUser::where('ehub_version', '!=', true)
                 ->orderBy('lc', 'asc')
                 ->orderBy('nojs', 'asc')
                 ->skip(25)
                 ->take(25)
                 ->get();
         } elseif ($noc === "site3") {
-            $datas = NojsUser::query()
+            $datas = NojsUser::where('ehub_version', '!=', true)
                 ->orderBy('lc', 'asc')
                 ->orderBy('nojs', 'asc')
                 ->skip(50)
                 ->take(25)
                 ->get();
         } elseif ($noc === "site4") {
-            $datas = NojsUser::query()
+            $datas = NojsUser::where('ehub_version', '!=', true)
                 ->orderBy('lc', 'asc')
                 ->orderBy('nojs', 'asc')
                 ->skip(75)
                 ->take(25)
                 ->get();
         } elseif ($start === 0 && $take) {
-            $datas = NojsUser::query()
+            $datas = NojsUser::where('ehub_version', '!=', true)
                 ->orderBy('lc', 'asc')
                 ->orderBy('nojs', 'asc')
                 ->skip(0)
                 ->take($take)
                 ->get();
         } elseif ($start !== 0 && $take) {
-            $datas = NojsUser::query()
+            $datas = NojsUser::where('ehub_version', '!=', true)
                 ->orderBy('lc', 'asc')
                 ->orderBy('nojs', 'asc')
                 ->skip($start)
                 ->take($take)
                 ->get();
         } else {
-            $datas = NojsUser::orderBy('site', 'asc')->get();
+            $datas = NojsUser::where('ehub_version', '!=', true)->orderBy('site', 'asc')->get();
         }
         return response($datas, 200);
     }
