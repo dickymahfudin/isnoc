@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('bot:telegram')->cron('*/20 * * * *');
         $schedule->command('sla:prtg')->dailyAt('00:02');
         $schedule->command('service:call')->dailyAt('23:58');
-        $schedule->command('email:service')->weeklyOn(1, '8:45');
+        // $schedule->command('email:service')->weeklyOn(1, '8:45');
         $schedule->command('email:month')->monthlyOn(1, '8:00');
     }
 
