@@ -640,6 +640,7 @@ class NojsLoggersController extends Controller
                     "batt_volt2" => round($batt_volt2 / 100, 1),
                     "edl1" => $edl1,
                     "edl2" => $edl2,
+                    "duration" => $upTime
                     // "pms_state" => $pms_state,
                 ]);
             }

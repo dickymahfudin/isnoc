@@ -103,18 +103,19 @@ $(document).ready(function() {
                     <table class="table table-striped table-bordered dt-responsive nowrap" style="width:100%" id="tableLog" url="{{route('nojs.table')}}">
                         <thead>
                             <tr>
-                                <th scope="col">Date</th>
-                                <th scope="col">Up Time</th>
-                                <th scope="col">Nojs</th>
-                                <th scope="col">Eh1</th>
-                                <th scope="col">Eh2</th>
-                                <th scope="col">Vsat Curr</th>
-                                <th scope="col">Bts Curr</th>
-                                <th scope="col">Load3</th>
-                                <th scope="col">Batt Volt1</th>
-                                <th scope="col">Batt Volt2</th>
-                                <th scope="col">Edl1</th>
-                                <th scope="col">Edl2</th>
+                                <th scope="col">DATE</th>
+                                <th scope="col">UP TIME</th>
+                                <th scope="col">NOJS</th>
+                                <th scope="col">BATTERY VOLTAGE 1</th>
+                                <th scope="col">BATTERY VOLTAGE 2</th>
+                                <th scope="col">VSAT CURRENT</th>
+                                <th scope="col">BTS CURRENT</th>
+                                <th scope="col">LOAD3</th>
+                                <th scope="col">EH1</th>
+                                <th scope="col">EH2</th>
+                                <th scope="col">EDL1</th>
+                                <th scope="col">EDL2</th>
+                                <th scope="col">duration</th>
                             </tr>
                         </thead>
                     </table>
@@ -133,10 +134,10 @@ $(document).ready(function() {
                     data: "nojs"
                 },
                 {
-                    data: "eh1"
+                    data: "batt_volt1"
                 },
                 {
-                    data: "eh2"
+                    data: "batt_volt2"
                 },
                 {
                     data: "vsat_curr"
@@ -148,16 +149,19 @@ $(document).ready(function() {
                     data: "load3"
                 },
                 {
-                    data: "batt_volt1"
+                    data: "eh1"
                 },
                 {
-                    data: "batt_volt2"
+                    data: "eh2"
                 },
                 {
                     data: "edl1"
                 },
                 {
                     data: "edl2"
+                },
+                {
+                    data: "duration"
                 }
             ]
         });
