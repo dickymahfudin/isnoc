@@ -85,6 +85,7 @@ class SlaPrtgController extends Controller
         foreach ($users as $key => $data) {
             $id = $data->id_lvdvsat;
             $new_data = [
+                "ip" => "202.43.73.187",
                 "id" => $id,
                 "sdate" => $sdate,
                 "edate" => $edate,

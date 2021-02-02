@@ -17,6 +17,7 @@ class PrtgController extends Controller
 
     public function getDataTotals(Request $request)
     {
+        $ip = $request->ip;
         $id = $request->id;
         $sdate = $request->sdate;
         $edate = $request->edate;
@@ -24,6 +25,7 @@ class PrtgController extends Controller
         $password = $request->password;
 
         $data = $this->getPrtg([
+            "ip" => $ip,
             "id" => $id,
             "sdate" => $sdate,
             "edate" => $edate,
@@ -35,6 +37,7 @@ class PrtgController extends Controller
 
     public static function getPrtg($datas)
     {
+        $ip = $datas["ip"];
         $id = $datas["id"];
         $sdate = $datas["sdate"];
         $edate = $datas["edate"];
@@ -47,7 +50,7 @@ class PrtgController extends Controller
                 "Content-Type" => "application/xml"
             ],
             "verify" => false,
-        ])->get("https://202.43.73.187/api/historicdata_totals.xml?id={$id}&sdate={$sdate}&edate={$edate}&username={$username}&password={$password}");
+        ])->get("https://{$ip}/api/historicdata_totals.xml?id={$id}&sdate={$sdate}&edate={$edate}&username={$username}&password={$password}");
 
         $xml = $response->getBody()->getContents();
         $data = simplexml_load_string($xml);
