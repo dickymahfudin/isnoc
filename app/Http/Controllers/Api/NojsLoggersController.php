@@ -714,7 +714,7 @@ class NojsLoggersController extends Controller
                 "up_time" => $this->secToTime($upTime),
                 "unknown_time" => $this->secToTime(($time - $upTime)),
                 "up_persentase" => $up_persentase . "%",
-                "unknown_persentase" => 100 - $up_persentase . "%",
+                "unknown_persentase" => round(100 - $up_persentase, 2) . "%",
                 "eh1" => $eh1,
                 "eh2" => $eh2,
                 "vsat_curr" => round(
