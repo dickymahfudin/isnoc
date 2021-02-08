@@ -76,6 +76,7 @@ class NojsLoggersController extends Controller
         $single = $request->single;
         $noc = $request->noc;
         $detail = $request->detail;
+        $daily = $request->daily;
 
         if (($nojs && $limit) && !$sdate) {
             if ($calculate === "true") {
@@ -186,7 +187,7 @@ class NojsLoggersController extends Controller
         $daily = $logger->groupBy(function ($item, $key) {
             return substr($item["time_local"], 0, 10);
         });
-        $daily = $this->daily($daily);
+        $daily = $this->daily($daily, $nojs);
         $result = [
             "logger" => $logger,
             "daily" => $daily
@@ -594,12 +595,14 @@ class NojsLoggersController extends Controller
         return collect($result);
     }
 
-    public function daily($datas)
+    public function daily($datas, $js)
     {
         try {
             $result = [];
             $valueError = null;
-
+            $nojsGet = NojsUser::where('nojs', $js)
+                ->get();
+            $site = $nojsGet[0]->site;
             foreach ($datas as $key => $data) {
                 $upTime = 0;
                 $temp = ($data[0]["time_local"] !== $valueError) ? $data[0]["time_local"] : 0;
@@ -618,26 +621,25 @@ class NojsLoggersController extends Controller
                 $eh2 = intval(round($data->avg("eh2")));
                 $vsat_curr = intval(round($data->avg("vsat_curr")));
                 $bts_curr = intval(round($data->avg("bts_curr")));
-                $load3 = intval(round($data->avg("load3")));
+                // $load3 = intval(round($data->avg("load3")));
                 $batt_volt1 = intval(round($data->avg("batt_volt1")));
-                $batt_volt2 = intval(round($data->avg("batt_volt2")));
+                // $batt_volt2 = intval(round($data->avg("batt_volt2")));
                 $edl1 = intval(round($data->avg("edl1")));
                 $edl2 = intval(round($data->avg("edl2")));
-                $pms_state = intval(round($data->avg(function ($item) {
-                    return $this->pmsConvert($item["pms_state"]);
-                })));
+                // $pms_state = intval(round($data->avg(function ($item) {
+                //     return $this->pmsConvert($item["pms_state"]);
+                // })));
 
                 array_push($result, [
-                    "time_local" => $key,
-                    "up_time" => gmdate("H:i:s", $upTime),
                     "nojs" => $nojs,
-                    "eh1" => $eh1,
-                    "eh2" => $eh2,
+                    "site" => $site,
+                    "Date" => $key,
+                    "up_time" => gmdate("H:i:s", $upTime),
+                    "batt_volt" => round($batt_volt1 / 100, 1),
                     "vsat_curr" => round($vsat_curr / 100, 1),
                     "bts_curr" => round($bts_curr / 100, 1),
-                    "load3" => round($load3 / 100, 1),
-                    "batt_volt1" => round($batt_volt1 / 100, 1),
-                    "batt_volt2" => round($batt_volt2 / 100, 1),
+                    "eh1" => $eh1,
+                    "eh2" => $eh2,
                     "edl1" => $edl1,
                     "edl2" => $edl2,
                     "duration" => $upTime
