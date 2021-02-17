@@ -39,14 +39,11 @@ class ReportSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, W
     public function headings(): array
     {
         return [
-            [
-                "SLA Site $this->site"
-            ], ["LOG POWER JOULE STORE PRO"],
-            [
-                "$this->title"
-            ], [
-                "Duration", $this->sumDuration
-            ], ["Batt Volt", $this->sumBattVolt],
+            ["LOG POWER JOULE STORE PRO"],
+            ["Site $this->site"],
+            ["$this->title"],
+            ["Duration", $this->sumDuration],
+            ["Batt Volt", $this->sumBattVolt],
             [
                 "Date Time",
                 "Eh1",
@@ -66,7 +63,7 @@ class ReportSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, W
 
     public function title(): string
     {
-        return $this->title;
+        return strtoupper($this->site);
     }
 
 
