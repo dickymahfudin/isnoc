@@ -121,5 +121,4 @@ Route::group(['prefix' => 'report', 'middleware' => 'auth'], function () {
     })->name('report.index');
     Route::get('/download', 'ReportController@download')->name('report.download');
 });
-
-Route::get('/test', 'BotTelegramController@send');
+Route::get('/export', 'ReportController@download')->name('report.download');
