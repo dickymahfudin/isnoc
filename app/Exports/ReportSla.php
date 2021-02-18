@@ -43,7 +43,7 @@ class ReportSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, W
             ["Site $this->site"],
             ["$this->title"],
             ["Duration", $this->sumDuration],
-            ["Batt Volt", $this->sumBattVolt],
+            ["Batt Volt", $this->sumBattVolt], [],
             [
                 "Date Time",
                 "Eh1",
@@ -205,9 +205,9 @@ class ReportSla implements FromArray, ShouldAutoSize, WithHeadings, WithTitle, W
                 $event->sheet->getDelegate()->getStyle('A3:L3')->applyFromArray($styleDescription);
                 $event->sheet->getDelegate()->getStyle('A4:C4')->applyFromArray($styleDescription);
                 $event->sheet->getDelegate()->getStyle('A5:C5')->applyFromArray($styleDescription);
-                $event->sheet->getDelegate()->getStyle('A6:L6')->applyFromArray($styleHeader);
+                $event->sheet->getDelegate()->getStyle('A7:L7')->applyFromArray($styleHeader);
 
-                $event->sheet->getDelegate()->getStyle('A7:L' . $dataCount)->applyFromArray($styleMain);
+                $event->sheet->getDelegate()->getStyle('A8:L' . $dataCount)->applyFromArray($styleMain);
             },
         ];
     }
