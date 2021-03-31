@@ -34,6 +34,7 @@ Route::prefix('logger')->group(function () {
 Route::prefix('nojs')->group(function () {
     Route::get('/', 'Api\ApiNojsUserController@index');
     Route::get('/error', 'Api\ApiNojsUserController@bbc');
+    Route::get('/all', 'Api\ApiNojsUserController@all');
     Route::put('/', 'Api\ApiNojsUserController@update');
     Route::get('/{nojsUser}', 'Api\ApiNojsUserController@show');
     Route::post('/', 'Api\ApiNojsUserController@store');

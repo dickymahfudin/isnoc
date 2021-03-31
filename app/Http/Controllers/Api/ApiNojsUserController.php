@@ -224,4 +224,10 @@ class ApiNojsUserController extends Controller
     {
         //
     }
+
+    public function all()
+    {
+        $datas = NojsUser::get();
+        return response($datas, 200);
+    }
 }
