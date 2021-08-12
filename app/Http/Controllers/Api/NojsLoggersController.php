@@ -708,7 +708,9 @@ class NojsLoggersController extends Controller
 
             $up_persentase = round(($upTime / $time) * 100, 2);
             $dataNojs = NojsUser::find($nojs);
-
+            $avgBatt = round($batt_volt1 / 100, 1);
+            $avgVsatCurr = round($vsat_curr / 100,1);
+            $avgBtsCurr = round($bts_curr / 100,1);
             $result = [
                 "nojs" => $nojs,
                 "site" => $dataNojs["site"],
@@ -719,16 +721,14 @@ class NojsLoggersController extends Controller
                 "unknown_persentase" => round(100 - $up_persentase, 2) . "%",
                 "eh1" => $eh1,
                 "eh2" => $eh2,
-                "vsat_curr" => round(
-                    $vsat_curr / 100,
-                    1
-                ),
-                "bts_curr" => round($bts_curr / 100, 1),
+                "vsat_curr" => $avgVsatCurr,
+                "bts_curr" => $avgBtsCurr,
                 "load3" => round($load3 / 100, 1),
                 "batt_volt1" => round($batt_volt1 / 100, 1),
                 "batt_volt2" => round($batt_volt2 / 100, 1),
                 "edl1" => $edl1,
                 "edl2" => $edl2,
+                "watt" => ($avgVsatCurr+ $avgBtsCurr) * $avgBatt,
                 "pms_state" => $pms_state
             ];
             return $result;
