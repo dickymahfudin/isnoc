@@ -728,7 +728,7 @@ class NojsLoggersController extends Controller
                 "batt_volt2" => round($batt_volt2 / 100, 1),
                 "edl1" => $edl1,
                 "edl2" => $edl2,
-                "watt" => ($avgVsatCurr+ $avgBtsCurr) * $avgBatt,
+                "watt" => round((($avgVsatCurr+ $avgBtsCurr) * $avgBatt), 1),
                 "pms_state" => $pms_state
             ];
             return $result;
